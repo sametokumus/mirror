@@ -310,15 +310,15 @@ class CartController extends Controller
             $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
             $total_price_with_delivery = $total_price + $regional_delivery_price->price;
 
-            $checkout_prices['products_subtotal_price'] = $products_subtotal_price;
+            $checkout_prices['products_subtotal_price'] = number_format($products_subtotal_price, 2);
             $checkout_prices['user_discount'] = $user_discount;
             $checkout_prices['user_discount_rate'] = $user_discount_rate;
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = $coupon_subtotal_price;
             $checkout_prices['delivery_price'] = $regional_delivery_price->price;
-            $checkout_prices['total_price'] = $total_price;
-            $checkout_prices['total_price_with_delivery'] = $total_price_with_delivery;
+            $checkout_prices['total_price'] = number_format($total_price, 2);
+            $checkout_prices['total_price_with_delivery'] = number_format($total_price_with_delivery, 2);
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['checkout_prices' => $checkout_prices]]);
         } catch (QueryException $queryException) {
