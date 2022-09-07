@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartDetail;
+use App\Models\Coupons;
 use App\Models\DeliveryPrice;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductRule;
 use App\Models\ProductVariation;
+use App\Models\RegionalDeliveryPrice;
+use App\Models\User;
 use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -226,6 +230,99 @@ class CartController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','e' => $queryException->getMessage()]);
         } catch (\Throwable $throwable) {
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','e'=> $throwable->getMessage()]);
+        }
+    }
+
+    public function getCheckoutPrices(Request $request){
+        try {
+
+            $cart_id = $request->cart_id;
+            $user_id = $request->user_id;
+            $address_id = $request->address_id;
+            $coupon_code = $request->coupon_code;
+
+            $checkout_prices = array();
+            $products_subtotal_price = null;
+            $user_discount = false;
+            $user_discount_rate = User::query()->where('id', $user_id)->where('active', 1)->first()->user_discount;
+            $coupon_message = null;
+            $coupon_subtotal_price = null;
+            $delivery_price = null;
+            $total_price = null;
+            $total_price_with_delivery = null;
+
+            if($user_discount_rate > 0){$user_discount = true;}
+
+
+            //ürünlerin ara toplam fiyatı
+            //ürünlerin kullanıcı indirimi dahil ara toplam fiyatı
+
+            // products_subtotal_price, user_discount_rate, coupon_subtotal_price, delivery_price, total_price, total_price_with_delivery
+
+            $cart = Cart::query()->where('cart_id',$cart_id)->first();
+            $cart_details = CartDetail::query()->where('cart_id',$cart->cart_id)->where('active',1)->get();
+            $cart_price = 0;
+            $cart_tax = 0;
+            $weight = 0;
+            foreach ($cart_details as $cart_detail){
+                $rule = ProductRule::query()->where('variation_id',$cart_detail->variation_id)->first();
+
+                if ($rule->discounted_price == null || $rule->discount_rate == 0){
+                    if($user_discount){
+                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * $user_discount_rate)) * $cart_detail->quantity;
+                        $cart_detail_tax = ($cart_detail_price / 100 * $rule->tax_rate) * $cart_detail->quantity;
+                    }else{
+                        $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
+                        $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
+                    }
+                }else{
+                    if($user_discount){
+                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * ($user_discount_rate + $rule->discount_rate))) * $cart_detail->quantity;
+                        $cart_detail_tax = ($cart_detail_price / 100 * $rule->tax_rate) * $cart_detail->quantity;
+                    }else{
+                        $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
+                        $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
+                    }
+                }
+                $weight = $weight + $rule->weight;
+
+                $cart_price += $cart_detail_price;
+                $cart_tax += $cart_detail_tax;
+
+            }
+            $products_subtotal_price = $cart_price + $cart_tax;
+            $total_price = $products_subtotal_price;
+
+            if($coupon_code != null){
+                $coupon = Coupons::query()->where('code', $coupon_code)->where('active', 1)->first();
+                if ($coupon->type == 1){
+                    $coupon_message = $coupon->discount." TL indirim.";
+                    $coupon_subtotal_price = $products_subtotal_price - $coupon->discount;
+                }elseif ($coupon->type == 2){
+                    $coupon_message = "%".$coupon->discount." indirim.";
+                    $coupon_subtotal_price = $products_subtotal_price - ($products_subtotal_price / 100 * $coupon->discount);
+                }
+                $total_price = $coupon_subtotal_price;
+            }
+
+            $address = Address::query()->where('id', $address_id)->where('active', 1)->first();
+            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
+            $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
+            $total_price_with_delivery = $total_price + $regional_delivery_price->price;
+
+            $checkout_prices['products_subtotal_price'] = $products_subtotal_price;
+            $checkout_prices['user_discount'] = $user_discount;
+            $checkout_prices['user_discount_rate'] = $user_discount_rate;
+            $checkout_prices['coupon_code'] = $coupon_code;
+            $checkout_prices['coupon_message'] = $coupon_message;
+            $checkout_prices['coupon_subtotal_price'] = $coupon_subtotal_price;
+            $checkout_prices['delivery_price'] = $regional_delivery_price->price;
+            $checkout_prices['total_price'] = $total_price;
+            $checkout_prices['total_price_with_delivery'] = $total_price_with_delivery;
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['checkout_prices' => $checkout_prices]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
 
