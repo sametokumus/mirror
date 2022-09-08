@@ -243,6 +243,8 @@ class CartController extends Controller
 
             $checkout_prices = array();
             $products_subtotal_price = null;
+            $products_cart_price = null;
+            $products_cart_tax = null;
             $user_discount = false;
             $user_discount_rate = User::query()->where('id', $user_id)->where('active', 1)->first()->user_discount;
             $coupon_message = null;
@@ -250,6 +252,7 @@ class CartController extends Controller
             $delivery_price = null;
             $total_price = null;
             $total_price_with_delivery = null;
+
 
             if($user_discount_rate > 0){$user_discount = true;}
 
@@ -290,6 +293,8 @@ class CartController extends Controller
                 $cart_tax += $cart_detail_tax;
 
             }
+            $products_cart_price = $cart_price;
+            $products_cart_tax = $cart_tax;
             $products_subtotal_price = $cart_price + $cart_tax;
             $total_price = $products_subtotal_price;
 
@@ -311,6 +316,8 @@ class CartController extends Controller
             $total_price_with_delivery = $total_price + $regional_delivery_price->price;
 
             $checkout_prices['products_subtotal_price'] = number_format($products_subtotal_price, 2,",",".");
+            $checkout_prices['products_cart_price'] = number_format($products_cart_price, 2,",",".");
+            $checkout_prices['products_cart_tax'] = number_format($products_cart_tax, 2,",",".");
             $checkout_prices['user_discount'] = $user_discount;
             $checkout_prices['user_discount_rate'] = $user_discount_rate;
             $checkout_prices['coupon_code'] = $coupon_code;
