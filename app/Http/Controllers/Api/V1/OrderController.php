@@ -73,6 +73,12 @@ class OrderController extends Controller
                 }
 
 
+                $shipping_price = str_replace(".", "", $request->shipping_price);
+                $shipping_price = str_replace(",", ".", $shipping_price);
+                $subtotal = str_replace(".", "", $request->subtotal);
+                $subtotal = str_replace(",", ".", $subtotal);
+                $total = str_replace(".", "", $request->total);
+                $total = str_replace(",", ".", $total);
                 $order_id = Order::query()->insertGetId([
                     'order_id' => $order_quid,
                     'user_id' => $request->user_id,
@@ -86,9 +92,9 @@ class OrderController extends Controller
                     'comment' => $request->comment,
                     'shipping_type' => $request->delivery_type,
                     'payment_type' => $request->payment_type,
-                    'shipping_price' => $request->shipping_price,
-                    'subtotal' => $request->subtotal,
-                    'total' => $request->total,
+                    'shipping_price' => $shipping_price,
+                    'subtotal' => $subtotal,
+                    'total' => $total,
                     'is_partial' => $request->is_partial,
                     'is_paid' => $request->is_paid
                 ]);
