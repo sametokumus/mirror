@@ -323,8 +323,8 @@ class CartController extends Controller
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
-            $checkout_prices['delivery_price'] = $regional_delivery_price->price;
-            $checkout_prices['total_price'] = number_format($total_price, 2,".","");
+            $checkout_prices['delivery_price'] = number_format($regional_delivery_price->price, 2,",",".");
+            $checkout_prices['total_price'] = number_format($total_price, 2,",",".");
             $checkout_prices['total_price_with_delivery'] = number_format($total_price_with_delivery, 2,",",".");
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['checkout_prices' => $checkout_prices]]);

@@ -71,6 +71,8 @@ class OrderController extends Controller
                     $billing_corporate_address = CorporateAddresses::query()->where('address_id',$billing_id)->first();
                     $shipping_address = $shipping_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
                 }
+
+
                 $order_id = Order::query()->insertGetId([
                     'order_id' => $order_quid,
                     'user_id' => $request->user_id,
@@ -246,14 +248,16 @@ class OrderController extends Controller
     {
         try {
 
+            $payment_quid = Uuid::uuid();
             Payment::query()->insert([
                 'order_id' => $request->order_id,
+                'payment_id' => $payment_quid,
                 'type' => $request->type,
                 'bank_id' => $request->bank_id,
                 'installment' => $request->installment_count
             ]);
 
-            return response(['message' => 'Ödeme oluşturuldu.', 'status' => 'success']);
+            return response(['message' => 'Ödeme oluşturuldu.', 'status' => 'success', 'object' => ['payment_id' => $payment_quid]]);
 
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
