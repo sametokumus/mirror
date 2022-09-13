@@ -50,9 +50,9 @@ class CreditCardController extends Controller
                     }
                     $total_price += ($price * $cart_detail->quantity);
                 }
-                $credit_card_installment['sub_total'] = $total_price;
-                $credit_card_installment['tax'] = $total_price / 100 * $product_rule->tax_rate;
-                $credit_card_installment['total'] = $total_price + ($total_price / 100 * $product_rule->tax_rate);
+                $credit_card_installment['sub_total'] = number_format($total_price, 2,",",".");
+                $credit_card_installment['tax'] = number_format($total_price / 100 * $product_rule->tax_rate, 2,",",".");
+                $credit_card_installment['total'] = number_format($total_price + ($total_price / 100 * $product_rule->tax_rate), 2,",",".");
             }
             $credit_card['installment'] = $credit_card_installments;
             $credit_card['no_bank'] = $no_bank;
