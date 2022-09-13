@@ -250,6 +250,62 @@ class OrderController extends Controller
         }
     }
 
+    public function getOrderByPaymentId($payment_id){
+        try {
+            $order_id = Payment::query()->where('payment_id', $payment_id)->first()->order_id;
+
+            $order = Order::query()->where('order_id',$order_id)->first();
+            $order['status_name'] = OrderStatus::query()->where('id', $order->status_id)->first()->name;
+            $order['carrier_name'] = Carrier::query()->where('id', $order->carrier_id)->first()->name;
+            $order['shipping_name'] = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
+            $order['payment_name'] = PaymentType::query()->where('id', $order->payment_type)->first()->name;
+            $order_details = OrderProduct::query()->where('order_id', $order_id)->get();
+            $order_price = 0;
+            $order_tax = 0;
+            $weight = 0;
+            foreach ($order_details as $order_detail){
+                $product = Product::query()->where('id',$order_detail->product_id)->first();
+                $brand_name = Brand::query()->where('id',$product->brand_id)->first()->name;
+                $variation = ProductVariation::query()->where('id',$order_detail->variation_id)->first();
+                $rule = ProductRule::query()->where('variation_id',$order_detail->variation_id)->first();
+                $image = ProductImage::query()->where('variation_id',$order_detail->variation_id)->first();
+
+                $variation['rule'] = $rule;
+                $variation['image'] = $image;
+                $product['variation'] = $variation;
+                $product['brand_name'] = $brand_name;
+                $order_detail['product'] = $product;
+                if ($order_detail->discounted_price == null || $order_detail->discount_rate == 0){
+                    $order_detail_price = $order_detail->regular_price * $order_detail->quantity;
+                    $order_detail_tax = $order_detail->regular_tax * $order_detail->quantity;
+                }else{
+                    $order_detail_price = $order_detail->discounted_price * $order_detail->quantity;
+                    $order_detail_tax = $order_detail->discounted_tax * $order_detail->quantity;
+                }
+                $weight = $weight + $rule->weight;
+//                if($product->is_free_shipping == 1){
+//                    $order_detail_delivery_price = 0.00;
+//                }
+                $order_detail['sub_total_price'] = $order_detail_price;
+                $order_detail['sub_total_tax'] = $order_detail_tax;
+                $order_price += $order_detail_price;
+                $order_tax += $order_detail_tax;
+
+            }
+            $order['order_details'] = $order_details;
+            $order['total_price'] = $order_price;
+            $order['total_tax'] = $order_tax;
+
+            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
+            $order['total_delivery'] = $delivery_price;
+            $order['total_weight'] = $weight;
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order' => $order]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
     public function addPayment(Request $request)
     {
         try {
