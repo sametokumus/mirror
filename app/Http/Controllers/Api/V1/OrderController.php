@@ -92,9 +92,9 @@ class OrderController extends Controller
                     'comment' => $request->comment,
                     'shipping_type' => $request->delivery_type,
                     'payment_type' => $request->payment_type,
-                    'shipping_price' => $shipping_price,
-                    'subtotal' => $subtotal,
-                    'total' => $total,
+                    'shipping_price' => $request->shipping_price,
+                    'subtotal' => $request->subtotal,
+                    'total' => $request->total,
                     'is_partial' => $request->is_partial,
                     'is_paid' => $request->is_paid
                 ]);
