@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartDetail;
+use App\Models\Coupons;
 use App\Models\CreditCard;
 use App\Models\CreditCardInstallment;
 use App\Models\ProductRule;
@@ -27,7 +28,7 @@ class CreditCardController extends Controller
         }
     }
 
-    public function getCreditCardById($member_no,$cart_id){
+    public function getCreditCardById($member_no, $cart_id, $coupon_code){
         try {
             $no_bank = 0;
             if ($member_no == 0){
@@ -50,9 +51,21 @@ class CreditCardController extends Controller
                     }
                     $total_price += ($price * $cart_detail->quantity);
                 }
-                $credit_card_installment['sub_total'] = number_format($total_price, 2,",",".");
-                $credit_card_installment['tax'] = number_format($total_price / 100 * $product_rule->tax_rate, 2,",",".");
-                $credit_card_installment['total'] = number_format($total_price + ($total_price / 100 * $product_rule->tax_rate), 2,",",".");
+//                $credit_card_installment['sub_total'] = number_format($total_price, 2,",",".");
+//                $credit_card_installment['tax'] = number_format($total_price / 100 * $product_rule->tax_rate, 2,",",".");
+                $total_price = $total_price + ($total_price / 100 * $product_rule->tax_rate);
+
+                if($coupon_code != "null"){
+                    $coupon = Coupons::query()->where('code', $coupon_code)->where('active', 1)->first();
+                    if ($coupon->type == 1){
+                        $coupon_subtotal_price = $total_price - $coupon->discount;
+                    }elseif ($coupon->type == 2){
+                        $coupon_subtotal_price = $total_price - ($total_price / 100 * $coupon->discount);
+                    }
+                    $total_price = $coupon_subtotal_price;
+                }
+
+                $credit_card_installment['total'] = number_format($total_price, 2,",",".");
             }
             $credit_card['installment'] = $credit_card_installments;
             $credit_card['no_bank'] = $no_bank;
