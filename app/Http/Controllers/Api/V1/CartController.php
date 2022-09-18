@@ -28,10 +28,10 @@ class CartController extends Controller
             if(!empty($request->cart_id)){
                 $cart_id = $request->cart_id;
             }else{
+                $cart_id = Uuid::uuid();
                 $added_cart_id = Cart::query()->insertGetId([
-                    'cart_id' => Uuid::uuid()
+                    'cart_id' => $cart_id
                 ]);
-                $cart_id = Cart::query()->where('id',$added_cart_id)->first()->cart_id;
             }
             $rule = ProductRule::query()->where('variation_id',$request->variation_id)->first();
             if ($rule->discount_rate > 0){
@@ -120,7 +120,7 @@ class CartController extends Controller
                 ->update([
                 'active' => 0
             ]);
-            $cart_details = CartDetail::query()->where('cart_id',$request->cart_id)->get();
+            $cart_details = CartDetail::query()->where('cart_id',$request->cart_id)->where('active', 1)->get();
             if (isset($cart_details)){
                 return response(['message' => 'Sepet silme işlemi başarılı.', 'status' => 'success', 'cart_status' => true]);
             }else{

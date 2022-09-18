@@ -314,6 +314,8 @@ class OrderController extends Controller
             Payment::query()->insert([
                 'order_id' => $request->order_id,
                 'payment_id' => $payment_quid,
+                'default_price' => $request->default_price,
+                'paid_price' => $request->paid_price,
                 'type' => $request->type,
                 'bank_id' => $request->bank_id,
                 'installment' => $request->installment_count
