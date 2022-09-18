@@ -120,8 +120,8 @@ class CartController extends Controller
                 ->update([
                 'active' => 0
             ]);
-            $cart_details = CartDetail::query()->where('cart_id',$request->cart_id)->where('active', 1)->get();
-            if (isset($cart_details)){
+            $cart_details = CartDetail::query()->where('cart_id',$request->cart_id)->where('active', 1)->count();
+            if ($cart_details > 0){
                 return response(['message' => 'Sepet silme işlemi başarılı.', 'status' => 'success', 'cart_status' => true]);
             }else{
                 Cart::query()->where('cart_id',$request->cart_id)->update([
