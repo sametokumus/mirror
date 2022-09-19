@@ -336,7 +336,7 @@ class OrderController extends Controller
     {
         try {
 
-            Payment::query()->where('order_id', $request->order_id)->update([
+            Payment::query()->where('payment_id', $request->payment_id)->update([
                 'return_code' => $request->return_code,
                 'response' => $request->response,
                 'transaction_id' => $request->transaction_id,
@@ -346,10 +346,20 @@ class OrderController extends Controller
                 'is_preauth' => 1,
                 'is_paid'=> 1
             ]);
-            Order::query()->where('order_id', $request->order_id)->update([
-                'is_paid' => 1,
-                'status_id' => 3
-            ]);
+            $order_id = Payment::query()->where('payment_id', $request->payment_id)->where('active')->get()->order_id;
+
+            $order = Order::query()->where('order_id', $order_id)->where('active', 1)->first();
+            $order_payments = Payment::query()->where('order_id', $order_id)->where('active', 1)->get();
+            $payment_totals = 0.00;
+            foreach ($order_payments as $order_payment){
+                $payment_totals += $order_payment->default_price;
+            }
+            if ($payment_totals == $order->total){
+                Order::query()->where('order_id', $request->order_id)->update([
+                    'is_paid' => 1,
+                    'status_id' => 3
+                ]);
+            }
 
             return response(['message' => 'Ödeme güncellendi.', 'status' => 'success']);
 
