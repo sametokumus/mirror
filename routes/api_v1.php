@@ -117,6 +117,7 @@ Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderByI
 Route::get('/order/getOrderByPaymentId/{payment_id}',[OrderController::class,'getOrderByPaymentId']);
 Route::post('/order/addPayment',[OrderController::class,'addPayment']);
 Route::post('/order/updatePayment',[OrderController::class,'updatePayment']);
+Route::get('/order/getOrderPaymentStatusByPaymentId/{payment_id}',[OrderController::class,'getOrderPaymentStatusByPaymentId']);
 
 
 Route::get('/brand/getBrands', [BrandController::class, 'getBrands']);

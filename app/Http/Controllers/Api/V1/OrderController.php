@@ -355,13 +355,46 @@ class OrderController extends Controller
                 $payment_totals += $order_payment->default_price;
             }
             if ($payment_totals == $order->total){
-                Order::query()->where('order_id', $request->order_id)->update([
+                Order::query()->where('order_id', $order_id)->update([
                     'is_preauth' => 1,
                     'status_id' => 3
                 ]);
             }
 
             return response(['message' => 'Ödeme güncellendi.', 'status' => 'success']);
+
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
+
+    public function getOrderPaymentStatusByPaymentId($payment_id){
+        try {
+
+            $order_id = Payment::query()->where('payment_id', $payment_id)->where('active')->get()->order_id;
+
+            $order = Order::query()->where('order_id', $order_id)->where('active', 1)->first();
+            $order_payments = Payment::query()->where('order_id', $order_id)->where('active', 1)->get();
+            $payment_default_totals = 0.00;
+            $payment_totals = 0.00;
+            $i = 0;
+            foreach ($order_payments as $order_payment){
+                $payment_default_totals += $order_payment->default_price;
+                $payment_totals += $order_payment->paid_price;
+                $i++;
+            }
+            $payment_details = array();
+            $payment_details['order_total'] = $order->total;
+            $payment_details['payment_total'] = $payment_totals;
+            $payment_details['payment_default_total'] = $payment_default_totals;
+            $payment_details['count'] = $i;
+            $payment_details['order_payments'] = $order_payments;
+
+            return response(['message' => 'Başarılı.', 'status' => 'success', 'object' => ['payment_details' => $payment_details]]);
 
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
