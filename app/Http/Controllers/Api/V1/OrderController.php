@@ -375,7 +375,7 @@ class OrderController extends Controller
     public function getOrderPaymentStatusByPaymentId($payment_id){
         try {
 
-            $order_id = Payment::query()->where('payment_id', $payment_id)->where('active')->first()->order_id;
+            $order_id = Payment::query()->where('payment_id', $payment_id)->where('active', 1)->first()->order_id;
 
             $order = Order::query()->where('order_id', $order_id)->where('active', 1)->first();
             $order_payments = Payment::query()->where('order_id', $order_id)->where('active', 1)->get();
