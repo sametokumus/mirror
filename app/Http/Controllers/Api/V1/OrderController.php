@@ -376,12 +376,12 @@ class OrderController extends Controller
         try {
 
             $order_id = Payment::query()->where('payment_id', $payment_id)->where('active', 1)->first()->order_id;
-//
+
 //            $order = Order::query()->where('order_id', $order_id)->where('active', 1)->first();
-//            $order_payments = Payment::query()->where('order_id', $order_id)->where('active', 1)->get();
-//            $payment_default_totals = 0.00;
-//            $payment_totals = 0.00;
-//            $i = 0;
+            $order_payments = Payment::query()->where('order_id', $order_id)->where('active', 1)->get();
+            $payment_default_totals = 0.00;
+            $payment_totals = 0.00;
+            $i = 0;
 //            foreach ($order_payments as $order_payment){
 //                $payment_default_totals += $order_payment->default_price;
 //                $payment_totals += $order_payment->paid_price;
@@ -394,7 +394,7 @@ class OrderController extends Controller
 //            $payment_details['count'] = $i;
 //            $payment_details['order_payments'] = $order_payments;
 
-            return response(['message' => 'Başarılı.', 'status' => 'success', 'object' => ['payment_details' => $order_id]]);
+            return response(['message' => 'Başarılı.', 'status' => 'success', 'object' => ['payment_details' => $order_payments]]);
 
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
