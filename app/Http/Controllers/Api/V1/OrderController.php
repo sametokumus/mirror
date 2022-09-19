@@ -389,6 +389,7 @@ class OrderController extends Controller
                 $i++;
             }
             $payment_details = array();
+            $payment_details['order_payment_methods'] = $order->payment_method;
             $payment_details['order_total'] = number_format($order->total, 2,".","");
             $payment_details['payment_total'] = number_format($payment_totals, 2,".","");
             $payment_details['payment_default_total'] = number_format($payment_default_totals, 2,".","");
