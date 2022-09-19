@@ -35,6 +35,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('subtotal');
             $table->decimal('total');
             $table->tinyInteger('is_partial')->default(0);
+            $table->tinyInteger('is_preauth')->default(0);
             $table->tinyInteger('is_paid')->default(0);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();

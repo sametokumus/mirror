@@ -344,7 +344,7 @@ class OrderController extends Controller
                 'hostrefnum' => $request->hostrefnum,
                 'authcode' => $request->authcode,
                 'is_preauth' => 1,
-                'is_paid'=> 1
+                'is_paid'=> 0
             ]);
             $order_id = Payment::query()->where('payment_id', $request->payment_id)->where('active')->get()->order_id;
 
@@ -356,7 +356,7 @@ class OrderController extends Controller
             }
             if ($payment_totals == $order->total){
                 Order::query()->where('order_id', $request->order_id)->update([
-                    'is_paid' => 1,
+                    'is_preauth' => 1,
                     'status_id' => 3
                 ]);
             }
