@@ -30,7 +30,7 @@ class CreateOrdersTable extends Migration
             $table->dateTime('invoice_date')->nullable();
             $table->dateTime('shipping_date')->nullable();
             $table->tinyInteger('shipping_type')->nullable()->default(1);
-            $table->tinyInteger('payment_type');
+            $table->tinyInteger('payment_method');
             $table->decimal('shipping_price');
             $table->decimal('subtotal');
             $table->decimal('total');
