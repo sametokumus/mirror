@@ -382,17 +382,17 @@ class OrderController extends Controller
             $payment_default_totals = 0.00;
             $payment_totals = 0.00;
             $i = 0;
-//            foreach ($order_payments as $order_payment){
-//                $payment_default_totals += $order_payment->default_price;
-//                $payment_totals += $order_payment->paid_price;
-//                $i++;
-//            }
-//            $payment_details = array();
-//            $payment_details['order_total'] = $order->total;
-//            $payment_details['payment_total'] = $payment_totals;
-//            $payment_details['payment_default_total'] = $payment_default_totals;
-//            $payment_details['count'] = $i;
-//            $payment_details['order_payments'] = $order_payments;
+            foreach ($order_payments as $order_payment){
+                $payment_default_totals += $order_payment->default_price;
+                $payment_totals += $order_payment->paid_price;
+                $i++;
+            }
+            $payment_details = array();
+            $payment_details['order_total'] = $order->total;
+            $payment_details['payment_total'] = $payment_totals;
+            $payment_details['payment_default_total'] = $payment_default_totals;
+            $payment_details['count'] = $i;
+            $payment_details['order_payments'] = $order_payments;
 
             return response(['message' => 'Başarılı.', 'status' => 'success', 'object' => ['payment_details' => $order_payments]]);
 
