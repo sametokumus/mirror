@@ -11,6 +11,7 @@ use App\Models\CartDetail;
 use App\Models\City;
 use App\Models\CorporateAddresses;
 use App\Models\Country;
+use App\Models\Coupons;
 use App\Models\DeliveryPrice;
 use App\Models\District;
 use App\Models\Order;
@@ -97,7 +98,8 @@ class OrderController extends Controller
                     'subtotal' => $request->subtotal,
                     'total' => $request->total,
                     'is_partial' => $request->is_partial,
-                    'is_paid' => $request->is_paid
+                    'is_paid' => $request->is_paid,
+                    'coupon_code' => $request->coupon_code
                 ]);
 
                 Cart::query()->where('cart_id', $request->cart_id)->update([
@@ -142,6 +144,19 @@ class OrderController extends Controller
                     'order_id' => $order_quid,
                     'status_id' => $order_status->id
                 ]);
+
+                if ($request->coupon_code != "null") {
+                    $coupon_info = Coupons::query()->where('code', $request->coupon_code)->where('active', 1)->first();
+                    $used_count = $coupon_info->count_of_used + 1;
+                    $coupon_active = 1;
+                    if ($coupon_info->count_of_uses == $used_count) {
+                        $coupon_active = 0;
+                    }
+                    Coupons::query()->where('code', $request->coupon_code)->where('active', 1)->update([
+                        'count_of_used' => $used_count,
+                        'active' => $coupon_active
+                    ]);
+                }
 
                 return response(['message' => 'Sipariş ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['order_id' => $order_quid]]);
             }else{

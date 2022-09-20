@@ -34,6 +34,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('shipping_price');
             $table->decimal('subtotal');
             $table->decimal('total');
+            $table->string('coupon_code');
             $table->tinyInteger('is_partial')->default(0);
             $table->tinyInteger('is_preauth')->default(0);
             $table->tinyInteger('is_paid')->default(0);
