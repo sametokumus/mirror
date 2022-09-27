@@ -145,7 +145,7 @@ class OrderController extends Controller
                     'status_id' => $order_status->id
                 ]);
 
-                if ($request->coupon_code != "null") {
+                if ($request->coupon_code != "") {
                     $coupon_info = Coupons::query()->where('code', $request->coupon_code)->where('active', 1)->first();
                     $used_count = $coupon_info->count_of_used + 1;
                     $coupon_active = 1;
