@@ -659,5 +659,33 @@ class ProductController extends Controller
         }
     }
 
+    public function getCheckProductSku($product_sku){
+        try {
+            $count = Product::query()->where('sku', $product_sku)->where('active', 1)->count();
+            if ($count > 0){
+                return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => true]]);
+            }else{
+                return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => false]]);
+            }
+
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getCheckProductVariationSku($product_sku){
+        try {
+            $count = ProductVariation::query()->where('sku', $product_sku)->where('active', 1)->count();
+            if ($count > 0){
+                return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => true]]);
+            }else{
+                return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => false]]);
+            }
+
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
 }
 

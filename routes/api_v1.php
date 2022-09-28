@@ -150,6 +150,9 @@ Route::get('/product/getFeaturedProducts', [ProductController::class, 'getFeatur
 Route::get('/product/getNewProducts', [ProductController::class, 'getNewProducts']);
 Route::get('/product/getSimilarProducts/{product_id}', [ProductController::class, 'getSimilarProducts']);
 
+Route::get('/product/getCheckProductSku/{product_sku}', [ProductController::class, 'getCheckProductSku']);
+Route::get('/product/getCheckProductVariationSku/{product_sku}', [ProductController::class, 'getCheckProductVariationSku']);
+
 
 
 
