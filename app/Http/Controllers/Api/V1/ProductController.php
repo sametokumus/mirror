@@ -666,7 +666,7 @@ class ProductController extends Controller
                 return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => true]]);
             }else{
                 return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => false]]);
-            }
+            }a
 
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
