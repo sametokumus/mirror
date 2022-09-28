@@ -410,6 +410,7 @@ class ProductController extends Controller
                 ->leftJoin('product_variations', 'product_variations.variation_group_id', '=', 'product_variation_groups.id')
                 ->where('product_variation_groups.product_id', $id)
                 ->selectRaw('product_variations.*')
+                ->where('product_variations.active', 1)
                 ->get();
 
             foreach ($product_variations as $product_variation) {
