@@ -665,6 +665,7 @@ class ProductController extends Controller
             if ($count > 0){
                 return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => true]]);
             }else{
+                $x=1;
                 return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => false]]);
             }
 
