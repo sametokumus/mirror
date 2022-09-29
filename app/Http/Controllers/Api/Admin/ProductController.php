@@ -969,11 +969,11 @@ class ProductController extends Controller
                             $discounted_price = $product_rule->regular_price / 100 * (100 - $discount_rate);
                             $discounted_tax = $discounted_price / 100 * $product_rule->tax_rate;
                         }
-                            ProductRule::query()->where('variation_id', $product_variation->id)->update([
-                                'discount_rate' => $discount_rate,
-                                'discounted_price' => $discounted_price,
-                                'discounted_tax' => $discounted_tax
-                            ]);
+                        ProductRule::query()->where('variation_id', $product_variation->id)->update([
+                            'discount_rate' => $discount_rate,
+                            'discounted_price' => $discounted_price,
+                            'discounted_tax' => $discounted_tax
+                        ]);
                     }
                 }
             }
@@ -1008,11 +1008,11 @@ class ProductController extends Controller
                             $discounted_price = $product_rule->regular_price / 100 * (100 - $discount_rate);
                             $discounted_tax = $discounted_price / 100 * $product_rule->tax_rate;
                         }
-                            ProductRule::query()->where('variation_id', $product_variation->id)->update([
-                                'discount_rate' => $discount_rate,
-                                'discounted_price' => $discounted_price,
-                                'discounted_tax' => $discounted_tax
-                            ]);
+                        ProductRule::query()->where('variation_id', $product_variation->id)->update([
+                            'discount_rate' => $discount_rate,
+                            'discounted_price' => $discounted_price,
+                            'discounted_tax' => $discounted_tax
+                        ]);
                     }
                 }
             }
@@ -1048,15 +1048,41 @@ class ProductController extends Controller
                             $discounted_price = $product_rule->regular_price / 100 * (100 - $discount_rate);
                             $discounted_tax = $discounted_price / 100 * $product_rule->tax_rate;
                         }
-                            ProductRule::query()->where('variation_id', $product_variation->id)->update([
-                                'discount_rate' => $discount_rate,
-                                'discounted_price' => $discounted_price,
-                                'discounted_tax' => $discounted_tax
-                            ]);
+                        ProductRule::query()->where('variation_id', $product_variation->id)->update([
+                            'discount_rate' => $discount_rate,
+                            'discounted_price' => $discounted_price,
+                            'discounted_tax' => $discounted_tax
+                        ]);
                     }
                 }
             }
             return response(['message' => 'İskonto güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+    public function getProductFeaturedVariationById($id)
+    {
+        try {
+            $featured_variation = Product::query()->where('id', $id)->first()->featured_variation;
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['featured_variation' => $featured_variation]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function updateProductFeaturedVariationById(Request $request, $id)
+    {
+        try {
+            Product::query()->where('id', $id)->update([
+                'featured_variation' => $request->featured_variation
+            ]);
+            return response(['message' => 'Öne çıkan varyasyon güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {

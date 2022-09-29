@@ -128,6 +128,9 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('product/updateProductVariation/{id}', [ProductController::class, 'updateProductVariation']);
     Route::get('product/deleteProductVariation/{id}', [ProductController::class, 'deleteProductVariation']);
 
+    Route::get('product/getProductFeaturedVariationById/{id}', [ProductController::class, 'getProductFeaturedVariationById']);
+    Route::post('product/updateProductFeaturedVariationById/{id}', [ProductController::class, 'updateProductFeaturedVariationById']);
+
     Route::post('variationImage/updateVariationImage/{id}', [ProductController::class, 'updateVariationImage']);
     Route::get('variationImage/deleteVariationImage/{id}', [ProductController::class, 'deleteVariationImage']);
 
