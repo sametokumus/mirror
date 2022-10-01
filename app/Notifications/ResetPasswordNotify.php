@@ -42,6 +42,8 @@ class ResetPasswordNotify extends Notification
     {
         $url = url('https://kablocu.wimco.com.tr/sifre-yenileme/' . $this->token);
         return (new MailMessage)
+            ->from('Kablocu')
+            ->subject('Şifre değiştirme')
             ->greeting('Merhaba!')
             ->line('Şifrenizi yenilemek için lütfen aşağıdaki butona tıklayınız.')
             ->action('Şifrenizi değiştirmek için tıklayınız!', $url)
