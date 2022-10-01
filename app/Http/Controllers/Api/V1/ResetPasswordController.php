@@ -43,14 +43,14 @@ class ResetPasswordController extends Controller
             if ($user && $resetpassword) {
                 $user->notify(new ResetPasswordNotify($resetpassword->token));
             }
-            return response()->json(['message' => 'Eposta şifre yenileme linki gönderildi.', 'status' => 'success']);
+            return response()->json(['message' => 'E-Posta adresinize şifre sıfırlama bağlantısı gönderildi.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'validation-003'){
-                return response('Eposta adresi bulunamadı.');
+                return response('E-Posta adresi bulunamadı.');
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
         }
@@ -123,7 +123,7 @@ class ResetPasswordController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'validation-003'){
-                return response('Eposta adresi bulunamadı.');
+                return response('E-Posta adresi bulunamadı.');
             }
             if ($exception->getMessage() == 'validation-005'){
                 return response('Kullanıcı bulunamadı.');
