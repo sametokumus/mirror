@@ -10,6 +10,7 @@ use App\Models\OrderRefund;
 use App\Models\OrderRefundStatus;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
+use App\Models\PaymentMethod;
 use App\Models\PaymentType;
 use App\Models\ProductImage;
 use App\Models\ShippingType;
@@ -71,7 +72,7 @@ class OrderController extends Controller
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
                 ->where('order_statuses.run_on', 1)
                 ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.total', 'orders.status_id',
-                    'orders.shipping_type', 'orders.user_id', 'orders.payment_type'
+                    'orders.shipping_type', 'orders.user_id', 'orders.payment_method'
                 ]);
             foreach ($orders as $order) {
                 $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
@@ -80,16 +81,16 @@ class OrderController extends Controller
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
                 $shipping_type = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
                 $user_profile = UserProfile::query()->where('user_id', $order->user_id)->first(['name', 'surname']);
-                $payment_type = PaymentType::query()->where('id', $order->payment_type)->first()->name;
+                $payment_method = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
 
                 $order['product_count'] = $product_count;
                 $order['product_image'] = $product_image;
-                $order['payment_type'] = $order->payment_type;
+                $order['payment_method'] = $order->payment_method;
                 $order['status_name'] = $status_name;
                 $order['shipping_number'] = $order->shipping_number;
                 $order['shipping_type_name'] = $shipping_type;
                 $order['user_profile'] = $user_profile;
-                $order['payment_type_name'] = $payment_type;
+                $order['payment_method_name'] = $payment_method;
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['orders' => $orders]]);
         } catch (QueryException $queryException) {
@@ -104,7 +105,7 @@ class OrderController extends Controller
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
                 ->where('order_statuses.run_on', 0)
                 ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.total', 'orders.status_id',
-                    'orders.shipping_type', 'orders.user_id', 'orders.payment_type'
+                    'orders.shipping_type', 'orders.user_id', 'orders.payment_method'
                 ]);
             foreach ($orders as $order) {
                 $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
@@ -113,16 +114,16 @@ class OrderController extends Controller
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
                 $shipping_type = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
                 $user_profile = UserProfile::query()->where('user_id', $order->user_id)->first(['name', 'surname']);
-                $payment_type = PaymentType::query()->where('id', $order->payment_type)->first()->name;
+                $payment_method = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
 
                 $order['product_count'] = $product_count;
                 $order['product_image'] = $product_image;
-                $order['payment_type'] = $order->payment_type;
+                $order['payment_method'] = $order->payment_method;
                 $order['status_name'] = $status_name;
                 $order['shipping_number'] = $order->shipping_number;
                 $order['shipping_type_name'] = $shipping_type;
                 $order['user_profile'] = $user_profile;
-                $order['payment_type_name'] = $payment_type;
+                $order['payment_method_name'] = $payment_method;
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['orders' => $orders]]);
         } catch (QueryException $queryException) {
