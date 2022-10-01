@@ -48,7 +48,7 @@ Route::get('auth/verify/{token}', [AuthController::class, 'verify'])->name('veri
 Route::post('auth/resend-verify-email', [AuthController::class, 'resend']);
 
 Route::get('password/find/{token}', [ResetPasswordController::class, 'find']);
-Route::post('password/sendResetEmail', [ResetPasswordController::class, 'store']);
+Route::post('password/sendResetPasswordEmail', [ResetPasswordController::class, 'store']);
 Route::post('password/reset',[ResetPasswordController::class, 'resetPassword']);
 
 
