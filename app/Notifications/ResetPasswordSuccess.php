@@ -41,8 +41,8 @@ class ResetPasswordSuccess extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('Kablocu')
             ->subject('Şifreniz başarıyla değiştirilmiştir.')
+            ->from('no-reply@kablocu.com.tr','Kablocu')
             ->line('Şifreniz başarıyla değiştirilmiştir.');
     }
 
