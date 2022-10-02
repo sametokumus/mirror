@@ -9,6 +9,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductDocument;
 use App\Models\ProductImage;
 use App\Models\ProductRule;
+use App\Models\ProductSeo;
 use App\Models\ProductTab;
 use App\Models\ProductTabContent;
 use App\Models\ProductTags;
@@ -655,6 +656,15 @@ class ProductController extends Controller
                 ->distinct('product_variations.name')
                 ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['colors' => $colors]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getProductSeoById($product_id){
+        try {
+            $seo = ProductSeo::query()->where('product_id', $product_id)->where('active', 1)->first();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['seo' => $seo]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         }

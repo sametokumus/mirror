@@ -911,6 +911,7 @@ class ProductController extends Controller
                 ProductSeo::query()->where('id', $product_seo->id)->update([
                     'title' => $request->title,
                     'keywords' => $request->keywords,
+                    'description' => $request->description,
                     'search_keywords' => $request->search_keywords
                 ]);
             } else {
@@ -918,6 +919,7 @@ class ProductController extends Controller
                     'product_id' => $request->product_id,
                     'title' => $request->title,
                     'keywords' => $request->keywords,
+                    'description' => $request->description,
                     'search_keywords' => $request->search_keywords
                 ]);
             }

@@ -171,6 +171,9 @@ Route::get('/product/getCategoriesByBranId', [ProductController::class, 'getCate
 Route::get('/product/getProductColors', [ProductController::class, 'getProductColors']);
 
 
+Route::get('/productSeo/getProductSeoById/{product_id}', [ProductController::class, 'getProductSeoById']);
+
+
 Route::get('/productDocument/getProductDocument', [ProductDocumentController::class, 'getProductDocument']);
 
 

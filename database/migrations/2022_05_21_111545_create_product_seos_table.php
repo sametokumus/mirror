@@ -18,6 +18,7 @@ class CreateProductSeosTable extends Migration
             $table->bigInteger('product_id');
             $table->text('title')->nullable();
             $table->text('keywords')->nullable();
+            $table->text('description')->nullable();
             $table->text('search_keywords')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
