@@ -19,6 +19,9 @@ class CreatePopupsTable extends Migration
             $table->string('title')->nullable();
             $table->string('subtitle')->nullable();
             $table->string('description')->nullable();
+            $table->string('pages')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
             $table->tinyInteger('show_form')->default(1);
             $table->tinyInteger('show_popup')->default(1);
             $table->tinyInteger('active')->default(1);
