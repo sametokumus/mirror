@@ -570,8 +570,6 @@ class ProductController extends Controller
                 'name' => 'required',
                 'description' => 'required',
                 'sku' => 'required',
-                'delivery_price' => 'required',
-                'delivery_tax' => 'required',
                 'is_free_shipping' => 'required',
                 'view_all_images' => 'required'
             ]);
@@ -584,8 +582,6 @@ class ProductController extends Controller
                 'short_description' => $request->short_description,
                 'notes' => $request->notes,
                 'sku' => $request->sku,
-                'delivery_price' => $request->delivery_price,
-                'delivery_tax' => $request->delivery_tax,
                 'is_free_shipping' => $request->is_free_shipping,
                 'view_all_images' => $request->view_all_images,
             ]);
