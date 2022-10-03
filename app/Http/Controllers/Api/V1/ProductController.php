@@ -229,7 +229,7 @@ class ProductController extends Controller
             }
 
             $products = $products->get();
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $request]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $request->brand_id]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         }
