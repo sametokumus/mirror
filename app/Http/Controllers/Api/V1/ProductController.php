@@ -228,8 +228,8 @@ class ProductController extends Controller
                 $products = $products->where('product_types.id', $request->type_id);
             }
 
-            $products = $products->get();
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $request->brand_id]]);
+            $products = $products->toSql();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         }
