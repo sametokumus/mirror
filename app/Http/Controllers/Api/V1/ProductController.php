@@ -209,6 +209,32 @@ class ProductController extends Controller
         }
     }
 
+    public function getFilteredProduct(Request $request)
+    {
+        try {
+            $products = Product::query()
+                ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
+                ->leftJoin('product_types', 'product_types.id', '=', 'products.type_id')
+                ->leftJoin('product_variations', 'product_variations.id', '=', 'products.featured_variation')
+                ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
+                ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
+                ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
+                ->where('products.active', 1);
+
+            if ($request->brand_id != 0){
+                $products = $products->where('brands.id', $request->brand_id);
+            }
+            if ($request->type_id != 0){
+                $products = $products->where('product_types.id', $request->type_id);
+            }
+
+            $products = $products->get();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
     public function getProductsByCategoryId($category_id)
     {
         try {
