@@ -20,6 +20,7 @@ use App\Models\ProductVariationGroupType;
 use App\Models\Tag;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Nette\Schema\ValidationException;
 
@@ -1052,6 +1053,81 @@ class ProductController extends Controller
                     }
                 }
             }
+            return response(['message' => 'İskonto güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+    public function updateProductDiscountRate(Request $request)
+    {
+        try {
+            if ($request->category_id != 0) {
+
+                $products = ProductCategory::query()
+                    ->leftJoin('products', 'products.id', '=', 'product_categories.product_id')
+                    ->selectRaw('products.*')
+                    ->where('product_categories.category_id', $request->category_id);
+
+                if ($request->brand_id != 0){
+                    $products = $products->where('products.brand_id', $request->brand_id);
+                }
+                if ($request->type_id != 0){
+                    $products = $products->where('products.type_id', $request->type_id);
+                }
+
+                $products = $products->get();
+
+
+            }else if ($request->brand_id != 0){
+
+                $products = Product::query()
+                    ->where('brand_id', $request->brand_id);
+
+                if ($request->type_id != 0){
+                    $products = $products->where('products.type_id', $request->type_id);
+                }
+
+                $products = $products->get();
+
+            }else{
+
+                $products = Product::query()
+                    ->where('type_id', $request->type_id);
+
+                $products = $products->get();
+
+            }
+
+                foreach ($products as $product) {
+                    $product_variation_groups = ProductVariationGroup::query()->where('product_id', $product->id)->get();
+                    foreach ($product_variation_groups as $product_variation_group) {
+                        $product_variations = ProductVariation::query()->where('variation_group_id', $product_variation_group->id)->get();
+                        foreach ($product_variations as $product_variation) {
+                            $product_rule = ProductRule::query()->where('variation_id', $product_variation->id)->first();
+
+                            if ($request->discount_rate == 0) {
+                                $discount_rate = null;
+                                $discounted_price = null;
+                                $discounted_tax = null;
+                            } else {
+
+                                $discount_rate = $request->discount_rate;
+                                $discounted_price = $product_rule->regular_price / 100 * (100 - $discount_rate);
+                                $discounted_tax = $discounted_price / 100 * $product_rule->tax_rate;
+                            }
+                            ProductRule::query()->where('variation_id', $product_variation->id)->update([
+                                'discount_rate' => $discount_rate,
+                                'discounted_price' => $discounted_price,
+                                'discounted_tax' => $discounted_tax
+                            ]);
+                        }
+                    }
+                }
             return response(['message' => 'İskonto güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);

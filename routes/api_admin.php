@@ -115,6 +115,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('product/updateFullProductVariationGroup/{id}', [ProductController::class, 'updateFullProductVariationGroup']);
     Route::get('product/deleteFullProductVariationGroup/{}', [ProductController::class, 'deleteFullProductVariationGroup']);
 
+    Route::post('product/updateProductDiscountRate', [ProductController::class, 'updateProductDiscountRate']);
     Route::post('product/updateBrandIdDiscountRate/{brand_id}', [ProductController::class, 'updateBrandIdDiscountRate']);
     Route::post('product/updateTypeIdDiscountRate/{type_id}', [ProductController::class, 'updateTypeIdDiscountRate']);
     Route::post('product/updateCategoryIdDiscountRate/{category_id}', [ProductController::class, 'updateCategoryIdDiscountRate']);
