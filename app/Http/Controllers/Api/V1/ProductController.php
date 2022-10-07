@@ -257,7 +257,7 @@ class ProductController extends Controller
 //                }
                 $products = $products->where(function ($query) use ($products, $brands){
                    foreach ($brands as $brand){
-                       $products = $products->orWhere('brands.id', $brand);
+                       $query = $query->orWhere('brands.id', $brand);
                    }
                 });
             }
@@ -268,7 +268,7 @@ class ProductController extends Controller
 //                }
                 $products = $products->where(function ($query) use ($products, $types){
                     foreach ($types as $type){
-                        $products = $products->orWhere('product_types.id', $type);
+                        $query = $query->orWhere('product_types.id', $type);
                     }
                 });
             }
