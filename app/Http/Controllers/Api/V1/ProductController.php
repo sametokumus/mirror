@@ -18,6 +18,7 @@ use App\Models\ProductVariation;
 use App\Models\ProductVariationGroup;
 use App\Models\ProductVariationGroupType;
 use App\Models\Tag;
+use http\QueryString;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -249,15 +250,27 @@ class ProductController extends Controller
 
             if ($request->brands != ""){
                 $brands = explode(',',$request->brands);
-                foreach ($brands as $brand) {
-                    $products = $products->orWhere('brands.id', $brand);
-                }
+//                $query1;
+//                foreach ($brands as $brand) {
+////                    $products = $products->orWhere('brands.id', $brand);
+//                    $query1 = $query1->orWhere('brands.id', $brand);
+//                }
+                $products = $products->where(function ($query) use ($products, $brands){
+                   foreach ($brands as $brand){
+                       $products = $products->orWhere('brands.id', $brand);
+                   }
+                });
             }
             if ($request->types != ""){
                 $types = explode(',',$request->types);
-                foreach ($types as $type) {
-                    $products = $products->orWhere('product_types.id', $type);
-                }
+//                foreach ($types as $type) {
+//                    $products = $products->orWhere('product_types.id', $type);
+//                }
+                $products = $products->where(function ($query) use ($products, $types){
+                    foreach ($types as $type){
+                        $products = $products->orWhere('product_types.id', $type);
+                    }
+                });
             }
 
             $products = $products->toSql();
