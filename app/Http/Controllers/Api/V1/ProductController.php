@@ -250,11 +250,6 @@ class ProductController extends Controller
 
             if ($request->brands != ""){
                 $brands = explode(',',$request->brands);
-//                $query1;
-//                foreach ($brands as $brand) {
-////                    $products = $products->orWhere('brands.id', $brand);
-//                    $query1 = $query1->orWhere('brands.id', $brand);
-//                }
                 $products = $products->where(function ($query) use ($products, $brands){
                    foreach ($brands as $brand){
                        $query = $query->orWhere('brands.id', $brand);
@@ -263,9 +258,6 @@ class ProductController extends Controller
             }
             if ($request->types != ""){
                 $types = explode(',',$request->types);
-//                foreach ($types as $type) {
-//                    $products = $products->orWhere('product_types.id', $type);
-//                }
                 $products = $products->where(function ($query) use ($products, $types){
                     foreach ($types as $type){
                         $query = $query->orWhere('product_types.id', $type);
