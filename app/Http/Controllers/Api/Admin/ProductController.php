@@ -660,10 +660,10 @@ class ProductController extends Controller
 
     }
 
-    public function deleteCampaignProduct(Request $request)
+    public function deleteCampaignProduct($id)
     {
         try {
-            CampaignProduct::query()->where('product_id', $request->product_id)->update([
+            CampaignProduct::query()->where('product_id', $id)->update([
                 'active' => 0
             ]);
             return response(['message' => 'Kampanyalı ürün silme işlemi başarılı.', 'status' => 'success']);
