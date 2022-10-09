@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CampaignProduct;
 use App\Models\Category;
 use App\Models\ProductImage;
 use App\Models\ProductPackageType;
@@ -625,6 +626,47 @@ class ProductController extends Controller
                 'active' => 0
             ]);
             return response(['message' => 'Ürün etiketi silme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+
+    }
+
+    public function addCampaignProduct(Request $request)
+    {
+        try {
+            $request->validate([
+                'product_sku' => 'required'
+            ]);
+
+            $product_id = Product::query()->where('sku', $request->product_sku)->where('active', 1)->first()->id;
+
+            CampaignProduct::query()->insert([
+                'product_id' => $product_id,
+                'order' => $request->order
+            ]);
+            return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+
+    }
+
+    public function deleteCampaignProduct(Request $request)
+    {
+        try {
+            CampaignProduct::query()->where('product_id', $request->product_id)->update([
+                'active' => 0
+            ]);
+            return response(['message' => 'Kampanyalı ürün silme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
