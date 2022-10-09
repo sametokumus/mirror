@@ -643,13 +643,17 @@ class ProductController extends Controller
                 'product_sku' => 'required'
             ]);
 
-            $product_id = Product::query()->where('sku', $request->product_sku)->where('active', 1)->first()->id;
+            $product = Product::query()->where('sku', $request->product_sku)->where('active', 1)->first();
 
-            CampaignProduct::query()->insert([
-                'product_id' => $product_id,
-                'order' => $request->order
-            ]);
-            return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
+            if (isset($product)) {
+                CampaignProduct::query()->insert([
+                    'product_id' => $product->id,
+                    'order' => $request->order
+                ]);
+                return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
+            }else{
+                return response(['message' => 'Girdiğiniz ürün sku sistemde bulunmuyor', 'status' => 'false']);
+            }
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
