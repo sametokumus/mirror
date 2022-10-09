@@ -1066,45 +1066,11 @@ class ProductController extends Controller
     public function updateProductDiscountRate(Request $request)
     {
         try {
-            if ($request->category_id != 0) {
 
-                $products = ProductCategory::query()
-                    ->leftJoin('products', 'products.id', '=', 'product_categories.product_id')
-                    ->selectRaw('products.*')
-                    ->where('product_categories.category_id', $request->category_id);
+            $ids = explode(',',$request->ids);
 
-                if ($request->brand_id != 0){
-                    $products = $products->where('products.brand_id', $request->brand_id);
-                }
-                if ($request->type_id != 0){
-                    $products = $products->where('products.type_id', $request->type_id);
-                }
-
-                $products = $products->get();
-
-
-            }else if ($request->brand_id != 0){
-
-                $products = Product::query()
-                    ->where('brand_id', $request->brand_id);
-
-                if ($request->type_id != 0){
-                    $products = $products->where('products.type_id', $request->type_id);
-                }
-
-                $products = $products->get();
-
-            }else{
-
-                $products = Product::query()
-                    ->where('type_id', $request->type_id);
-
-                $products = $products->get();
-
-            }
-
-                foreach ($products as $product) {
-                    $product_variation_groups = ProductVariationGroup::query()->where('product_id', $product->id)->get();
+                foreach ($ids as $product_id) {
+                    $product_variation_groups = ProductVariationGroup::query()->where('product_id', $product_id)->get();
                     foreach ($product_variation_groups as $product_variation_group) {
                         $product_variations = ProductVariation::query()->where('variation_group_id', $product_variation_group->id)->get();
                         foreach ($product_variations as $product_variation) {
