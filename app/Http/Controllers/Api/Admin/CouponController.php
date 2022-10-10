@@ -76,11 +76,15 @@ class CouponController extends Controller
     }
     public function deleteCoupon($id){
         try {
-
-            Coupons::query()->where('id',$id)->update([
-                'active' => 0,
-            ]);
-            return response(['message' => 'Kupon silme işlemi başarılı.','status' => 'success']);
+            $coupon = Coupons::query()->where('id', $id)->first();
+            if ($coupon->count_of_used > 0){
+                return response(['message' => 'Kupon daha önce kullanıldığı için silme işlemi gerçekleştirilemedi.', 'status' => 'failure']);
+            }else {
+                Coupons::query()->where('id', $id)->update([
+                    'active' => 0,
+                ]);
+                return response(['message' => 'Kupon silme işlemi başarılı.', 'status' => 'success']);
+            }
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
