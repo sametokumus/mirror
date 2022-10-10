@@ -237,26 +237,6 @@ class ProductController extends Controller
         }
     }
 
-    public function getCampaignProduct()
-    {
-        try {
-            $products = CampaignProduct::query()
-                ->leftJoin('products', 'products.id', '=', 'campaign_products.product_id')
-                ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
-                ->leftJoin('product_types', 'product_types.id', '=', 'products.type_id')
-                ->leftJoin('product_variations', 'product_variations.id', '=', 'products.featured_variation')
-                ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
-                ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
-                ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*, campaign_products.order')
-                ->where('campaign_products.active', 1)
-                ->orderBy('campaign_products.order', 'ASC')
-                ->get();
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
-        } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
-        }
-    }
-
     public function getProductsByCategoryId($category_id)
     {
         try {
@@ -568,15 +548,16 @@ class ProductController extends Controller
     public function getAllCampaignProducts()
     {
         try {
-            $products = Product::query()
+            $products = CampaignProduct::query()
+                ->leftJoin('products', 'products.id', '=', 'campaign_products.product_id')
                 ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
                 ->leftJoin('product_types', 'product_types.id', '=', 'products.type_id')
                 ->leftJoin('product_variations', 'product_variations.id', '=', 'products.featured_variation')
                 ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
-                ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
-                ->where('products.active', 1)
-                ->where('products.is_campaign', 1)
+                ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*, campaign_products.order')
+                ->where('campaign_products.active', 1)
+                ->orderBy('campaign_products.order', 'ASC')
                 ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
@@ -587,15 +568,16 @@ class ProductController extends Controller
     public function getCampaignProductsByLimit($limit)
     {
         try {
-            $products = Product::query()
+            $products = CampaignProduct::query()
+                ->leftJoin('products', 'products.id', '=', 'campaign_products.product_id')
                 ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
                 ->leftJoin('product_types', 'product_types.id', '=', 'products.type_id')
                 ->leftJoin('product_variations', 'product_variations.id', '=', 'products.featured_variation')
                 ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
-                ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
-                ->where('products.active', 1)
-                ->where('products.is_campaign', 1)
+                ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*, campaign_products.order')
+                ->where('campaign_products.active', 1)
+                ->orderBy('campaign_products.order', 'ASC')
                 ->limit($limit)
                 ->get();
 

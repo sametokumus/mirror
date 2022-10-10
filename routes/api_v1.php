@@ -136,7 +136,6 @@ Route::get('/product/getProduct', [ProductController::class, 'getProduct']);
 Route::post('/product/getFilteredProduct', [ProductController::class, 'getFilteredProduct']);
 Route::post('/product/getProductsByFilter', [ProductController::class, 'getProductsByFilter']);
 Route::get('/product/getProductById/{id}', [ProductController::class, 'getProductById']);
-Route::get('/product/getCampaignProduct', [ProductController::class, 'getCampaignProduct']);
 
 Route::get('/product/getProductsByCategoryId/{category_id}', [ProductController::class, 'getProductsByCategoryId']);
 Route::get('/product/getProductsWithParentCategory', [ProductController::class, 'getProductsWithParentCategory']);
