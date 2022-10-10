@@ -113,4 +113,36 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         }
     }
+    public function addUserTypeDiscount(Request $request)
+    {
+        try {
+            $request->validate([
+                'user_type' => 'required',
+                'discount' => 'required',
+                'brands' => 'required',
+                'types' => 'required'
+            ]);
+
+            $brands = explode(',',$request->brands);
+            $types = explode(',',$request->types);
+
+            foreach ($brands as $brand){
+                foreach ($types as $type){
+                    UserTypeDiscount::query()->insert([
+                        'user_type_id' => $request->user_type,
+                        'discount' => $request->discount,
+                        'brand_id' => $brand,
+                        'type_id' => $type
+                    ]);
+                }
+            }
+            return response(['message' => 'Kullanıcı türüne göre indirim ekleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','er' => $throwable->getMessage()]);
+        }
+    }
 }
