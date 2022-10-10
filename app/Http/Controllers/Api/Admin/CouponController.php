@@ -78,7 +78,7 @@ class CouponController extends Controller
         try {
             $coupon = Coupons::query()->where('id', $id)->first();
             if ($coupon->count_of_used > 0){
-                return response(['message' => 'Kupon daha önce kullanıldığı için silme işlemi gerçekleştirilemedi.', 'status' => 'failure']);
+                return response(['message' => 'Kupon daha önce kullanıldığı için silme işlemi gerçekleştirilemedi.', 'status' => 'error-002']);
             }else {
                 Coupons::query()->where('id', $id)->update([
                     'active' => 0,
