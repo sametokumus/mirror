@@ -217,6 +217,11 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('creditCard/getCreditCardInstallmentById/{id}',[CreditCardController::class,'getCreditCardInstallmentById']);
 
     Route::get('user/getUsers',[UserController::class,'getUsers']);
+    Route::get('user/getUserTypes', [UserController::class, 'getUserTypes']);
+    Route::get('user/getUserTypeById/{id}', [UserController::class, 'getUserTypeById']);
+    Route::post('user/addUserType', [UserController::class, 'addUserType']);
+    Route::post('user/updateUserType/{id}', [UserController::class, 'updateUserType']);
+    Route::get('user/deleteUserType/{id}', [UserController::class, 'deleteUserType']);
 
     Route::post('slider/addSlider', [SliderController::class, 'addSlider']);
     Route::post('slider/updateSlider/{id}', [SliderController::class, 'updateSlider']);

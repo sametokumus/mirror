@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Models\UserType;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Nette\Schema\ValidationException;
 
 class UserController extends Controller
 {
@@ -19,6 +21,77 @@ class UserController extends Controller
             return response(['message' => 'İşlem başarılı.','status' => 'success','object' => ['users' => $users]]);
         } catch (QueryException $queryException){
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getUserTypes(){
+        try {
+            $user_types = UserType::query()->where('active', 1)->get();
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user_types' => $user_types]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        }
+    }
+
+    public function getUserTypeById($id){
+        try {
+            $user_type = UserType::query()->where('id', $id)->first();
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user_type' => $user_type]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        }
+    }
+    public function addUserType(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required'
+            ]);
+            UserType::query()->insert([
+                'name' => $request->name,
+                'discount' => $request->discount
+            ]);
+            return response(['message' => 'Kullanıcı türü ekleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','er' => $throwable->getMessage()]);
+        }
+    }
+    public function updateUserType(Request $request,$id){
+        try {
+            $request->validate([
+                'name' => 'required'
+            ]);
+
+            UserType::query()->where('id',$id)->update([
+                'name' => $request->name,
+                'discount' => $request->discount
+            ]);
+
+            return response(['message' => 'Kullanıcı türü güncelleme işlemi başarılı.','status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        } catch (\Throwable $throwable) {
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001','ar' => $throwable->getMessage()]);
+        }
+    }
+    public function deleteUserType($id){
+        try {
+            UserType::query()->where('id', $id)->update([
+                'active' => 0
+            ]);
+            return response(['message' => 'Kullanıcı türü silme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        } catch (\Throwable $throwable) {
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001','ar' => $throwable->getMessage()]);
         }
     }
 }
