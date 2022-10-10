@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\UserType;
+use App\Models\UserTypeDiscount;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;
@@ -92,6 +93,24 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Throwable $throwable) {
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001','ar' => $throwable->getMessage()]);
+        }
+    }
+
+    public function getUserTypeDiscounts(){
+        try {
+            $user_type_discounts = UserTypeDiscount::query()->where('active', 1)->get();
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user_type_discounts' => $user_type_discounts]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        }
+    }
+
+    public function getUserTypeDiscountById($id){
+        try {
+            $user_type_discount = UserTypeDiscount::query()->where('id', $id)->first();
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user_type_discount' => $user_type_discount]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         }
     }
 }
