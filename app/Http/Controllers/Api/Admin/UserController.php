@@ -128,12 +128,23 @@ class UserController extends Controller
 
             foreach ($brands as $brand){
                 foreach ($types as $type){
-                    UserTypeDiscount::query()->insert([
-                        'user_type_id' => $request->user_type,
-                        'discount' => $request->discount,
-                        'brand_id' => $brand,
-                        'type_id' => $type
-                    ]);
+                    $hasData = UserTypeDiscount::query()->where('user_type_id', $request->user_type)->where('brand_id', $brand)->where('type_id', $type)->first();
+                    if (isset($hasData)){
+                        UserTypeDiscount::query()->where('id', $hasData->id)->update([
+                            'user_type_id' => $request->user_type,
+                            'discount' => $request->discount,
+                            'brand_id' => $brand,
+                            'type_id' => $type,
+                            'active' => 1
+                        ]);
+                    }else {
+                        UserTypeDiscount::query()->insert([
+                            'user_type_id' => $request->user_type,
+                            'discount' => $request->discount,
+                            'brand_id' => $brand,
+                            'type_id' => $type
+                        ]);
+                    }
                 }
             }
             return response(['message' => 'Kullanıcı türüne göre indirim ekleme işlemi başarılı.', 'status' => 'success']);
