@@ -98,7 +98,13 @@ class UserController extends Controller
 
     public function getUserTypeDiscounts(){
         try {
-            $user_type_discounts = UserTypeDiscount::query()->where('active', 1)->get();
+            $user_type_discounts = UserTypeDiscount::query()
+                ->leftJoin('user_types','user_types.id','=','user_type_discounts.user_type_id')
+                ->leftJoin('brands','brands.id','=','user_type_discounts.brand_id')
+                ->leftJoin('product_types','product_types.id','=','user_type_discounts.type_id')
+                ->selectRaw('user_type_discounts.*, user_types.name as user_type_name, brands.name as brand_name, product_types.name as type_name')
+                ->where('user_type_discounts.active', 1)
+                ->get();
             return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user_type_discounts' => $user_type_discounts]]);
         } catch (QueryException $queryException){
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
