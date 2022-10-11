@@ -120,7 +120,7 @@ class UserController extends Controller
                 ->selectRaw('user_type_discounts.*, user_types.name as user_type_name, brands.name as brand_name, product_types.name as type_name')
                 ->where('user_type_discounts.active', 1)
                 ->where('user_type_discounts.id', $id)
-                ->get();
+                ->first();
             return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user_type_discount' => $user_type_discount]]);
         } catch (QueryException $queryException){
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
