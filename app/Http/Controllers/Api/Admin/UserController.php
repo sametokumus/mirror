@@ -156,4 +156,18 @@ class UserController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','er' => $throwable->getMessage()]);
         }
     }
+    public function deleteUserTypeDiscount($id){
+        try {
+            UserTypeDiscount::query()->where('id', $id)->update([
+                'active' => 0
+            ]);
+            return response(['message' => 'İndirim silme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        } catch (\Throwable $throwable) {
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001','ar' => $throwable->getMessage()]);
+        }
+    }
 }
