@@ -21,7 +21,7 @@ class CreateCouponsTable extends Migration
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
             $table->bigInteger('user_id')->default(0);
-            $table->tinyInteger('type')->default(1);
+            $table->tinyInteger('discount_type')->default(1); //1:tam indirim, 2:yüzdelik indirim
             $table->integer('discount')->default(0);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();

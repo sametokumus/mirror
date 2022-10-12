@@ -20,7 +20,7 @@ class CouponController extends Controller
                 'count_of_used' => 'required',
                 'start_date' => 'required',
                 'end_date' => 'required',
-                'type' => 'required',
+                'discount_type' => 'required',
                 'discount' => 'required'
             ]);
             $coupon_id = Coupons::query()->insertGetId([
@@ -29,7 +29,7 @@ class CouponController extends Controller
                 'count_of_used' => $request->count_of_used,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-                'type' => $request->type,
+                'discount_type' => $request->discount_type,
                 'discount' => $request->discount,
                 'user_id' => $request->user_id
             ]);
@@ -50,7 +50,7 @@ class CouponController extends Controller
                 'count_of_used' => 'required',
                 'start_date' => 'required',
                 'end_date' => 'required',
-                'type' => 'required',
+                'discount_type' => 'required',
                 'discount' => 'required'
             ]);
 
@@ -60,7 +60,7 @@ class CouponController extends Controller
                 'count_of_used' => $request->count_of_used,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-                'type' => $request->type,
+                'discount_type' => $request->discount_type,
                 'discount' => $request->discount,
                 'user_id' => $request->user_id
             ]);

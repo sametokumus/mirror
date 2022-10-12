@@ -57,9 +57,9 @@ class CreditCardController extends Controller
 
                 if($coupon_code != "null"){
                     $coupon = Coupons::query()->where('code', $coupon_code)->where('active', 1)->first();
-                    if ($coupon->type == 1){
+                    if ($coupon->discount_type == 1){
                         $coupon_subtotal_price = $total_price - $coupon->discount;
-                    }elseif ($coupon->type == 2){
+                    }elseif ($coupon->discount_type == 2){
                         $coupon_subtotal_price = $total_price - ($total_price / 100 * $coupon->discount);
                     }
                     $total_price = $coupon_subtotal_price;
