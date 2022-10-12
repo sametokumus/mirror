@@ -31,7 +31,9 @@ class CouponController extends Controller
                 'end_date' => $request->end_date,
                 'discount_type' => $request->discount_type,
                 'discount' => $request->discount,
-                'user_id' => $request->user_id
+                'user_id' => $request->user_id,
+                'group_id' => $request->group_id,
+                'coupon_user_type' => $request->coupon_user_type
             ]);
             return response(['message' => 'Kupon ekleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {

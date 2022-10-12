@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Coupons;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
@@ -18,14 +19,28 @@ class CouponController extends Controller
 
             if ($coupon->count_of_used >= $coupon->count_of_uses) {
                 throw new \Exception('coupon-001');
-            }else if ($date < $coupon->start_date || $date > $coupon->end_date){
+            }
+
+            if ($date < $coupon->start_date || $date > $coupon->end_date){
                 throw new \Exception('coupon-002');
-            }else if ($coupon->user_id != $request->user_id && $coupon->user_id != 0){
-                throw new \Exception('coupon-003');
+            }
+
+            if ($coupon->coupon_user_type == 1) {
+                if ($coupon->user_id == $request->user_id || $coupon->user_id == 0) {
+                }else{
+                    throw new \Exception('coupon-003');
+                }
+            }else if ($coupon->coupon_user_type == 2) {
+                $user = User::query()->where('id', $request->user_id)->where('active', 1)->first();
+                if ($coupon->group_id == $user->user_type) {
+                }else{
+                    throw new \Exception('coupon-003');
+                }
             }else{
+                throw new \Exception('coupon-003');
+            }
 
                 return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['coupon' => $coupon]]);
-            }
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         } catch (\Exception $exception){
