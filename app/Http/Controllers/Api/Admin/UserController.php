@@ -25,6 +25,19 @@ class UserController extends Controller
         }
     }
 
+    public function getUsersByTypeId($type_id){
+        try {
+            $users = User::query()
+                ->leftJoin('user_profiles','user_profiles.user_id','=','users.id')
+                ->selectRaw('users.*, user_profiles.name, user_profiles.surname')
+                ->where('users.user_type', $type_id)
+                ->get();
+            return response(['message' => 'İşlem başarılı.','status' => 'success','object' => ['users' => $users]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
+        }
+    }
+
     public function getUserTypes(){
         try {
             $user_types = UserType::query()->where('active', 1)->get();

@@ -217,6 +217,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('creditCard/getCreditCardInstallmentById/{id}',[CreditCardController::class,'getCreditCardInstallmentById']);
 
     Route::get('user/getUsers',[UserController::class,'getUsers']);
+    Route::get('user/getUsersByTypeId/{id}',[UserController::class,'getUsersByTypeId']);
     Route::get('user/getUserTypes', [UserController::class, 'getUserTypes']);
     Route::get('user/getUserTypeById/{id}', [UserController::class, 'getUserTypeById']);
     Route::post('user/addUserType', [UserController::class, 'addUserType']);
