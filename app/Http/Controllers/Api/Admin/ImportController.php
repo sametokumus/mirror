@@ -405,15 +405,15 @@ class ImportController extends Controller
         Excel::import(new ZipCodeImports(), $request->file('file'));
     }
 
-    public function addZipCodeToNeighbour()
+    public function addZipCodeToNeighbour($min, $max)
     {
-        $districts = District::query()->where('id', '<=', 10)->get();
+        $districts = District::query()->where('id', '>=', $min)->where('id', '<=', $max)->get();
         foreach ($districts as $district){
             $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->get();
             foreach ($import_zipcodes as $zipcode){
                 Neighbourhood::query()->insert([
                     'district_id' => $district->id,
-                    'name' => ucfirst(strtolower(trim($zipcode->mahalle))),
+                    'name' => $zipcode->mahalle,
                     'postal_code' => $zipcode->pk
                 ]);
             }
