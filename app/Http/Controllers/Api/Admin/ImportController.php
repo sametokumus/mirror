@@ -421,7 +421,7 @@ class ImportController extends Controller
 //            }
 //        }
 
-        $import_zipcodes = ImportZipCode::all();
+        $import_zipcodes = ImportZipCode::query()->where('id', '>=', $min)->where('id', '<=', $max)->get();
         foreach ($import_zipcodes as $zipcode){
             $city = City::query()->where('name', $zipcode->il)->first();
             $district = District::query()->where('name', $zipcode->ilce)->where('city_id', $city->id)->first();
