@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\CorporateAddresses;
 use App\Models\Country;
 use App\Models\District;
+use App\Models\Neighbourhood;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,7 @@ class AddressController extends Controller
                 $address['country'] = Country::query()->where('id',$address->country_id)->first();
                 $address['city'] = City::query()->where('id',$address->city_id)->first();
                 $address['district'] = District::query()->where('id',$address->district_id)->first();
+                $address['neighbourhood'] = Neighbourhood::query()->where('id',$address->neighbourhood_id)->first();
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['addresses' => $addresses]]);
@@ -46,6 +48,7 @@ class AddressController extends Controller
             $address['country'] = Country::query()->where('id',$address->country_id)->first();
             $address['city'] = City::query()->where('id',$address->city_id)->first();
             $address['district'] = District::query()->where('id',$address->district_id)->first();
+            $address['neighbourhood'] = Neighbourhood::query()->where('id',$address->neighbourhood_id)->first();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['address' => $address]]);
         } catch (QueryException $queryException) {
@@ -60,6 +63,7 @@ class AddressController extends Controller
                 'country_id' => 'required|exists:countries,id',
                 'city_id' => 'required|exists:cities,id',
                 'district_id' => 'required|exists:districts,id',
+                'neighbourhood_id' => 'required|exists:neighbourhoods,id',
                 'title' => 'required',
                 'name' => 'required',
                 'surname' => 'required',
@@ -72,6 +76,7 @@ class AddressController extends Controller
                 'country_id' => $request->country_id,
                 'city_id' => $request->city_id,
                 'district_id' => $request->district_id,
+                'neighbourhood_id' => $request->neighbourhood_id,
                 'title' => $request->title,
                 'name' => $request->name,
                 'surname' => $request->surname,
@@ -118,6 +123,7 @@ class AddressController extends Controller
                 'country_id' => $request->country_id,
                 'city_id' => $request->city_id,
                 'district_id' => $request->district_id,
+                'neighbourhood_id' => $request->neighbourhood_id,
                 'title' => $request->title,
                 'name' => $request->name,
                 'surname' => $request->surname,
