@@ -407,7 +407,7 @@ class ImportController extends Controller
 
     public function addZipCodeToNeighbour()
     {
-        $districts = District::all();
+        $districts = District::query()->where('id', '<=', 500)->get();
         foreach ($districts as $district){
             $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->get();
             foreach ($import_zipcodes as $zipcode){
