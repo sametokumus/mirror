@@ -198,6 +198,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     Route::get('excel/addAllProduct', [ImportController::class, 'addAllProduct']);
     Route::get('excel/addProductPrice', [ImportController::class, 'addProductPrice']);
+    Route::get('excel/addZipCodeToNeighbour', [ImportController::class, 'addZipCodeToNeighbour']);
 
     Route::get('excel/productVariationUpdate', [ImportController::class, 'productVariationUpdate']);
     Route::get('excel/setProductCategory', [ImportController::class, 'setProductCategory']);

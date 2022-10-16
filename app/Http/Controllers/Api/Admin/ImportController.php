@@ -7,8 +7,11 @@ use App\Imports\NewProducts;
 use App\Imports\PriceImports;
 use App\Imports\ZipCodeImports;
 use App\Models\Brand;
+use App\Models\District;
 use App\Models\ImportPrice;
 use App\Models\ImportProduct;
+use App\Models\ImportZipCode;
+use App\Models\Neighbourhood;
 use App\Models\NewProduct;
 use App\Models\Product;
 use App\Models\ProductCategory;
@@ -399,5 +402,19 @@ class ImportController extends Controller
     public function zipCodeExcelImport(Request $request)
     {
         Excel::import(new ZipCodeImports(), $request->file('file'));
+    }
+
+    public function addZipCodeToNeighbour()
+    {
+        $districts = District::all();
+        foreach ($districts as $district){
+            $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->get();
+            foreach ($import_zipcodes as $zipcode){
+                Neighbourhood::query()->insert([
+                    'name' =>  ucfirst(trans($zipcode->mahalle)),
+                    'postal_code' => $zipcode->pk
+                ]);
+            }
+        }
     }
 }
