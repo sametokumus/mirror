@@ -411,6 +411,7 @@ class ImportController extends Controller
             $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->get();
             foreach ($import_zipcodes as $zipcode){
                 Neighbourhood::query()->insert([
+                    'district_id' => $district->id,
                     'name' =>  ucfirst(trans($zipcode->mahalle)),
                     'postal_code' => $zipcode->pk
                 ]);
