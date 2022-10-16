@@ -7,6 +7,7 @@ use App\Imports\NewProducts;
 use App\Imports\PriceImports;
 use App\Imports\ZipCodeImports;
 use App\Models\Brand;
+use App\Models\City;
 use App\Models\District;
 use App\Models\ImportPrice;
 use App\Models\ImportProduct;
@@ -409,7 +410,8 @@ class ImportController extends Controller
     {
         $districts = District::query()->where('id', '>=', $min)->where('id', '<=', $max)->get();
         foreach ($districts as $district){
-            $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->get();
+            $city = City::query()->where('id', $district->city_id)->first();
+            $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->where('il', '=', $city->name)->get();
             foreach ($import_zipcodes as $zipcode){
                 Neighbourhood::query()->insert([
                     'district_id' => $district->id,
