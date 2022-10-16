@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductImport;
 use Nette\Schema\ValidationException;
+use Illuminate\Support\Str;
 
 
 class ImportController extends Controller
@@ -412,7 +413,7 @@ class ImportController extends Controller
             foreach ($import_zipcodes as $zipcode){
                 Neighbourhood::query()->insert([
                     'district_id' => $district->id,
-                    'name' =>  ucfirst(trans($zipcode->mahalle)),
+                    'name' =>  Str::ucfirst($zipcode->mahalle),
                     'postal_code' => $zipcode->pk
                 ]);
             }
