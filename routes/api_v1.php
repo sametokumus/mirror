@@ -79,6 +79,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     Route::get('/cities/getCitiesByCountryId/{country_id}', [CitiesController::class, 'getCitiesByCountryId']);
     Route::get('/cities/getDistrictsByCityId/{city_id}', [CitiesController::class, 'getDistrictsByCityId']);
+    Route::get('/cities/getNeighbourhoodsByDistrictId/{district_id}', [CitiesController::class, 'getNeighbourhoodsByDistrictId']);
     Route::post('/cities/addCities/{country_id}', [CitiesController::class, 'addCities']);
 
     Route::get('/contactRules/getContactRules', [ContactRulesController::class, 'getContactRules']);
