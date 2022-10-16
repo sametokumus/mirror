@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Imports\NewProducts;
 use App\Imports\PriceImports;
+use App\Imports\ZipCodeImports;
 use App\Models\Brand;
 use App\Models\ImportPrice;
 use App\Models\ImportProduct;
@@ -392,5 +393,11 @@ class ImportController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'ar' => $throwable->getMessage()]);
         }
 
+    }
+
+
+    public function zipCodeExcelImport(Request $request)
+    {
+        Excel::import(new ZipCodeImports(), $request->file('file'));
     }
 }
