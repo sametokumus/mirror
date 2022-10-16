@@ -407,13 +407,13 @@ class ImportController extends Controller
 
     public function addZipCodeToNeighbour()
     {
-        $districts = District::query()->where('id', '<=', 500)->get();
+        $districts = District::query()->where('id', '<=', 10)->get();
         foreach ($districts as $district){
             $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->get();
             foreach ($import_zipcodes as $zipcode){
                 Neighbourhood::query()->insert([
                     'district_id' => $district->id,
-                    'name' =>  Str::ucfirst($zipcode->mahalle),
+                    'name' => ucfirst(strtolower(trim($zipcode->mahalle))),
                     'postal_code' => $zipcode->pk
                 ]);
             }
