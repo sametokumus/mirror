@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Imports\NewProducts;
 use App\Imports\PriceImports;
 use App\Imports\ZipCodeImports;
+use App\Models\Address;
 use App\Models\Brand;
 use App\Models\City;
 use App\Models\District;
@@ -430,6 +431,18 @@ class ImportController extends Controller
                     'name' => $zipcode->mahalle,
                     'postal_code' => $zipcode->pk
                 ]);
+        }
+    }
+
+    public function addAddressZipCodeAndNeighbour()
+    {
+        $addresses = Address::all();
+        foreach ($addresses as $address){
+            $neighbour = Neighbourhood::query()->where('district_id', $address->district_id)->first();
+            Address::query()->where('id', $address->id)->update([
+               'neighbourhood_id' => $neighbour->id,
+               'postal_code' => $neighbour->postal_code
+            ]);
         }
     }
 }
