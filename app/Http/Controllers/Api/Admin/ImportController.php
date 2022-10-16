@@ -408,17 +408,28 @@ class ImportController extends Controller
 
     public function addZipCodeToNeighbour($min, $max)
     {
-        $districts = District::query()->where('id', '>=', $min)->where('id', '<=', $max)->get();
-        foreach ($districts as $district){
-            $city = City::query()->where('id', $district->city_id)->first();
-            $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->where('il', '=', $city->name)->get();
-            foreach ($import_zipcodes as $zipcode){
+//        $districts = District::query()->where('id', '>=', $min)->where('id', '<=', $max)->get();
+//        foreach ($districts as $district){
+//            $city = City::query()->where('id', $district->city_id)->first();
+//            $import_zipcodes = ImportZipCode::query()->where('ilce', '=', $district->name)->where('il', '=', $city->name)->get();
+//            foreach ($import_zipcodes as $zipcode){
+//                Neighbourhood::query()->insert([
+//                    'district_id' => $district->id,
+//                    'name' => $zipcode->mahalle,
+//                    'postal_code' => $zipcode->pk
+//                ]);
+//            }
+//        }
+
+        $import_zipcodes = ImportZipCode::all();
+        foreach ($import_zipcodes as $zipcode){
+            $city = City::query()->where('name', $zipcode->il)->first();
+            $district = District::query()->where('name', $zipcode->ilce)->where('city_id', $city->id)->first();
                 Neighbourhood::query()->insert([
                     'district_id' => $district->id,
                     'name' => $zipcode->mahalle,
                     'postal_code' => $zipcode->pk
                 ]);
-            }
         }
     }
 }
