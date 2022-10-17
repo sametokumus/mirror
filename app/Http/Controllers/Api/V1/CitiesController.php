@@ -40,6 +40,15 @@ class CitiesController extends Controller
         }
     }
 
+    public function getNeighbourhoodById($neighbourhood_id){
+        try {
+            $neighbourhood = Neighbourhood::query()->where('id',$neighbourhood_id)->first();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success','neighbourhood' => $neighbourhood]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
     public function addCities(Request $request,$country_id)
     {
         try {
