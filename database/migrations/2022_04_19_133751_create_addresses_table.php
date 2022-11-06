@@ -23,6 +23,7 @@ class CreateAddressesTable extends Migration
             $table->string('title');
             $table->string('name');
             $table->string('surname');
+            $table->string('citizen_number')->nullable();
             $table->string('address_1');
             $table->string('address_2')->nullable();
             $table->string('postal_code');
