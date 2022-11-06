@@ -653,7 +653,7 @@ class ProductController extends Controller
                     ]);
                     return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
                 }else{
-                    return response(['message' => 'Girdiğiniz ürün sku sistemde bulunmuyor', 'status' => 'false']);
+                    return response(['message' => 'Girdiğiniz ürün adı sistemde bulunmuyor', 'status' => 'false']);
                 }
             }else{
                 if ($request->product_sku != ''){
