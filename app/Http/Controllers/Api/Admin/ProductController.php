@@ -639,10 +639,37 @@ class ProductController extends Controller
     public function addCampaignProduct(Request $request)
     {
         try {
-            $request->validate([
-                'product_sku' => 'required'
-            ]);
+//            $request->validate([
+//                'product_sku' => 'required'
+//            ]);
 
+            if ($request->product_name != ''){
+                $product = Product::query()->where('name', $request->product_name)->where('active', 1)->first();
+
+                if (isset($product)) {
+                    CampaignProduct::query()->insert([
+                        'product_id' => $product->id,
+                        'order' => $request->order
+                    ]);
+                    return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
+                }else{
+                    return response(['message' => 'Girdiğiniz ürün sku sistemde bulunmuyor', 'status' => 'false']);
+                }
+            }else{
+                if ($request->product_sku != ''){
+                    $product = Product::query()->where('sku', $request->product_sku)->where('active', 1)->first();
+
+                    if (isset($product)) {
+                        CampaignProduct::query()->insert([
+                            'product_id' => $product->id,
+                            'order' => $request->order
+                        ]);
+                        return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
+                    }else{
+                        return response(['message' => 'Girdiğiniz ürün sku sistemde bulunmuyor', 'status' => 'false']);
+                    }
+                }
+            }
             $product = Product::query()->where('sku', $request->product_sku)->where('active', 1)->first();
 
             if (isset($product)) {
