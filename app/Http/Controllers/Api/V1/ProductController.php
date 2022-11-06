@@ -247,7 +247,7 @@ class ProductController extends Controller
                 ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
-                ->where('products.active', 1);
+                ->where('products.active', $request->active);
 
             if ($request->brands != ""){
                 $brands = explode(',',$request->brands);
