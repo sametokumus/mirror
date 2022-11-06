@@ -228,6 +228,27 @@ class ProductController extends Controller
         }
     }
 
+    public function updateProductStatus(Request $request)
+    {
+        try {
+
+            $ids = explode(',',$request->ids);
+
+            foreach ($ids as $product_id) {
+                Product::query()->where('id', $product_id)->update([
+                    'active' => $request->status
+                ]);
+            }
+            return response(['message' => 'Durum güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
     public function addFullProductVariationGroup(Request $request)
     {
         try {
@@ -1142,31 +1163,31 @@ class ProductController extends Controller
 
             $ids = explode(',',$request->ids);
 
-                foreach ($ids as $product_id) {
-                    $product_variation_groups = ProductVariationGroup::query()->where('product_id', $product_id)->get();
-                    foreach ($product_variation_groups as $product_variation_group) {
-                        $product_variations = ProductVariation::query()->where('variation_group_id', $product_variation_group->id)->get();
-                        foreach ($product_variations as $product_variation) {
-                            $product_rule = ProductRule::query()->where('variation_id', $product_variation->id)->first();
+            foreach ($ids as $product_id) {
+                $product_variation_groups = ProductVariationGroup::query()->where('product_id', $product_id)->get();
+                foreach ($product_variation_groups as $product_variation_group) {
+                    $product_variations = ProductVariation::query()->where('variation_group_id', $product_variation_group->id)->get();
+                    foreach ($product_variations as $product_variation) {
+                        $product_rule = ProductRule::query()->where('variation_id', $product_variation->id)->first();
 
-                            if ($request->discount_rate == 0) {
-                                $discount_rate = null;
-                                $discounted_price = null;
-                                $discounted_tax = null;
-                            } else {
+                        if ($request->discount_rate == 0) {
+                            $discount_rate = null;
+                            $discounted_price = null;
+                            $discounted_tax = null;
+                        } else {
 
-                                $discount_rate = $request->discount_rate;
-                                $discounted_price = $product_rule->regular_price / 100 * (100 - $discount_rate);
-                                $discounted_tax = $discounted_price / 100 * $product_rule->tax_rate;
-                            }
-                            ProductRule::query()->where('variation_id', $product_variation->id)->update([
-                                'discount_rate' => $discount_rate,
-                                'discounted_price' => $discounted_price,
-                                'discounted_tax' => $discounted_tax
-                            ]);
+                            $discount_rate = $request->discount_rate;
+                            $discounted_price = $product_rule->regular_price / 100 * (100 - $discount_rate);
+                            $discounted_tax = $discounted_price / 100 * $product_rule->tax_rate;
                         }
+                        ProductRule::query()->where('variation_id', $product_variation->id)->update([
+                            'discount_rate' => $discount_rate,
+                            'discounted_price' => $discounted_price,
+                            'discounted_tax' => $discounted_tax
+                        ]);
                     }
                 }
+            }
             return response(['message' => 'İskonto güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
