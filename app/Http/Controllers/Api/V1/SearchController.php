@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 
 class SearchController extends Controller
 {
-    public function categoryByIdSearch(Request $request)
+    public function categoryByIdSearch(Request $request, $user_id)
     {
         try {
             $x = 0;
@@ -65,6 +65,33 @@ class SearchController extends Controller
                 $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . '%" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . ',%" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ',%")';
                 $products = $products->whereRaw($q);
                 $products = $products->get();
+
+                if($user_id != 0) {
+                    $user = User::query()->where('id', $user_id)->where('active', 1)->first();
+                    $total_user_discount = $user->user_discount;
+                    foreach ($products as $product){
+
+                        $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
+                        if(!empty($type_discount)){
+                            $total_user_discount = $total_user_discount + $type_discount->discount;
+                        }
+
+                        $product['extra_discount'] = 0;
+                        $product['extra_discount_price'] = 0;
+                        $product['extra_discount_tax'] = 0;
+                        $product['extra_discount_rate'] = number_format($total_user_discount, 2,".","");
+                        if ($total_user_discount > 0){
+                            $product['extra_discount'] = 1;
+                            if ($product->discounted_price == null || $product->discount_rate == 0){
+                                $price = $product->regular_price - ($product->regular_price / 100 * $total_user_discount);
+                            }else{
+                                $price = $product->regular_price - ($product->regular_price / 100 * ($total_user_discount + $product->discount_rate));
+                            }
+                            $product['extra_discount_price'] = number_format($price, 2,".","");
+                            $product['extra_discount_tax'] = number_format(($price / 100 * $product->tax_rate), 2,".","");
+                        }
+                    }
+                }
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {

@@ -202,7 +202,7 @@ Route::get('/creditCard/getCreditCardById/{member_no}/{cart_id}/{coupon_code}', 
 
 
 Route::get('/bankBinPair/getBankBinPairMemberNo/{prefix_no}', [BankBinPairController::class, 'getBankBinPairMemberNo']);
-Route::post('/search/categoryByIdSearch', [SearchController::class, 'categoryByIdSearch']);
+Route::post('/search/categoryByIdSearch/{user_id}', [SearchController::class, 'categoryByIdSearch']);
 Route::post('/search/filterProducts/{user_id}', [SearchController::class, 'filterProducts']);
 
 Route::get('/slider/getSliders', [SliderController::class, 'getSliders']);
