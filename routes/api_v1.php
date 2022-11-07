@@ -141,7 +141,7 @@ Route::get('/product/getProductById/{id}', [ProductController::class, 'getProduc
 
 Route::get('/product/getProductsByCategoryId/{category_id}', [ProductController::class, 'getProductsByCategoryId']);
 Route::get('/product/getProductsWithParentCategory/{user_id}', [ProductController::class, 'getProductsWithParentCategory']);
-Route::get('/product/getProductsBySlug/{slug}', [ProductController::class, 'getProductsBySlug']);
+Route::get('/product/getProductsBySlug/{user_id}/{slug}', [ProductController::class, 'getProductsBySlug']);
 Route::get('/product/getProductsByType/{user_id}/{slug}', [ProductController::class, 'getProductsByType']);
 
 Route::get('/product/getProductsByBrand/{user_id}/{slug}', [ProductController::class, 'getProductsByBrand']);
