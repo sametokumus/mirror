@@ -343,8 +343,7 @@ class CartController extends Controller
             $products_subtotal_price = null;
             $products_cart_price = null;
             $products_cart_tax = null;
-            $user_discount = false;
-            $user_discount_rate = User::query()->where('id', $user_id)->where('active', 1)->first()->user_discount;
+            $extra_discount = false;
             $coupon_message = null;
             $coupon_subtotal_price = null;
             $delivery_price = null;
@@ -352,7 +351,11 @@ class CartController extends Controller
             $total_price_with_delivery = null;
 
 
-            if($user_discount_rate > 0){$user_discount = true;}
+
+
+
+//            $user_discount_rate = User::query()->where('id', $user_id)->where('active', 1)->first()->user_discount;
+//            if($user_discount_rate > 0){$user_discount = true;}
 
 
             //ürünlerin ara toplam fiyatı
@@ -367,18 +370,31 @@ class CartController extends Controller
             $weight = 0;
             foreach ($cart_details as $cart_detail){
                 $rule = ProductRule::query()->where('variation_id',$cart_detail->variation_id)->first();
+                $product = Product::query()->where('id',$cart_detail->product_id)->first();
+
+                $user = User::query()->where('id', $user_id)->where('active', 1)->first();
+                $total_user_discount = $user->user_discount;
+
+                $type_discount = UserTypeDiscount::query()->where('user_type_id', $user->user_type)->where('brand_id', $product->brand_id)->where('type_id', $product->type_id)->where('active', 1)->first();
+                if (!empty($type_discount)) {
+                    $total_user_discount = $total_user_discount + $type_discount->discount;
+                }
+
+                if ($total_user_discount > 0) {
+                    $extra_discount = true;
+                }
 
                 if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                    if($user_discount){
-                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * $user_discount_rate)) * $cart_detail->quantity;
+                    if($extra_discount){
+                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * $total_user_discount)) * $cart_detail->quantity;
                         $cart_detail_tax = ($cart_detail_price / 100 * $rule->tax_rate) * $cart_detail->quantity;
                     }else{
                         $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
                         $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
                     }
                 }else{
-                    if($user_discount){
-                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * ($user_discount_rate + $rule->discount_rate))) * $cart_detail->quantity;
+                    if($extra_discount){
+                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate))) * $cart_detail->quantity;
                         $cart_detail_tax = ($cart_detail_price / 100 * $rule->tax_rate) * $cart_detail->quantity;
                     }else{
                         $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
