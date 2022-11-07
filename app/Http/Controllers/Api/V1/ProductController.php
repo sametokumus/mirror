@@ -630,8 +630,17 @@ class ProductController extends Controller
                     }
 
                     $product['extra_discount'] = 0;
+                    $product['extra_discount_price'] = 0;
                     $product['extra_discount_rate'] = $total_user_discount;
-                    if ($total_user_discount > 0){$product['extra_discount'] = 1;}
+                    if ($total_user_discount > 0){
+                        $product['extra_discount'] = 1;
+                        if ($product->discounted_price == null || $product->discount_rate == 0){
+                            $price = $product->regular_price - ($product->regular_price / 100 * $total_user_discount);
+                        }else{
+                            $price = $product->regular_price - ($product->regular_price / 100 * ($total_user_discount + $product->discount_rate));
+                        }
+                        $product['extra_discount_price'] = $price;
+                    }
                 }
             }
 
