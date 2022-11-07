@@ -37,14 +37,28 @@ class CartController extends Controller
 
 
             $rule = ProductRule::query()->where('variation_id',$request->variation_id)->first();
-            if ($rule->discount_rate > 0){
-                $price = $rule->discounted_price;
+            $product = Product::query()->where('id', $request->product_id)->first();
 
+            $user = User::query()->where('id', $user_id)->where('active', 1)->first();
+            $total_user_discount = $user->user_discount;
 
+            $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
+            if(!empty($type_discount)){
+                $total_user_discount = $total_user_discount + $type_discount->discount;
+            }
+
+            if ($total_user_discount > 0){
+                if ($rule->discounted_price == null || $rule->discount_rate == 0){
+                    $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
+                }else{
+                    $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
+                }
             }else{
-                $price = $rule->regular_price;
-
-
+                if ($rule->discount_rate > 0) {
+                    $price = $rule->discounted_price;
+                } else {
+                    $price = $rule->regular_price;
+                }
             }
             $cart_detail = CartDetail::query()->where('variation_id',$request->variation_id)
                 ->where('cart_id',$cart_id)
