@@ -387,7 +387,7 @@ class CartController extends Controller
                 if ($rule->discounted_price == null || $rule->discount_rate == 0){
                     if($extra_discount){
                         $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * $total_user_discount)) * $cart_detail->quantity;
-                        $cart_detail_tax = ($cart_detail_price / 100 * $rule->tax_rate) * $cart_detail->quantity;
+                        $cart_detail_tax = $cart_detail_price / 100 * $rule->tax_rate;
                     }else{
                         $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
                         $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
@@ -395,7 +395,7 @@ class CartController extends Controller
                 }else{
                     if($extra_discount){
                         $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate))) * $cart_detail->quantity;
-                        $cart_detail_tax = ($cart_detail_price / 100 * $rule->tax_rate) * $cart_detail->quantity;
+                        $cart_detail_tax = $cart_detail_price / 100 * $rule->tax_rate;
                     }else{
                         $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
                         $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
