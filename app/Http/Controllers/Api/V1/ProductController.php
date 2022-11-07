@@ -639,7 +639,7 @@ class ProductController extends Controller
                         }else{
                             $price = $product->regular_price - ($product->regular_price / 100 * ($total_user_discount + $product->discount_rate));
                         }
-                        $product['extra_discount_price'] = $price;
+                        $product['extra_discount_price'] = number_format($price, 2,".","");
                     }
                 }
             }
