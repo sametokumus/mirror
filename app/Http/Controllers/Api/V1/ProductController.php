@@ -625,7 +625,7 @@ class ProductController extends Controller
                 foreach ($products as $product){
 
                     $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
-                    if($type_discount->count() > 0){
+                    if(!empty($type_discount)){
                         $total_user_discount = $total_user_discount + $type_discount->discount;
                     }
 
