@@ -631,7 +631,7 @@ class ProductController extends Controller
 
                     $product['extra_discount'] = 0;
                     $product['extra_discount_price'] = 0;
-                    $product['extra_discount_rate'] = $total_user_discount;
+                    $product['extra_discount_rate'] = number_format($total_user_discount, 2,".","");
                     if ($total_user_discount > 0){
                         $product['extra_discount'] = 1;
                         if ($product->discounted_price == null || $product->discount_rate == 0){
