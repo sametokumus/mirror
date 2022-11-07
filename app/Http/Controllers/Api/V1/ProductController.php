@@ -131,7 +131,7 @@ class ProductController extends Controller
         }
     }
 
-    public function getAllProductWithVariationById($product_id, $variation_id)
+    public function getAllProductWithVariationById($user_id, $product_id, $variation_id)
     {
         try {
             $product = Product::query()->where('id', $product_id)->where('active', 1)->first();
@@ -177,6 +177,32 @@ class ProductController extends Controller
 
             $featured_variation = ProductVariation::query()->where('id', $variation_id)->first();
             $rule = ProductRule::query()->where('variation_id', $variation_id)->first();
+
+            if($user_id != 0) {
+                $user = User::query()->where('id', $user_id)->where('active', 1)->first();
+                $total_user_discount = $user->user_discount;
+
+                $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
+                if(!empty($type_discount)){
+                    $total_user_discount = $total_user_discount + $type_discount->discount;
+                }
+
+                $rule['extra_discount'] = 0;
+                $rule['extra_discount_price'] = 0;
+                $rule['extra_discount_tax'] = 0;
+                $rule['extra_discount_rate'] = number_format($total_user_discount, 2,".","");
+                if ($total_user_discount > 0){
+                    $rule['extra_discount'] = 1;
+                    if ($rule->discounted_price == null || $rule->discount_rate == 0){
+                        $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
+                    }else{
+                        $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
+                    }
+                    $rule['extra_discount_price'] = number_format($price, 2,".","");
+                    $rule['extra_discount_tax'] = number_format(($price / 100 * $product->tax_rate), 2,".","");
+                }
+            }
+
             $images = ProductImage::query()->where('variation_id', $variation_id)->get();
             $featured_variation['rule'] = $rule;
             $featured_variation['images'] = $images;

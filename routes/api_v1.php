@@ -132,7 +132,7 @@ Route::get('/category/getCategoryById/{category_id}', [CategoryController::class
 
 Route::get('/product/getAllProduct', [ProductController::class, 'getAllProduct']);
 Route::get('/product/getAllProductById/{id}', [ProductController::class, 'getAllProductById']);
-Route::get('/product/getAllProductWithVariationById/{product_id}/{variation_id}', [ProductController::class, 'getAllProductWithVariationById']);
+Route::get('/product/getAllProductWithVariationById/{user_id}/{product_id}/{variation_id}', [ProductController::class, 'getAllProductWithVariationById']);
 
 Route::get('/product/getProduct', [ProductController::class, 'getProduct']);
 Route::post('/product/getFilteredProduct', [ProductController::class, 'getFilteredProduct']);
