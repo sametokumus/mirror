@@ -136,15 +136,15 @@ Route::get('/product/getAllProductWithVariationById/{product_id}/{variation_id}'
 
 Route::get('/product/getProduct', [ProductController::class, 'getProduct']);
 Route::post('/product/getFilteredProduct', [ProductController::class, 'getFilteredProduct']);
-Route::post('/product/getProductsByFilter', [ProductController::class, 'getProductsByFilter']);
+Route::post('/product/getProductsByFilter/{user_id}', [ProductController::class, 'getProductsByFilter']);
 Route::get('/product/getProductById/{id}', [ProductController::class, 'getProductById']);
 
 Route::get('/product/getProductsByCategoryId/{category_id}', [ProductController::class, 'getProductsByCategoryId']);
 Route::get('/product/getProductsWithParentCategory/{user_id}', [ProductController::class, 'getProductsWithParentCategory']);
 Route::get('/product/getProductsBySlug/{slug}', [ProductController::class, 'getProductsBySlug']);
-Route::get('/product/getProductsByType/{slug}', [ProductController::class, 'getProductsByType']);
+Route::get('/product/getProductsByType/{user_id}/{slug}', [ProductController::class, 'getProductsByType']);
 
-Route::get('/product/getProductsByBrand/{slug}', [ProductController::class, 'getProductsByBrand']);
+Route::get('/product/getProductsByBrand/{user_id}/{slug}', [ProductController::class, 'getProductsByBrand']);
 Route::get('/product/getBrandsWithProductsAndLimit/{limit}', [ProductController::class, 'getBrandsWithProductsAndLimit']);
 
 
