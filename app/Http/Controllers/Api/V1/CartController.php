@@ -236,8 +236,9 @@ class CartController extends Controller
 //                if($product->is_free_shipping == 1){
 //                    $cart_detail_delivery_price = 0.00;
 //                }
-                $cart_detail['sub_total_price'] = number_format($cart_detail_price, 2,",",".");;
-                $cart_detail['sub_total_tax'] = number_format($cart_detail_tax, 2,",",".");;
+                $cart_detail['sub_total_price'] = number_format($cart_detail_price, 2,",",".");
+                $cart_detail['sub_total_tax'] = number_format($cart_detail_tax, 2,",",".");
+                $cart_detail['sub_total_price_with_tax'] = number_format(($cart_detail_price + $cart_detail_tax), 2,",",".");
                 $cart_price += $cart_detail_price;
                 $cart_tax += $cart_detail_tax;
 
