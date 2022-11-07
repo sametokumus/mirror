@@ -148,7 +148,7 @@ Route::get('/product/getProductsByBrand/{user_id}/{slug}', [ProductController::c
 Route::get('/product/getBrandsWithProductsAndLimit/{limit}', [ProductController::class, 'getBrandsWithProductsAndLimit']);
 
 
-Route::get('/product/getAllCampaignProducts', [ProductController::class, 'getAllCampaignProducts']);
+Route::get('/product/getAllCampaignProducts/{user_id}', [ProductController::class, 'getAllCampaignProducts']);
 Route::get('/product/getCampaignProductsByLimit/{user_id}/{limit}', [ProductController::class, 'getCampaignProductsByLimit']);
 Route::get('/product/getFeaturedProducts/{user_id}', [ProductController::class, 'getFeaturedProducts']);
 Route::get('/product/getNewProducts/{user_id}', [ProductController::class, 'getNewProducts']);
