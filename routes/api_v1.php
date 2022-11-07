@@ -140,7 +140,7 @@ Route::post('/product/getProductsByFilter', [ProductController::class, 'getProdu
 Route::get('/product/getProductById/{id}', [ProductController::class, 'getProductById']);
 
 Route::get('/product/getProductsByCategoryId/{category_id}', [ProductController::class, 'getProductsByCategoryId']);
-Route::get('/product/getProductsWithParentCategory', [ProductController::class, 'getProductsWithParentCategory']);
+Route::get('/product/getProductsWithParentCategory/{user_id}', [ProductController::class, 'getProductsWithParentCategory']);
 Route::get('/product/getProductsBySlug/{slug}', [ProductController::class, 'getProductsBySlug']);
 Route::get('/product/getProductsByType/{slug}', [ProductController::class, 'getProductsByType']);
 
