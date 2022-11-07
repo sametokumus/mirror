@@ -432,8 +432,8 @@ class CartController extends Controller
             $checkout_prices['products_subtotal_price'] = number_format($products_subtotal_price, 2,",",".");
             $checkout_prices['products_cart_price'] = number_format($products_cart_price, 2,",",".");
             $checkout_prices['products_cart_tax'] = number_format($products_cart_tax, 2,",",".");
-            $checkout_prices['user_discount'] = $user_discount;
-            $checkout_prices['user_discount_rate'] = $user_discount_rate;
+//            $checkout_prices['user_discount'] = $user_discount;
+//            $checkout_prices['user_discount_rate'] = $user_discount_rate;
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
