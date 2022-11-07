@@ -14,6 +14,7 @@ use App\Models\ProductRule;
 use App\Models\ProductVariation;
 use App\Models\RegionalDeliveryPrice;
 use App\Models\User;
+use App\Models\UserTypeDiscount;
 use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -33,11 +34,28 @@ class CartController extends Controller
                     'cart_id' => $cart_id
                 ]);
             }
+
+
+
+
+            if (!empty($request->user_id)){
+                Cart::query()->where('cart_id',$cart_id)->update([
+                    'user_id' => $request->user_id
+                ]);
+
+
+            }
+
+
             $rule = ProductRule::query()->where('variation_id',$request->variation_id)->first();
             if ($rule->discount_rate > 0){
                 $price = $rule->discounted_price;
+
+
             }else{
                 $price = $rule->regular_price;
+
+
             }
             $cart_detail = CartDetail::query()->where('variation_id',$request->variation_id)
                 ->where('cart_id',$cart_id)
@@ -60,12 +78,6 @@ class CartController extends Controller
                     'quantity' => $request->quantity,
                     'price' => $price,
                 ]);
-            }
-
-            if (!empty($request->user_id)){
-             Cart::query()->where('cart_id',$cart_id)->update([
-                 'user_id' => $request->user_id
-             ]);
             }
 
             return response(['message' => 'Sepet ekleme işlemi başarılı.', 'status' => 'success','cart' => $cart_id]);
