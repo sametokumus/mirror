@@ -37,21 +37,29 @@ class CartController extends Controller
 
 
             $rule = ProductRule::query()->where('variation_id',$request->variation_id)->first();
-            $product = Product::query()->where('id', $request->product_id)->first();
+            if (!empty($request->user_id)) {
+                $product = Product::query()->where('id', $request->product_id)->first();
 
-            $user = User::query()->where('id', $user_id)->where('active', 1)->first();
-            $total_user_discount = $user->user_discount;
+                $user = User::query()->where('id', $request->user_id)->where('active', 1)->first();
+                $total_user_discount = $user->user_discount;
 
-            $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
-            if(!empty($type_discount)){
-                $total_user_discount = $total_user_discount + $type_discount->discount;
-            }
+                $type_discount = UserTypeDiscount::query()->where('user_type_id', $user->user_type)->where('brand_id', $product->brand_id)->where('type_id', $product->type_id)->where('active', 1)->first();
+                if (!empty($type_discount)) {
+                    $total_user_discount = $total_user_discount + $type_discount->discount;
+                }
 
-            if ($total_user_discount > 0){
-                if ($rule->discount_rate > 0) {
-                    $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
-                }else{
-                    $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
+                if ($total_user_discount > 0) {
+                    if ($rule->discount_rate > 0) {
+                        $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
+                    } else {
+                        $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
+                    }
+                } else {
+                    if ($rule->discount_rate > 0) {
+                        $price = $rule->discounted_price;
+                    } else {
+                        $price = $rule->regular_price;
+                    }
                 }
             }else{
                 if ($rule->discount_rate > 0) {
