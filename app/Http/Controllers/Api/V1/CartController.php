@@ -48,10 +48,10 @@ class CartController extends Controller
             }
 
             if ($total_user_discount > 0){
-                if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                    $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
-                }else{
+                if ($rule->discount_rate > 0) {
                     $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
+                }else{
+                    $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
                 }
             }else{
                 if ($rule->discount_rate > 0) {
