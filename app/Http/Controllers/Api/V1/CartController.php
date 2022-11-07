@@ -205,7 +205,7 @@ class CartController extends Controller
 
 
                         $cart_detail_price = $price * $cart_detail->quantity;
-                        $cart_detail_tax = $price / 100 * $rule->tax_rate;
+                        $cart_detail_tax = ($price * $cart_detail->quantity) / 100 * $rule->tax_rate;
                     }else{
                         if ($rule->discounted_price == null || $rule->discount_rate == 0){
                             $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
