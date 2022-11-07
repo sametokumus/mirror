@@ -631,6 +631,7 @@ class ProductController extends Controller
 
                     $product['extra_discount'] = 0;
                     $product['extra_discount_price'] = 0;
+                    $product['extra_discount_tax'] = 0;
                     $product['extra_discount_rate'] = number_format($total_user_discount, 2,".","");
                     if ($total_user_discount > 0){
                         $product['extra_discount'] = 1;
@@ -640,6 +641,7 @@ class ProductController extends Controller
                             $price = $product->regular_price - ($product->regular_price / 100 * ($total_user_discount + $product->discount_rate));
                         }
                         $product['extra_discount_price'] = number_format($price, 2,".","");
+                        $product['extra_discount_tax'] = number_format(($price / 100 * $product->tax_rate), 2,".","");
                     }
                 }
             }
