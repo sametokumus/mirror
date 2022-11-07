@@ -180,17 +180,58 @@ class CartController extends Controller
                 $rule = ProductRule::query()->where('variation_id',$cart_detail->variation_id)->first();
                 $image = ProductImage::query()->where('variation_id',$cart_detail->variation_id)->first();
 
+                if($cart->user_id != null) {
+                    $user = User::query()->where('id', $cart->user_id)->where('active', 1)->first();
+                    $total_user_discount = $user->user_discount;
+
+                    $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
+                    if(!empty($type_discount)){
+                        $total_user_discount = $total_user_discount + $type_discount->discount;
+                    }
+
+                    $rule['extra_discount'] = 0;
+                    $rule['extra_discount_price'] = 0;
+                    $rule['extra_discount_tax'] = 0;
+                    $rule['extra_discount_rate'] = number_format($total_user_discount, 2,".","");
+                    if ($total_user_discount > 0){
+                        $rule['extra_discount'] = 1;
+                        if ($rule->discounted_price == null || $rule->discount_rate == 0){
+                            $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
+                        }else{
+                            $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
+                        }
+                        $rule['extra_discount_price'] = number_format($price, 2,".","");
+                        $rule['extra_discount_tax'] = number_format(($price / 100 * $product->tax_rate), 2,".","");
+
+
+                        $cart_detail_price = $price * $cart_detail->quantity;
+                        $cart_detail_tax = $price / 100 * $product->tax_rate;
+                    }else{
+                        if ($rule->discounted_price == null || $rule->discount_rate == 0){
+                            $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
+                            $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
+                        }else{
+                            $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
+                            $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
+                        }
+                    }
+                }else{
+                    if ($rule->discounted_price == null || $rule->discount_rate == 0){
+                        $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
+                        $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
+                    }else{
+                        $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
+                        $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
+                    }
+                }
+
                 $variation['rule'] = $rule;
                 $variation['image'] = $image;
                 $product['variation'] = $variation;
                 $cart_detail['product'] = $product;
-                if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                    $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
-                    $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
-                }else{
-                    $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
-                    $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
-                }
+
+
+
                 $weight = $weight + $rule->weight;
 //                if($product->is_free_shipping == 1){
 //                    $cart_detail_delivery_price = 0.00;
