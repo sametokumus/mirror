@@ -69,7 +69,7 @@ class CreditCardController extends Controller
 
                 }elseif ($partial == 1){
 
-                    $total_price = number_format($total, 2);
+                    $total_price = (float)$total;
                     $total_price = $total_price + ($total_price / 100 * $credit_card_installment->partial);
 
                     $credit_card_installment['total'] = number_format($total_price, 2, ",", ".");
