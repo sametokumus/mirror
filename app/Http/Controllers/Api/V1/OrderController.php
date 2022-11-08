@@ -96,7 +96,7 @@ class OrderController extends Controller
                     'payment_method' => $request->payment_method,
                     'shipping_price' => $request->shipping_price,
                     'subtotal' => $request->subtotal,
-                    'total' => $request->total,
+                    'total' => ($request->subtotal + $request->shipping_price),
                     'is_partial' => $request->is_partial,
                     'is_paid' => $request->is_paid,
                     'coupon_code' => $request->coupon_code
