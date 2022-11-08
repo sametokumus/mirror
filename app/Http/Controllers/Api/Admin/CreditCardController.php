@@ -47,7 +47,8 @@ class CreditCardController extends Controller
             CreditCardInstallment::query()->where('id', $id)->update([
                 'installment' => $request->installment,
                 'installment_plus' => $request->installment_plus,
-                'discount' => $request->discount
+                'discount' => $request->discount,
+                'partial' => $request->partial
             ]);
 
             return response(['message' => 'Kredi kartı taksit güncelleme işlemi başarılı.', 'status' => 'success']);

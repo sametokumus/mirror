@@ -18,6 +18,8 @@ class CreateCreditCardInstallmentsTable extends Migration
             $table->bigInteger('credit_card_id');
             $table->integer('installment');
             $table->integer('installment_plus');
+            $table->decimal('discount');
+            $table->decimal('partial');
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
