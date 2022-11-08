@@ -198,7 +198,7 @@ Route::get('/carrier/getCarriers', [CarrierController::class, 'getCarriers']);
 Route::get('/carrier/getCarrierById/{id}', [CarrierController::class, 'getCarrierById']);
 
 Route::get('/creditCard/getCreditCarts', [CreditCardController::class, 'getCreditCarts']);
-Route::get('/creditCard/getCreditCardById/{member_no}/{cart_id}/{coupon_code}', [CreditCardController::class, 'getCreditCardById']);
+Route::get('/creditCard/getCreditCardById/{member_no}/{cart_id}/{coupon_code}/{partial}/{total}', [CreditCardController::class, 'getCreditCardById']);
 
 
 Route::get('/bankBinPair/getBankBinPairMemberNo/{prefix_no}', [BankBinPairController::class, 'getBankBinPairMemberNo']);
