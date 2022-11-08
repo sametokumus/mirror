@@ -65,13 +65,18 @@ class CreditCardController extends Controller
                         $total_price = $coupon_subtotal_price;
                     }
 
+                    $installment_price = $total_price / ($credit_card_installment->installment + $credit_card_installment->installment_plus);
+                    $credit_card_installment['installment_price'] = number_format($installment_price, 2, ",", ".");
                     $credit_card_installment['total'] = number_format($total_price, 2, ",", ".");
+
 
                 }elseif ($partial == 1){
 
                     $total_price = (float)$total;
                     $total_price = $total_price + ($total_price / 100 * $credit_card_installment->partial);
+                    $installment_price = $total_price / ($credit_card_installment->installment + $credit_card_installment->installment_plus);
 
+                    $credit_card_installment['installment_price'] = number_format($installment_price, 2, ",", ".");
                     $credit_card_installment['total'] = number_format($total_price, 2, ",", ".");
                 }
             }
