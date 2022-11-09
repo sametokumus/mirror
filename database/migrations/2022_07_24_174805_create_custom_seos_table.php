@@ -16,6 +16,7 @@ class CreateCustomSeosTable extends Migration
         Schema::create('custom_seos', function (Blueprint $table) {
             $table->id();
             $table->text('page')->nullable();
+            $table->text('page_url')->nullable();
             $table->text('title')->nullable();
             $table->text('keywords')->nullable();
             $table->text('description')->nullable();
