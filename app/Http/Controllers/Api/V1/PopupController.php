@@ -37,8 +37,8 @@ class PopupController extends Controller
                 $page_explodes = explode(",", $popup->pages);
                 $page_urls = array();
                 for ($i = 0; $i < (count($page_explodes)); $i++) {
-//                    $page_url = CustomSeo::query()->where('id', $page_explodes[$i])->first()->page_url;
-                    array_push($page_urls, $page_explodes[$i]);
+                    $page_url = CustomSeo::query()->where('id', $page_explodes[$i])->first()->page_url;
+                    array_push($page_urls, $page_url);
                 }
                 $popup['page_urls'] = $page_urls;
 
