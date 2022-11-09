@@ -34,7 +34,7 @@ class PopupController extends Controller
             $popup = Popup::query()->where('show_popup',1)->orderByDesc('id')->first();
 
             if(isset($popup)){
-                $page_explodes = explode(",", "$popup->category_id");
+                $page_explodes = explode(",", $popup->pages);
                 $page_urls = array();
                 for ($i = 0; $i < (count($page_explodes)); $i++) {
 //                    $page_url = CustomSeo::query()->where('id', $page_explodes[$i])->first()->page_url;
