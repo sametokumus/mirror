@@ -143,7 +143,7 @@ class UserController extends Controller
     {
         try {
             $request->validate([
-                'user_type' => 'required',
+                'user_types' => 'required',
                 'discount' => 'required',
                 'brands' => 'required',
                 'types' => 'required'
