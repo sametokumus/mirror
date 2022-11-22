@@ -628,13 +628,13 @@ class ProductController extends Controller
                 $rules['regular_tax'] = convertEURtoTRY($rules->regular_tax);
                 $rules['discounted_price'] = convertEURtoTRY($rules->discounted_price);
                 $rules['discounted_tax'] = convertEURtoTRY($rules->discounted_tax);
-                $rules['curreny'] = "TRY";
+                $rules['currency'] = "TRY";
             }else if ($rules->currency == "USD") {
                 $rules['regular_price'] = convertUSDtoTRY($rules->regular_price);
                 $rules['regular_tax'] = convertUSDtoTRY($rules->regular_tax);
                 $rules['discounted_price'] = convertUSDtoTRY($rules->discounted_price);
                 $rules['discounted_tax'] = convertUSDtoTRY($rules->discounted_tax);
-                $rules['curreny'] = "TRY";
+                $rules['currency'] = "TRY";
             }
 
             $product_variation['rule'] = $rules;
