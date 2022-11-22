@@ -335,6 +335,8 @@ class CartController extends Controller
         try {
 
             $cart_id = $request->cart_id;
+            $user_id = $request->user_id;
+            $address_id = $request->address_id;
             $coupon_code = $request->coupon_code;
 
             $checkout_prices = array();
@@ -347,6 +349,13 @@ class CartController extends Controller
             $delivery_price = null;
             $total_price = null;
             $total_price_with_delivery = null;
+
+
+
+
+
+//            $user_discount_rate = User::query()->where('id', $user_id)->where('active', 1)->first()->user_discount;
+//            if($user_discount_rate > 0){$user_discount = true;}
 
 
             //ürünlerin ara toplam fiyatı
@@ -363,12 +372,34 @@ class CartController extends Controller
                 $rule = ProductRule::query()->where('variation_id',$cart_detail->variation_id)->first();
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
 
+                $user = User::query()->where('id', $user_id)->where('active', 1)->first();
+                $total_user_discount = $user->user_discount;
+
+                $type_discount = UserTypeDiscount::query()->where('user_type_id', $user->user_type)->where('brand_id', $product->brand_id)->where('type_id', $product->type_id)->where('active', 1)->first();
+                if (!empty($type_discount)) {
+                    $total_user_discount = $total_user_discount + $type_discount->discount;
+                }
+
+                if ($total_user_discount > 0) {
+                    $extra_discount = true;
+                }
+
                 if ($rule->discounted_price == null || $rule->discount_rate == 0){
+                    if($extra_discount){
+                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * $total_user_discount)) * $cart_detail->quantity;
+                        $cart_detail_tax = $cart_detail_price / 100 * $rule->tax_rate;
+                    }else{
                         $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
                         $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
+                    }
                 }else{
+                    if($extra_discount){
+                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate))) * $cart_detail->quantity;
+                        $cart_detail_tax = $cart_detail_price / 100 * $rule->tax_rate;
+                    }else{
                         $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
                         $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
+                    }
                 }
                 $weight = $weight + $rule->weight;
 
@@ -393,10 +424,10 @@ class CartController extends Controller
                 $total_price = $coupon_subtotal_price;
             }
 
-//            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
-//            $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
-            $regional_delivery_price = "30.00";
-            $total_price_with_delivery = $total_price + "30.00";
+            $address = Address::query()->where('id', $address_id)->where('active', 1)->first();
+            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
+            $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
+            $total_price_with_delivery = $total_price + $regional_delivery_price->price;
 
             $checkout_prices['products_subtotal_price'] = number_format($products_subtotal_price, 2,",",".");
             $checkout_prices['products_cart_price'] = number_format($products_cart_price, 2,",",".");
