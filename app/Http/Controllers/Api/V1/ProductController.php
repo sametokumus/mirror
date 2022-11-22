@@ -622,6 +622,21 @@ class ProductController extends Controller
         try {
             $product_variation = ProductVariation::query()->where('id', $id)->first();
             $rules = ProductRule::query()->where('variation_id', $id)->first();
+
+            if ($rules->curreny == "EUR"){
+                $rules->regular_price = convertEURtoTRY($rules->regular_price);
+                $rules->regular_tax = convertEURtoTRY($rules->regular_tax);
+                $rules->discounted_price = convertEURtoTRY($rules->discounted_price);
+                $rules->discounted_tax = convertEURtoTRY($rules->discounted_tax);
+                $rules->curreny = "TRY";
+            }else if ($rules->curreny == "USD") {
+                $rules->regular_price = convertUSDtoTRY($rules->regular_price);
+                $rules->regular_tax = convertUSDtoTRY($rules->regular_tax);
+                $rules->discounted_price = convertUSDtoTRY($rules->discounted_price);
+                $rules->discounted_tax = convertUSDtoTRY($rules->discounted_tax);
+                $rules->curreny = "TRY";
+            }
+
             $product_variation['rule'] = $rules;
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product_variation' => $product_variation]]);
         } catch (QueryException $queryException) {
