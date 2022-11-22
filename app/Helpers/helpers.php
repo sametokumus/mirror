@@ -9,7 +9,7 @@ if (! function_exists('convertUSDtoTRY')) {
         $today = date('Y-m-d');
         $yesterday = date('Y-m-d',strtotime($today)-1);
         $currency = CurrencyLog::query()->where('day', $yesterday)->first()->dollar;
-        return $price * $currency;
+        return number_format($price * $currency, 2,".","");
     }
 }
 
@@ -19,6 +19,6 @@ if (! function_exists('convertEURtoTRY')) {
         $today = date('Y-m-d');
         $yesterday = date('Y-m-d',strtotime($today)-1);
         $currency = CurrencyLog::query()->where('day', $yesterday)->first()->euro;
-        return $price * $currency;
+        return number_format($price * $currency, 2,".","");
     }
 }
