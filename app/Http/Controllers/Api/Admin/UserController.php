@@ -156,7 +156,7 @@ class UserController extends Controller
             foreach ($user_types as $user_type) {
                 foreach ($brands as $brand) {
                     foreach ($types as $type) {
-                        $hasData = UserTypeDiscount::query()->where('user_type_id', $request->user_type)->where('brand_id', $brand)->where('type_id', $type)->first();
+                        $hasData = UserTypeDiscount::query()->where('user_type_id', $user_type)->where('brand_id', $brand)->where('type_id', $type)->first();
                         if (isset($hasData)) {
                             UserTypeDiscount::query()->where('id', $hasData->id)->update([
                                 'user_type_id' => $user_type,
