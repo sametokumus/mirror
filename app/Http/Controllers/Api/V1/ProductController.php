@@ -220,17 +220,17 @@ class ProductController extends Controller
 
             $images = ProductImage::query()->where('variation_id', $variation_id)->get();
             if ($rule->currency == "EUR"){
-                $rule['regular_price'] = convertEURtoTRY($rule->regular_price);
-                $rule['regular_tax'] = convertEURtoTRY($rule->regular_tax);
-                $rule['discounted_price'] = convertEURtoTRY($rule->discounted_price);
-                $rule['discounted_tax'] = convertEURtoTRY($rule->discounted_tax);
-                $rule['currency'] = "TRY";
+                $rule['price_try']['regular_price'] = convertEURtoTRY($rule->regular_price);
+                $rule['price_try']['regular_tax'] = convertEURtoTRY($rule->regular_tax);
+                $rule['price_try']['discounted_price'] = convertEURtoTRY($rule->discounted_price);
+                $rule['price_try']['discounted_tax'] = convertEURtoTRY($rule->discounted_tax);
+                $rule['price_try']['currency'] = "TRY";
             }else if ($rule->currency == "USD") {
-                $rule['regular_price'] = convertUSDtoTRY($rule->regular_price);
-                $rule['regular_tax'] = convertUSDtoTRY($rule->regular_tax);
-                $rule['discounted_price'] = convertUSDtoTRY($rule->discounted_price);
-                $rule['discounted_tax'] = convertUSDtoTRY($rule->discounted_tax);
-                $rule['currency'] = "TRY";
+                $rule['price_try']['regular_price'] = convertUSDtoTRY($rule->regular_price);
+                $rule['price_try']['regular_tax'] = convertUSDtoTRY($rule->regular_tax);
+                $rule['price_try']['discounted_price'] = convertUSDtoTRY($rule->discounted_price);
+                $rule['price_try']['discounted_tax'] = convertUSDtoTRY($rule->discounted_tax);
+                $rule['price_try']['currency'] = "TRY";
             }
             $featured_variation['rule'] = $rule;
             $featured_variation['images'] = $images;
