@@ -475,7 +475,6 @@ class CartController extends Controller
                     $cart_price += convertUSDtoTRY($cart_detail_price);
                     $cart_tax += convertUSDtoTRY($cart_detail_tax);
                 }else{
-
                     $cart_price += $cart_detail_price;
                     $cart_tax += $cart_detail_tax;
                 }
