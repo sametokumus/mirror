@@ -279,14 +279,24 @@ class CartController extends Controller
                 }
 
 
-                $cart_price += $cart_detail_price;
-                $cart_tax += $cart_detail_tax;
+                if ($rule->currency == "EUR"){
+                    $cart_price += convertEURtoTRY($cart_detail_price);
+                    $cart_tax += convertEURtoTRY($cart_detail_tax);
+                }else if ($rule->currency == "USD") {
+                    $cart_price += convertUSDtoTRY($cart_detail_price);
+                    $cart_tax += convertUSDtoTRY($cart_detail_tax);
+                }else{
+
+                    $cart_price += $cart_detail_price;
+                    $cart_tax += $cart_detail_tax;
+                }
 
             }
             $cart['cart_details'] = $cart_details;
             $cart['total_price'] = number_format($cart_price, 2,",",".");$cart_price;
             $cart['total_tax'] = number_format($cart_tax, 2,",",".");$cart_tax;
             $cart['total_price_with_tax'] = number_format(($cart_price + $cart_tax), 2,",",".");
+
 
             $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
             $cart['total_delivery'] = $delivery_price;
