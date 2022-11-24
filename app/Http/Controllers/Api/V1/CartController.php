@@ -248,8 +248,6 @@ class CartController extends Controller
                 $product['variation'] = $variation;
                 $cart_detail['product'] = $product;
 
-
-
                 $weight = $weight + $rule->weight;
 //                if($product->is_free_shipping == 1){
 //                    $cart_detail_delivery_price = 0.00;
@@ -257,6 +255,30 @@ class CartController extends Controller
                 $cart_detail['sub_total_price'] = number_format($cart_detail_price, 2,",",".");
                 $cart_detail['sub_total_tax'] = number_format($cart_detail_tax, 2,",",".");
                 $cart_detail['sub_total_price_with_tax'] = number_format(($cart_detail_price + $cart_detail_tax), 2,",",".");
+                $cart_detail['currency'] = "TL";
+
+
+                if ($rule->currency == "EUR"){
+                    $cart_detail['currency'] = "EUR";
+                    $try_currency = array();
+                    $try_currency['price'] = convertEURtoTRY($cart_detail->price);
+                    $try_currency['sub_total_price'] = number_format(convertEURtoTRY($cart_detail_price), 2,",",".");
+                    $try_currency['sub_total_tax'] = number_format(convertEURtoTRY($cart_detail_tax), 2,",",".");
+                    $try_currency['sub_total_price_with_tax'] = number_format(convertEURtoTRY($cart_detail_price + $cart_detail_tax), 2,",",".");
+                    $try_currency['currency'] = "TL";
+                    $cart_detail['try_currency'] = $try_currency;
+                }else if ($rule->currency == "USD") {
+                    $cart_detail['currency'] = "USD";
+                    $try_currency = array();
+                    $try_currency['price'] = convertUSDtoTRY($cart_detail->price);
+                    $try_currency['sub_total_price'] = number_format(convertUSDtoTRY($cart_detail_price), 2,",",".");
+                    $try_currency['sub_total_tax'] = number_format(convertUSDtoTRY($cart_detail_tax), 2,",",".");
+                    $try_currency['sub_total_price_with_tax'] = number_format(convertUSDtoTRY($cart_detail_price + $cart_detail_tax), 2,",",".");
+                    $try_currency['currency'] = "TL";
+                    $cart_detail['try_currency'] = $try_currency;
+                }
+
+
                 $cart_price += $cart_detail_price;
                 $cart_tax += $cart_detail_tax;
 
