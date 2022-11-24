@@ -225,6 +225,24 @@ class CartController extends Controller
                     }
                 }
 
+                if ($rule->currency == "EUR"){
+                    $try_currency = array();
+                    $try_currency['regular_price'] = convertEURtoTRY($rule->regular_price);
+                    $try_currency['regular_tax'] = convertEURtoTRY($rule->regular_tax);
+                    $try_currency['discounted_price'] = convertEURtoTRY($rule->discounted_price);
+                    $try_currency['discounted_tax'] = convertEURtoTRY($rule->discounted_tax);
+                    $try_currency['currency'] = "TL";
+                    $rule['try_currency'] = $try_currency;
+                }else if ($rule->currency == "USD") {
+                    $try_currency = array();
+                    $try_currency['regular_price'] = convertUSDtoTRY($rule->regular_price);
+                    $try_currency['regular_tax'] = convertUSDtoTRY($rule->regular_tax);
+                    $try_currency['discounted_price'] = convertUSDtoTRY($rule->discounted_price);
+                    $try_currency['discounted_tax'] = convertUSDtoTRY($rule->discounted_tax);
+                    $try_currency['currency'] = "TL";
+                    $rule['try_currency'] = $try_currency;
+                }
+
                 $variation['rule'] = $rule;
                 $variation['image'] = $image;
                 $product['variation'] = $variation;
