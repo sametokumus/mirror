@@ -459,10 +459,26 @@ class CartController extends Controller
                         $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
                     }
                 }
+
+
+
+
                 $weight = $weight + $rule->weight;
 
-                $cart_price += $cart_detail_price;
-                $cart_tax += $cart_detail_tax;
+//                $cart_price += $cart_detail_price;
+//                $cart_tax += $cart_detail_tax;
+
+                if ($rule->currency == "EUR"){
+                    $cart_price += convertEURtoTRY($cart_detail_price);
+                    $cart_tax += convertEURtoTRY($cart_detail_tax);
+                }else if ($rule->currency == "USD") {
+                    $cart_price += convertUSDtoTRY($cart_detail_price);
+                    $cart_tax += convertUSDtoTRY($cart_detail_tax);
+                }else{
+
+                    $cart_price += $cart_detail_price;
+                    $cart_tax += $cart_detail_tax;
+                }
 
             }
             $products_cart_price = $cart_price;
