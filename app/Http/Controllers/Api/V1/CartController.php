@@ -232,6 +232,10 @@ class CartController extends Controller
                     $try_currency['discounted_price'] = convertEURtoTRY($rule->discounted_price);
                     $try_currency['discounted_tax'] = convertEURtoTRY($rule->discounted_tax);
                     $try_currency['currency'] = "TL";
+                    if ($rule['extra_discount'] == 1){
+                        $try_currency['extra_discount_price'] = convertEURtoTRY($rule['extra_discount_price']);
+                        $try_currency['extra_discount_tax'] = convertEURtoTRY($rule['extra_discount_tax']);
+                    }
                     $rule['try_currency'] = $try_currency;
                 }else if ($rule->currency == "USD") {
                     $try_currency = array();
@@ -240,6 +244,10 @@ class CartController extends Controller
                     $try_currency['discounted_price'] = convertUSDtoTRY($rule->discounted_price);
                     $try_currency['discounted_tax'] = convertUSDtoTRY($rule->discounted_tax);
                     $try_currency['currency'] = "TL";
+                    if ($rule['extra_discount'] == 1){
+                        $try_currency['extra_discount_price'] = convertUSDtoTRY($rule['extra_discount_price']);
+                        $try_currency['extra_discount_tax'] = convertUSDtoTRY($rule['extra_discount_tax']);
+                    }
                     $rule['try_currency'] = $try_currency;
                 }
 
