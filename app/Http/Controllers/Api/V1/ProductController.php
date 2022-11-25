@@ -229,6 +229,8 @@ class ProductController extends Controller
                 $try_currency['regular_tax'] = convertEURtoTRY($rule->regular_tax);
                 $try_currency['discounted_price'] = convertEURtoTRY($rule->discounted_price);
                 $try_currency['discounted_tax'] = convertEURtoTRY($rule->discounted_tax);
+                $try_currency['extra_discount_price'] = convertEURtoTRY($rule['extra_discount_price']);
+                $try_currency['extra_discount_tax'] = convertEURtoTRY($rule['extra_discount_tax']);
                 $try_currency['currency'] = "TL";
                 $rule['try_currency'] = $try_currency;
             }else if ($rule->currency == "USD") {
@@ -237,6 +239,8 @@ class ProductController extends Controller
                 $try_currency['regular_tax'] = convertUSDtoTRY($rule->regular_tax);
                 $try_currency['discounted_price'] = convertUSDtoTRY($rule->discounted_price);
                 $try_currency['discounted_tax'] = convertUSDtoTRY($rule->discounted_tax);
+                $try_currency['extra_discount_price'] = convertUSDtoTRY($rule['extra_discount_price']);
+                $try_currency['extra_discount_tax'] = convertUSDtoTRY($rule['extra_discount_tax']);
                 $try_currency['currency'] = "TL";
                 $rule['try_currency'] = $try_currency;
             }
