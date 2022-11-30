@@ -324,15 +324,31 @@ class OrderController extends Controller
 //                if($product->is_free_shipping == 1){
 //                    $order_detail_delivery_price = 0.00;
 //                }
-                $order_detail['sub_total_price'] = $order_detail_price;
-                $order_detail['sub_total_tax'] = $order_detail_tax;
-                $order_price += $order_detail_price;
-                $order_tax += $order_detail_tax;
+
+
+                if ($rule->currency == "EUR"){
+                    $order_detail['sub_total_price'] = convertEURtoTRY($order_detail_price);
+                    $order_detail['sub_total_tax'] = convertEURtoTRY($order_detail_tax);
+                    $order_price += convertEURtoTRY($order_detail_price);
+                    $order_tax += convertEURtoTRY($order_detail_tax);
+                }else if ($rule->currency == "USD") {
+                    $order_detail['sub_total_price'] = convertUSDtoTRY($order_detail_price);
+                    $order_detail['sub_total_tax'] = convertUSDtoTRY($order_detail_tax);
+                    $order_price += convertUSDtoTRY($order_detail_price);
+                    $order_tax += convertUSDtoTRY($order_detail_tax);
+                }else{
+
+                    $order_detail['sub_total_price'] = $order_detail_price;
+                    $order_detail['sub_total_tax'] = $order_detail_tax;
+                    $order_price += $order_detail_price;
+                    $order_tax += $order_detail_tax;
+                }
 
             }
             $order['order_details'] = $order_details;
             $order['total_price'] = $order_price;
             $order['total_tax'] = $order_tax;
+
 
             $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
             $order['total_delivery'] = $delivery_price;
