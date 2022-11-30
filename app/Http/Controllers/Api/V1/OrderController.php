@@ -347,7 +347,7 @@ class OrderController extends Controller
             }
             $order['order_details'] = $order_details;
             $order['total_price'] = number_format($order_price, 2,".","");
-            $order['total_tax'] = $order_tax;
+            $order['total_tax'] = number_format($order_tax, 2,".","");
 
             if($order->coupon_code != "null"){
                 $coupon = Coupons::query()->where('code', $order->coupon_code)->where('active', 1)->first();
