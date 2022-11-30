@@ -346,7 +346,7 @@ class OrderController extends Controller
 
             }
             $order['order_details'] = $order_details;
-            $order['total_price'] = $order_price;
+            $order['total_price'] = number_format($order_price, 2,".","");
             $order['total_tax'] = $order_tax;
 
             if($order->coupon_code != "null"){
@@ -359,7 +359,7 @@ class OrderController extends Controller
                     $coupon_price = $order_price - ($order_price / 100 * $coupon->discount);
                 }
 
-                $order['coupon_price'] = $coupon_price;
+                $order['coupon_price'] = number_format($coupon_price, 2,".","");
                 $order['coupon_message'] = $coupon_message;
             }
 
