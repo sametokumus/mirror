@@ -349,6 +349,20 @@ class OrderController extends Controller
             $order['total_price'] = $order_price;
             $order['total_tax'] = $order_tax;
 
+            if($order->coupon_code != "null"){
+                $coupon = Coupons::query()->where('code', $order->coupon_code)->where('active', 1)->first();
+                if ($coupon->discount_type == 1){
+                    $coupon_message = $coupon->discount." TL indirim.";
+                    $coupon_price = $order_price - $coupon->discount;
+                }elseif ($coupon->discount_type == 2){
+                    $coupon_message = "%".$coupon->discount." indirim.";
+                    $coupon_price = $order_price - ($order_price / 100 * $coupon->discount);
+                }
+
+                $order['coupon_price'] = $coupon_price;
+                $order['coupon_message'] = $coupon_message;
+            }
+
 
             $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
             $order['total_delivery'] = $delivery_price;
