@@ -329,43 +329,43 @@ class OrderController extends Controller
                 if ($rule->currency == "EUR"){
                     $order_detail['sub_total_price'] = convertEURtoTRY($order_detail_price);
                     $order_detail['sub_total_tax'] = convertEURtoTRY($order_detail_tax);
-                    $order_price += convertEURtoTRY($order_detail_price);
-                    $order_tax += convertEURtoTRY($order_detail_tax);
+//                    $order_price += convertEURtoTRY($order_detail_price);
+//                    $order_tax += convertEURtoTRY($order_detail_tax);
                 }else if ($rule->currency == "USD") {
                     $order_detail['sub_total_price'] = convertUSDtoTRY($order_detail_price);
                     $order_detail['sub_total_tax'] = convertUSDtoTRY($order_detail_tax);
-                    $order_price += convertUSDtoTRY($order_detail_price);
-                    $order_tax += convertUSDtoTRY($order_detail_tax);
+//                    $order_price += convertUSDtoTRY($order_detail_price);
+//                    $order_tax += convertUSDtoTRY($order_detail_tax);
                 }else{
 
                     $order_detail['sub_total_price'] = $order_detail_price;
                     $order_detail['sub_total_tax'] = $order_detail_tax;
-                    $order_price += $order_detail_price;
-                    $order_tax += $order_detail_tax;
+//                    $order_price += $order_detail_price;
+//                    $order_tax += $order_detail_tax;
                 }
 
             }
             $order['order_details'] = $order_details;
-            $order['total_price'] = number_format($order_price, 2,".","");
-            $order['total_tax'] = number_format($order_tax, 2,".","");
+//            $order['total_price'] = number_format($order_price, 2,".","");
+//            $order['total_tax'] = number_format($order_tax, 2,".","");
+//
+//            if($order->coupon_code != "null"){
+//                $coupon = Coupons::query()->where('code', $order->coupon_code)->where('active', 1)->first();
+//                if ($coupon->discount_type == 1){
+//                    $coupon_message = $coupon->discount." TL indirim.";
+//                    $coupon_price = ($order_price + $order_tax) - $coupon->discount;
+//                }elseif ($coupon->discount_type == 2){
+//                    $coupon_message = "%".$coupon->discount." indirim.";
+//                    $coupon_price = $order_price - (($order_price + $order_tax) / 100 * $coupon->discount);
+//                }
+//
+//                $order['coupon_price'] = number_format($coupon_price, 2,".","");
+//                $order['coupon_message'] = $coupon_message;
+//            }
 
-            if($order->coupon_code != "null"){
-                $coupon = Coupons::query()->where('code', $order->coupon_code)->where('active', 1)->first();
-                if ($coupon->discount_type == 1){
-                    $coupon_message = $coupon->discount." TL indirim.";
-                    $coupon_price = ($order_price + $order_tax) - $coupon->discount;
-                }elseif ($coupon->discount_type == 2){
-                    $coupon_message = "%".$coupon->discount." indirim.";
-                    $coupon_price = $order_price - (($order_price + $order_tax) / 100 * $coupon->discount);
-                }
 
-                $order['coupon_price'] = number_format($coupon_price, 2,".","");
-                $order['coupon_message'] = $coupon_message;
-            }
-
-
-            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
-            $order['total_delivery'] = $delivery_price;
+//            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
+//            $order['total_delivery'] = $delivery_price;
             $order['total_weight'] = $weight;
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order' => $order]]);
