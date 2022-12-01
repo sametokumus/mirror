@@ -145,6 +145,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('orderStatus/updateOrderStatus/{id}', [OrderStatusController::class, 'updateOrderStatus']);
     Route::get('orderStatus/deleteOrderStatus/{id}', [OrderStatusController::class, 'deleteOrderStatus']);
     Route::get('orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);
+    Route::get('orderStatus/getOrderStatusById/{id}', [OrderStatusController::class, 'getOrderStatusById']);
 
 
     Route::post('order/updateOrder/{id}', [OrderController::class, 'updateOrder']);
@@ -214,6 +215,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
 
     Route::get('shippingType/getShippingTypes',[ShippingTypeController::class,'getShippingTypes']);
+    Route::get('shippingType/getShippingTypeById/{id}',[ShippingTypeController::class,'getShippingTypeById']);
 
     Route::get('creditCard/getCreditCards',[CreditCardController::class,'getCreditCards']);
     Route::get('creditCard/getCreditCardById/{card_id}',[CreditCardController::class,'getCreditCardById']);
