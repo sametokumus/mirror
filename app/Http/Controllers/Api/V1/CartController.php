@@ -486,7 +486,7 @@ class CartController extends Controller
             $total_price = $products_subtotal_price;
 
             if($coupon_code != "null"){
-                $coupon = Coupons::query()->where('code', $coupon_code)->where('active', 1)->first();
+                $coupon = Coupons::query()->where('code', $coupon_code)->first();
                 if ($coupon->discount_type == 1){
                     $coupon_message = $coupon->discount." TL indirim.";
                     $coupon_subtotal_price = $products_subtotal_price - $coupon->discount;
