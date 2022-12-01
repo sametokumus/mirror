@@ -353,10 +353,10 @@ class OrderController extends Controller
                 $coupon = Coupons::query()->where('code', $order->coupon_code)->where('active', 1)->first();
                 if ($coupon->discount_type == 1){
                     $coupon_message = $coupon->discount." TL indirim.";
-                    $coupon_price = $order_price - $coupon->discount;
+                    $coupon_price = ($order_price + $order_tax) - $coupon->discount;
                 }elseif ($coupon->discount_type == 2){
                     $coupon_message = "%".$coupon->discount." indirim.";
-                    $coupon_price = $order_price - ($order_price / 100 * $coupon->discount);
+                    $coupon_price = $order_price - (($order_price + $order_tax) / 100 * $coupon->discount);
                 }
 
                 $order['coupon_price'] = number_format($coupon_price, 2,".","");
