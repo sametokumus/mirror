@@ -21,7 +21,7 @@ class ShippingTypeController extends Controller
     }
     public function getShippingTypeById($id){
         try {
-            $shipping_type = ShippingType::query()->where('id', $id)->where('active',1)->get();
+            $shipping_type = ShippingType::query()->where('id', $id)->where('active',1)->first();
             return response(['message' => 'Kargo silme işlemi başarılı.', 'status' => 'success','object' => ['shipping_type' => $shipping_type]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
