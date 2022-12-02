@@ -530,5 +530,74 @@ class OrderController extends Controller
         }
     }
 
+    public function getOrderBillingInfoById($order_id){
+        try {
+            $billing_info = Order::query()->where('order_id',$order_id)->first(['id', 'order_id', 'billing_address_id', 'billing_address']);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['billing_info' => $billing_info]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function updateOrderBillingInfoById(Request $request, $id)
+    {
+        try {
+
+            $billing_address = $request->name . " - " . $request->address . " - " . $request->postal_code . " - " . $request->phone . " - " . $request->district . " / " . $request->city . " / " . $request->country;
+
+            if ($request->tax_number != '' && $request->tax_office != '' && $request->company_name != ''){
+                $billing_address = $billing_address." - ".$request->tax_number." - ".$request->tax_office." - ".$request->company_name;
+            }
+
+            Order::query()->where('order_id', $id)->update([
+                'billing_address' => $billing_address
+            ]);
+
+            return response(['message' => 'Fatura adresi güncellendi.', 'status' => 'success']);
+
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
+
+    public function getOrderShippingInfoById($order_id){
+        try {
+            $shipping_info = Order::query()->where('order_id',$order_id)->first(['id', 'order_id', 'shipping_address_id', 'shipping_address']);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['shipping_info' => $shipping_info]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function updateOrderShippingInfoById(Request $request, $id)
+    {
+        try {
+            $shipping_address = $request->name . " - " . $request->address . " - " . $request->postal_code . " - " . $request->phone . " - " . $request->district . " / " . $request->city . " / " . $request->country;
+
+            if ($request->tax_number != '' && $request->tax_office != '' && $request->company_name != ''){
+                $shipping_address = $shipping_address." - ".$request->tax_number." - ".$request->tax_office." - ".$request->company_name;
+            }
+
+            Order::query()->where('order_id', $id)->update([
+                'shipping_address' => $shipping_address
+            ]);
+
+            return response(['message' => 'Teslimat adresi güncellendi.', 'status' => 'success']);
+
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
+
 
 }
