@@ -608,6 +608,9 @@ class OrderController extends Controller
                 $carrier = Carrier::query()->where('id', $shipment_info->carrier_id)->where('active', 1)->first();
                 $shipment_info['carrier_name'] = $carrier->name;
             }
+            if ($shipment_info->shipping_number == null){
+                $shipment_info['shipping_number'] = "";
+            }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['shipment_info' => $shipment_info]]);
         } catch (QueryException $queryException) {
