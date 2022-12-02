@@ -599,5 +599,17 @@ class OrderController extends Controller
         }
     }
 
+    public function getOrderShipmentInfoById($order_id){
+        try {
+            $shipment_info = Order::query()->where('order_id',$order_id)->first(['id', 'order_id', 'carrier_id', 'shipping_number']);
+            $carrier = Carrier::query()->where('id', $shipment_info->carrier_id)->where('active', 1)->first();
+            $shipment_info['carrier_name'] = $carrier->name;
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['shipment_info' => $shipment_info]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
 
 }
