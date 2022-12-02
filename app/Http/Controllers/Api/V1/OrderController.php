@@ -72,7 +72,7 @@ class OrderController extends Controller
 
                 if ($shipping->type == 2){
                     $billing_corporate_address = CorporateAddresses::query()->where('address_id',$billing_id)->first();
-                    $shipping_address = $shipping_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
+                    $billing_address = $billing_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
                 }
 
 
