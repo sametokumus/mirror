@@ -197,7 +197,7 @@ class OrderController extends Controller
                 'shipping_number' => $request->shipping_number,
                 'carrier_id' => $carrier_id
             ]);
-            return response(['message' => 'Sipariş numarası güncelleme işlemi başarılı.', 'status' => 'success']);
+            return response(['message' => 'Sipariş bilgileri güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
