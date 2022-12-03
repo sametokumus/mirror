@@ -189,6 +189,10 @@ class OrderController extends Controller
         /**firma gönderi takip kodu update olacak**/
 
         try {
+            $carrier_id = $request->carrier_id;
+            if ($carrier_id = ""){
+                $carrier_id = 0;
+            }
             Order::query()->where('order_id', $order_id)->update([
                 'shipping_number' => $request->shipping_number,
                 'carrier_id' => $request->carrier_id
