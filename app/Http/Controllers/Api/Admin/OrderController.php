@@ -327,6 +327,30 @@ class OrderController extends Controller
         }
     }
 
+    public function getOrderPaymentProvizyonById($payment_id){
+        try {
+            $payment = Payment::query()->where('payment_id',$payment_id)->where('active', 1)->first();
+
+            $payment['type_name'] = PaymentType::query()->where('id', $payment->type)->first()->name;
+            $payment['is_preauth_message'] = "Provizyon onaylanmadı";
+            $payment['is_paid_message'] = "Ödeme onaylanmadı";
+            $payment['bank'] = "";
+            if ($payment->is_preauth == 1){
+                $payment['is_preauth_message'] = "Provizyon onaylandı";
+            }
+            if ($payment->is_paid == 1){
+                $payment['is_paid_message'] = "Ödeme onaylandı";
+            }
+            if ($payment->bank_id != null){
+                $payment['bank'] = CreditCard::query()->where('member_no', $payment->bank_id)->first();
+            }
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['payment' => $payment]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
     public function getOrderBillingInfoById($order_id){
         try {
             $billing_info = Order::query()->where('order_id',$order_id)->first(['id', 'order_id', 'billing_address_id', 'billing_address']);

@@ -165,6 +165,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
 
     Route::get('/order/getOrderPaymentInfoById/{order_id}',[OrderController::class,'getOrderPaymentInfoById']);
+    Route::get('/order/getOrderPaymentProvizyonById/{payment_id}',[OrderController::class,'getOrderPaymentProvizyonById']);
     Route::get('/order/getOrderBillingInfoById/{order_id}',[OrderController::class,'getOrderBillingInfoById']);
     Route::post('/order/updateOrderBillingInfoById/{order_id}',[OrderController::class,'updateOrderBillingInfoById']);
     Route::get('/order/getOrderShippingInfoById/{order_id}',[OrderController::class,'getOrderShippingInfoById']);
