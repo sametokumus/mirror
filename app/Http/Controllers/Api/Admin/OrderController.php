@@ -195,7 +195,7 @@ class OrderController extends Controller
             }
             Order::query()->where('order_id', $order_id)->update([
                 'shipping_number' => $request->shipping_number,
-                'carrier_id' => $request->carrier_id
+                'carrier_id' => $carrier_id
             ]);
             return response(['message' => 'Sipariş numarası güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
