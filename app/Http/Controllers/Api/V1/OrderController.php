@@ -12,6 +12,7 @@ use App\Models\City;
 use App\Models\CorporateAddresses;
 use App\Models\Country;
 use App\Models\Coupons;
+use App\Models\CreditCard;
 use App\Models\DeliveryPrice;
 use App\Models\District;
 use App\Models\Order;
@@ -369,6 +370,41 @@ class OrderController extends Controller
             $order['total_weight'] = $weight;
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order' => $order]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function getOrderPaymentInfoById($order_id){
+        try {
+            $payment_info = array();
+            $order = Order::query()->where('order_id',$order_id)->first();
+            $payments = Payment::query()->where('order_id',$order_id)->where('active', 1)->get();
+
+            $payment_info['payment_method'] = $order->payment_method;
+            $payment_info['payment_method_name'] = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
+
+            foreach ($payments as $payment){
+                $payment['type_name'] = PaymentType::query()->where('id', $payment->type)->first()->name;
+                $payment['is_preauth_message'] = "Provizyon onaylanmadı";
+                $payment['is_paid_message'] = "Ödeme onaylanmadı";
+                $payment['bank'] = "";
+                if ($payment->is_preauth == 1){
+                    $payment['is_preauth_message'] = "Provizyon onaylandı";
+                }
+                if ($payment->is_paid == 1){
+                    $payment['is_paid_message'] = "Ödeme onaylandı";
+                }
+                if ($payment->bank_id != null){
+                    $payment['bank'] = CreditCard::query()->where('member_no', $payment->bank_id)->first();
+                }
+            }
+
+            $payment_info['payments'] = $payments;
+
+
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['payment_info' => $payment_info]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }

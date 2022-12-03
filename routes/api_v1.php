@@ -116,6 +116,7 @@ Route::post('/cart/getCheckoutPrices', [CartController::class, 'getCheckoutPrice
 Route::post('/order/addOrder',[OrderController::class,'addOrder']);
 Route::get('/order/getOrdersByUserId/{user_id}',[OrderController::class,'getOrdersByUserId']);
 Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
+Route::get('/order/getOrderPaymentInfoById/{order_id}',[OrderController::class,'getOrderPaymentInfoById']);
 Route::get('/order/getOrderByPaymentId/{payment_id}',[OrderController::class,'getOrderByPaymentId']);
 Route::post('/order/addPayment',[OrderController::class,'addPayment']);
 Route::post('/order/updatePayment',[OrderController::class,'updatePayment']);
