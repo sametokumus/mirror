@@ -190,7 +190,7 @@ class OrderController extends Controller
 
         try {
             $carrier_id = $request->carrier_id;
-            if ($carrier_id = ""){
+            if ($carrier_id == ""){
                 $carrier_id = 0;
             }
             Order::query()->where('order_id', $order_id)->update([
