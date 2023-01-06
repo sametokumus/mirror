@@ -19,4 +19,14 @@ class ShippingTypeController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
         }
     }
+    public function getShippingTypeById($id){
+        try {
+            $shipping_type = ShippingType::query()->where('id', $id)->where('active',1)->first();
+            return response(['message' => 'Kargo silme işlemi başarılı.', 'status' => 'success','object' => ['shipping_type' => $shipping_type]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
 }

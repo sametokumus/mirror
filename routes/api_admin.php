@@ -145,6 +145,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('orderStatus/updateOrderStatus/{id}', [OrderStatusController::class, 'updateOrderStatus']);
     Route::get('orderStatus/deleteOrderStatus/{id}', [OrderStatusController::class, 'deleteOrderStatus']);
     Route::get('orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);
+    Route::get('orderStatus/getOrderStatusById/{id}', [OrderStatusController::class, 'getOrderStatusById']);
 
 
     Route::post('order/updateOrder/{id}', [OrderController::class, 'updateOrder']);
@@ -161,6 +162,15 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('order/getRefundOrders', [OrderController::class, 'getRefundOrders']);
     Route::get('order/getOrderRefundStatuses', [OrderController::class, 'getOrderRefundStatuses']);
     Route::post('order/updateRefundStatus/{order_id}', [OrderController::class, 'updateRefundStatus']);
+
+
+    Route::get('/order/getOrderPaymentInfoById/{order_id}',[OrderController::class,'getOrderPaymentInfoById']);
+    Route::get('/order/getOrderPaymentProvizyonById/{payment_id}',[OrderController::class,'getOrderPaymentProvizyonById']);
+    Route::get('/order/getOrderBillingInfoById/{order_id}',[OrderController::class,'getOrderBillingInfoById']);
+    Route::post('/order/updateOrderBillingInfoById/{order_id}',[OrderController::class,'updateOrderBillingInfoById']);
+    Route::get('/order/getOrderShippingInfoById/{order_id}',[OrderController::class,'getOrderShippingInfoById']);
+    Route::post('/order/updateOrderShippingInfoById/{order_id}',[OrderController::class,'updateOrderShippingInfoById']);
+    Route::get('/order/getOrderShipmentInfoById/{order_id}',[OrderController::class,'getOrderShipmentInfoById']);
 
 
 
@@ -214,6 +224,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
 
     Route::get('shippingType/getShippingTypes',[ShippingTypeController::class,'getShippingTypes']);
+    Route::get('shippingType/getShippingTypeById/{id}',[ShippingTypeController::class,'getShippingTypeById']);
 
     Route::get('creditCard/getCreditCards',[CreditCardController::class,'getCreditCards']);
     Route::get('creditCard/getCreditCardById/{card_id}',[CreditCardController::class,'getCreditCardById']);
