@@ -512,9 +512,11 @@ class CartController extends Controller
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
+
             $checkout_prices['delivery_price'] = number_format($regional_delivery_price->price, 2,",",".");
             $checkout_prices['delivery_price_tax'] = number_format($regional_delivery_price_tax, 2,",",".");
             $checkout_prices['delivery_price_without_tax'] = number_format($regional_delivery_price_without_tax, 2,",",".");
+
             $checkout_prices['total_price'] = number_format($total_price, 2,",",".");
             $checkout_prices['total_price_with_delivery'] = number_format($total_price_with_delivery, 2,",",".");
 
