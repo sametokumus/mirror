@@ -281,5 +281,5 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('subscribe/updateSubscriber/{id}', [SubscribeController::class, 'updateSubscriber']);
     Route::get('subscribe/deleteSubscriber/{id}', [SubscribeController::class, 'deleteSubscriber']);
 
-});
+    });
 
