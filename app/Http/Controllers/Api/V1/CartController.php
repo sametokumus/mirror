@@ -500,6 +500,8 @@ class CartController extends Controller
             $address = Address::query()->where('id', $address_id)->where('active', 1)->first();
             $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
             $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
+            $regional_delivery_price_without_tax = $regional_delivery_price->price / 118 * 100;
+            $regional_delivery_price_tax = $regional_delivery_price->price - $regional_delivery_price_without_tax;
             $total_price_with_delivery = $total_price + $regional_delivery_price->price;
 
             $checkout_prices['products_subtotal_price'] = number_format($products_subtotal_price, 2,",",".");
@@ -511,6 +513,8 @@ class CartController extends Controller
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
             $checkout_prices['delivery_price'] = number_format($regional_delivery_price->price, 2,",",".");
+            $checkout_prices['delivery_price_tax'] = number_format($regional_delivery_price_tax, 2,",",".");
+            $checkout_prices['delivery_price_without_tax'] = number_format($regional_delivery_price_without_tax, 2,",",".");
             $checkout_prices['total_price'] = number_format($total_price, 2,",",".");
             $checkout_prices['total_price_with_delivery'] = number_format($total_price_with_delivery, 2,",",".");
 
