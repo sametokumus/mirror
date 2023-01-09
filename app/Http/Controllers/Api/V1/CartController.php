@@ -523,4 +523,17 @@ class CartController extends Controller
         }
     }
 
+    public function setIsOrder($cart_id, $is_order){
+        try {
+
+            Cart::query()->where('cart_id', $cart_id)->update([
+                'is_order' => $is_order
+            ]);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
 }
