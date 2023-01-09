@@ -283,6 +283,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('subscribe/deleteSubscriber/{id}', [SubscribeController::class, 'deleteSubscriber']);
 
     Route::post('proforma/addProformaOrder', [ProformaController::class, 'addProformaOrder']);
+    Route::get('proforma/getProformaProducts', [ProformaController::class, 'getProformaProducts']);
+    Route::post('proforma/getProformaProductsByFilter', [ProformaController::class, 'getProformaProductsByFilter']);
 
 
 });

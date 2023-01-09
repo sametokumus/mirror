@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartDetail;
+use App\Models\Category;
 use App\Models\City;
 use App\Models\CorporateAddresses;
 use App\Models\Country;
@@ -16,13 +17,22 @@ use App\Models\OrderProduct;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
 use App\Models\Product;
+use App\Models\ProductCategory;
+use App\Models\ProductDocument;
+use App\Models\ProductImage;
 use App\Models\ProductRule;
+use App\Models\ProductTags;
+use App\Models\ProductType;
 use App\Models\ProductVariation;
+use App\Models\ProductVariationGroup;
+use App\Models\ProductVariationGroupType;
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Nette\Schema\ValidationException;
 
 class ProformaController extends Controller
@@ -216,5 +226,62 @@ class ProformaController extends Controller
                 'status_id' => $order_status->id
             ]);
 
+    }
+
+    public function getProformaProducts()
+    {
+        try {
+            $products = Product::query()->where('active', 1)->get();
+            foreach ($products as $product) {
+                $product_variation_groups = ProductVariationGroup::query()->where('product_id', $product->id)->get();
+                foreach ($product_variation_groups as $product_variation_group) {
+                    $product_variation_group['variations'] = ProductVariation::query()->where('variation_group_id', $product_variation_group->id)->get();
+                }
+                $product['variations'] = $product_variation_group['variations'];
+            }
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+    public function getProformaProductsByFilter(Request $request)
+    {
+        try {
+            $products = Product::query()
+                ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
+                ->leftJoin('product_types', 'product_types.id', '=', 'products.type_id')
+                ->where('products.active', $request->active);
+
+            if ($request->brands != ""){
+                $brands = explode(',',$request->brands);
+                $products = $products->where(function ($query) use ($products, $brands){
+                    foreach ($brands as $brand){
+                        $query = $query->orWhere('brands.id', $brand);
+                    }
+                });
+            }
+            if ($request->types != ""){
+                $types = explode(',',$request->types);
+                $products = $products->where(function ($query) use ($products, $types){
+                    foreach ($types as $type){
+                        $query = $query->orWhere('product_types.id', $type);
+                    }
+                });
+            }
+            $products = $products->get();
+
+            foreach ($products as $product) {
+                $product_variation_groups = ProductVariationGroup::query()->where('product_id', $product->id)->get();
+                foreach ($product_variation_groups as $product_variation_group) {
+                    $product_variation_group['variations'] = ProductVariation::query()->where('variation_group_id', $product_variation_group->id)->get();
+                }
+                $product['variations'] = $product_variation_group['variations'];
+            }
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
     }
 }
