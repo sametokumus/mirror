@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\Admin\CouponController;
 use App\Http\Controllers\Api\Admin\DeliveryController;
 use App\Http\Controllers\Api\Admin\PopupController;
 use App\Http\Controllers\Api\Admin\SubscribeController;
+use App\Http\Controllers\Api\Admin\ProformaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -281,5 +282,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('subscribe/updateSubscriber/{id}', [SubscribeController::class, 'updateSubscriber']);
     Route::get('subscribe/deleteSubscriber/{id}', [SubscribeController::class, 'deleteSubscriber']);
 
-    });
+    Route::post('proforma/addProformaOrder', [ProformaController::class, 'addProformaOrder']);
+
+
+});
 

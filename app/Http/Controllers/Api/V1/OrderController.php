@@ -76,13 +76,6 @@ class OrderController extends Controller
                     $billing_address = $billing_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
                 }
 
-
-//                $shipping_price = str_replace(".", "", $request->shipping_price);
-//                $shipping_price = str_replace(",", ".", $shipping_price);
-//                $subtotal = str_replace(".", "", $request->subtotal);
-//                $subtotal = str_replace(",", ".", $subtotal);
-//                $total = str_replace(".", "", $request->total);
-//                $total = str_replace(",", ".", $total);
                 $order_id = Order::query()->insertGetId([
                     'order_id' => $order_quid,
                     'user_id' => $request->user_id,

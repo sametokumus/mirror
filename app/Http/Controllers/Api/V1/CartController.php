@@ -460,9 +460,6 @@ class CartController extends Controller
                     }
                 }
 
-
-
-
                 $weight = $weight + $rule->weight;
 
 //                $cart_price += $cart_detail_price;
