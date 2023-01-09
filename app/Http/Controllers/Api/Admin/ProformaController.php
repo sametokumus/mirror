@@ -251,6 +251,7 @@ class ProformaController extends Controller
             $products = Product::query()
                 ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
                 ->leftJoin('product_types', 'product_types.id', '=', 'products.type_id')
+                ->selectRaw('products.*')
                 ->where('products.active', $request->active);
 
             if ($request->brands != ""){
