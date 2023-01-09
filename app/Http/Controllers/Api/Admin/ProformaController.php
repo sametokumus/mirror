@@ -21,27 +21,39 @@ use App\Models\ProductVariation;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use Faker\Provider\Uuid;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Nette\Schema\ValidationException;
 
 class ProformaController extends Controller
 {
     public function addProformaOrder(Request $request){
 
-        //createCart
-        $user_id = $request->user_id;
-        $cart_id = Uuid::uuid();
-        $added_cart_id = Cart::query()->insertGetId([
-            'cart_id' => $cart_id
-        ]);
+        try {
+            //createCart
+            $user_id = $request->user_id;
+            $cart_id = Uuid::uuid();
+            $added_cart_id = Cart::query()->insertGetId([
+                'cart_id' => $cart_id
+            ]);
 
-        foreach ($request->products as $product){
-            $this->addCart($user_id, $cart_id, $product['product_id'], $product['variation_id'], $product['quantity']);
+            foreach ($request->products as $product){
+                $this->addCart($user_id, $cart_id, $product['product_id'], $product['variation_id'], $product['quantity']);
+            }
+
+
+            //createOrder
+            $order_quid = Uuid::uuid();
+            $this->addOrder($user_id, $cart_id, $order_quid);
+
+            return response(['message' => 'Proforma sipariş ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['order_id' => $order_quid, 'cart_id' => $cart_id]]);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
         }
-
-
-        //createOrder
-        $this->addOrder($user_id, $cart_id);
-
     }
 
     private function addCart($user_id, $cart_id, $product_id, $variation_id, $quantity){
@@ -108,13 +120,13 @@ class ProformaController extends Controller
         }
     }
 
-    private function addOrder($user_id, $cart_id){
+    private function addOrder($user_id, $cart_id, $order_quid){
 
         $cart = Cart::query()->where('cart_id', $cart_id)->where('active', 1)->first();
 
 
             $order_status = OrderStatus::query()->where('is_default', 1)->first();
-            $order_quid = Uuid::uuid();
+
 
 
             $order_id = Order::query()->insertGetId([
