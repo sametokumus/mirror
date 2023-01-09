@@ -44,7 +44,7 @@ class ProformaController extends Controller
 
             //createOrder
             $order_quid = Uuid::uuid();
-            $this->addOrder($user_id, $cart_id, $order_quid);
+            $this->addOrder($user_id, $cart_id, $order_quid, $request->shipping_address_id, $request->billing_address_id, $request->shipping_type);
 
             return response(['message' => 'Proforma sipariş ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['order_id' => $order_quid, 'cart_id' => $cart_id]]);
         } catch (ValidationException $validationException) {
@@ -120,14 +120,37 @@ class ProformaController extends Controller
         }
     }
 
-    private function addOrder($user_id, $cart_id, $order_quid){
+    private function addOrder($user_id, $cart_id, $order_quid, $shipping_address_id, $billing_address_id, $shipping_type){
 
         $cart = Cart::query()->where('cart_id', $cart_id)->where('active', 1)->first();
 
 
             $order_status = OrderStatus::query()->where('is_default', 1)->first();
 
+            $shipping_id = $shipping_address_id;
+            $billing_id = $billing_address_id;
+            $shipping = Address::query()->where('id', $shipping_id)->first();
+            $country = Country::query()->where('id', $shipping->country_id)->first();
+            $city = City::query()->where('id', $shipping->city_id)->first();
+            $district = District::query()->where('id', $shipping->district_id)->first();
 
+            $shipping_address = $shipping->name . " " . $shipping->surname . " - " . $shipping->address_1 . " " . $shipping->address_2 . " - " . $shipping->postal_code . " - " . $shipping->phone . " - " . $district->name . " / " . $city->name . " / " . $country->name;
+            if ($shipping->type == 2){
+                $shipping_corporate_address = CorporateAddresses::query()->where('address_id',$shipping_id)->first();
+                $shipping_address = $shipping_address." - ".$shipping_corporate_address->tax_number." - ".$shipping_corporate_address->tax_office." - ".$shipping_corporate_address->company_name;
+            }
+
+
+            $billing = Address::query()->where('id', $billing_id)->first();
+            $billing_country = Country::query()->where('id', $billing->country_id)->first();
+            $billing_city = City::query()->where('id', $billing->city_id)->first();
+            $billing_district = District::query()->where('id', $billing->district_id)->first();
+            $billing_address = $billing->name . " " . $billing->surname . " - " . $billing->address_1 . " " . $billing->address_2 . " - " . $billing->postal_code . " - " . $billing->phone . " - " . $billing_district->name . " / " . $billing_city->name . " / " . $billing_country->name;
+
+            if ($shipping->type == 2){
+                $billing_corporate_address = CorporateAddresses::query()->where('address_id',$billing_id)->first();
+                $billing_address = $billing_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
+            }
 
             $order_id = Order::query()->insertGetId([
                 'order_id' => $order_quid,
@@ -135,19 +158,19 @@ class ProformaController extends Controller
                 'carrier_id' => 0,
                 'cart_id' => $cart_id,
                 'status_id' => $order_status->id,
-                'shipping_address_id' => 0,
-                'billing_address_id' => 0,
-                'shipping_address' => "",
-                'billing_address' => "",
+                'shipping_address_id' => $shipping_address_id,
+                'billing_address_id' => $billing_address_id,
+                'shipping_address' => $shipping_address,
+                'billing_address' => $billing_address,
                 'comment' => "",
-                'shipping_type' => 0,
+                'shipping_type' => $shipping_type,
                 'payment_method' => 3,
                 'shipping_price' => 0,
                 'subtotal' => 0,
                 'total' => 0,
                 'is_partial' => 0,
                 'is_paid' => 0,
-                'coupon_code' => ""
+                'coupon_code' => "null"
             ]);
 
             Cart::query()->where('cart_id', $cart_id)->update([
