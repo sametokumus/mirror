@@ -83,8 +83,7 @@ class CimriController extends Controller
                         ->first();
                     $product_category = ProductCategory::query()
                         ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
-                        ->selectRaw('categories.*')
-                        ->selectRaw('product_categories.name as category_name, product_categories.id as category_id')
+                        ->selectRaw('categories.name as category_name, categories.id as category_id')
                         ->where('product_id', $product->id)
                         ->where('product_categories.active', 1)
                         ->where('product_categories.category_id', '!=', 0)
