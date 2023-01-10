@@ -19,7 +19,8 @@ class SliderController extends Controller
             ]);
             $slider_id = Slider::query()->insertGetId([
                 'content_text' => $request->content_text,
-                'order' => $request->order
+                'order' => $request->order,
+                'user_type' => $request->user_type
             ]);
             if ($request->hasFile('bg_url')) {
                 $rand = uniqid();
@@ -58,7 +59,8 @@ class SliderController extends Controller
 
             $slider = Slider::query()->where('id',$id)->update([
                 'content_text' => $request->content_text,
-                'order' => $request->order
+                'order' => $request->order,
+                'user_type' => $request->user_type
             ]);
 
             if ($request->hasFile('bg_url')) {
