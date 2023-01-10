@@ -19,10 +19,14 @@ class DashboardController extends Controller
 
             $total_user = User::query()->where('active', 1)->count();
             $total_order = Order::query()->where('is_paid', 1)->count();
-            $total_cost = Order::query()
+            $total_cost_all = Order::query()
                 ->leftJoin('payments', 'payments.order_id', '=', 'orders.order_id')
                 ->where('orders.is_paid', 1)
-                ->sum('payments.paid_price');
+                ->get();
+            $total_cost = 0;
+            foreach ($total_cost_all as $tc){
+                $total_cost += $tc->paid_price;
+            }
             $total_product = Product::query()->where('active', 1)->count();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['total_user' => $total_user, 'total_order' => $total_order, 'total_cost' => $total_cost, 'total_product' => $total_product]]);
