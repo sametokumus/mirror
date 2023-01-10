@@ -31,7 +31,8 @@ class CreateProductsTable extends Migration
             $table->integer('is_new')->default(0);
             $table->integer('is_discounted')->default(0);
             $table->integer('is_featured')->default(0);
-            $table->tinyInteger('order')->default(0);
+            $table->bigInteger('order')->default(0);
+            $table->tinyInteger('cimri')->default(0);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();

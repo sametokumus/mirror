@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\V1\SeoController;
 use App\Http\Controllers\Api\V1\CouponController;
 use App\Http\Controllers\Api\V1\PopupController;
 use App\Http\Controllers\Api\V1\SubscribeController;
+use App\Http\Controllers\Api\V1\CimriController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -218,3 +219,5 @@ Route::get('/popup/getPopupById/{id}', [PopupController::class, 'getPopupById'])
 Route::get('/popup/getActivePopup', [PopupController::class, 'getActivePopup']);
 
 Route::post('/subscribe/addSubscriber', [SubscribeController::class, 'addSubscriber']);
+
+Route::post('/cimri/getCimriProductsByFilter', [CimriController::class, 'getCimriProductsByFilter']);
