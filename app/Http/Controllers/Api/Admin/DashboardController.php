@@ -22,7 +22,8 @@ class DashboardController extends Controller
             $total_cost_all = Order::query()
                 ->leftJoin('payments', 'payments.order_id', '=', 'orders.order_id')
                 ->where('orders.is_paid', 1)
-                ->get();
+                ->toSql();
+            return $total_cost_all;
             $total_cost = 0;
             foreach ($total_cost_all as $tc){
                 $total_cost += $tc->paid_price;
