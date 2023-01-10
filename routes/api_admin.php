@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Admin\DeliveryController;
 use App\Http\Controllers\Api\Admin\PopupController;
 use App\Http\Controllers\Api\Admin\SubscribeController;
 use App\Http\Controllers\Api\Admin\ProformaController;
+use App\Http\Controllers\Api\Admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -286,6 +287,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('proforma/getProformaProducts', [ProformaController::class, 'getProformaProducts']);
     Route::post('proforma/getProformaProductsByFilter', [ProformaController::class, 'getProformaProductsByFilter']);
 
+
+    Route::get('dashboard/getDashboard', [DashboardController::class, 'getDashboard']);
 
 });
 
