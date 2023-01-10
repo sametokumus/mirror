@@ -12,7 +12,10 @@ class SliderController extends Controller
     public function getSliders()
     {
         try {
-            $sliders = Slider::query()->where('active',1)->get();
+            $sliders = Slider::query()
+                ->leftJoin('user_types', 'user_types.id', '=', 'sliders.user_type')
+                ->selectRaw('sliders.*, user_types.name as user_type_name')
+                ->where('active',1)->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['sliders' => $sliders]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -21,7 +24,10 @@ class SliderController extends Controller
 
     public function getSliderById($slider_id){
         try {
-            $sliders = Slider::query()->where('id',$slider_id)->first();
+            $sliders = Slider::query()
+                ->leftJoin('user_types', 'user_types.id', '=', 'sliders.user_type')
+                ->selectRaw('sliders.*, user_types.name as user_type_name')
+                ->where('id',$slider_id)->first();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['sliders' => $sliders]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
