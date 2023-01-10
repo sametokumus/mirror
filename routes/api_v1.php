@@ -221,3 +221,5 @@ Route::get('/popup/getActivePopup', [PopupController::class, 'getActivePopup']);
 Route::post('/subscribe/addSubscriber', [SubscribeController::class, 'addSubscriber']);
 
 Route::post('/cimri/getCimriProductsByFilter', [CimriController::class, 'getCimriProductsByFilter']);
+Route::post('/cimri/addProductCimri', [CimriController::class, 'addProductCimri']);
+Route::post('/cimri/deleteProductCimri', [CimriController::class, 'deleteProductCimri']);
