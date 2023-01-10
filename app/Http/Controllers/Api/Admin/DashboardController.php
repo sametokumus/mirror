@@ -23,7 +23,7 @@ class DashboardController extends Controller
                 ->leftJoin('payments', 'payments.order_id', '=', 'orders.order_id')
                 ->where('orders.is_paid', 1)
                 ->toSql();
-            return $total_cost_all;
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'sql' => $total_cost_all]);
             $total_cost = 0;
             foreach ($total_cost_all as $tc){
                 $total_cost += $tc->paid_price;
