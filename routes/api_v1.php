@@ -223,3 +223,8 @@ Route::post('/subscribe/addSubscriber', [SubscribeController::class, 'addSubscri
 Route::post('/cimri/getCimriProductsByFilter', [CimriController::class, 'getCimriProductsByFilter']);
 Route::post('/cimri/addProductCimri', [CimriController::class, 'addProductCimri']);
 Route::post('/cimri/deleteProductCimri', [CimriController::class, 'deleteProductCimri']);
+
+Route::get('/cimri/getProducts', [CimriController::class, 'getProducts']);
+Route::get('/cimri/getProductById/{product_id}', [CimriController::class, 'getProductById']);
+Route::post('/cimri/updateProduct/{product_id}', [CimriController::class, 'updateProduct']);
+Route::get('/cimri/deleteProduct/{product_id}', [CimriController::class, 'deleteProduct']);

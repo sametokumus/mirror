@@ -137,4 +137,51 @@ class CimriController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
         }
     }
+
+    public function getProducts(){
+        try {
+            $products = CimriProduct::query()->where('active', 1)->get();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getProductById($product_id){
+        try {
+            $product = CimriProduct::query()->where('id', $product_id)->first();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product' => $product]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function updateProduct(Request $request, $product_id){
+        try {
+            $product = CimriProduct::query()->where('id', $product_id)->update([
+                'price3T' => $request->price3T,
+                'price6T' => $request->price6T,
+                'priceEft' => $request->priceEft,
+                'pricePlusTax' => $request->pricePlusTax,
+            ]);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product' => $product]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function deleteProduct($product_id){
+        try {
+            $product = CimriProduct::query()->where('id', $product_id)->update([
+                'active' => 0
+            ]);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product' => $product]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
 }
