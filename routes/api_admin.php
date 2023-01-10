@@ -289,6 +289,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
 
     Route::get('dashboard/getDashboard', [DashboardController::class, 'getDashboard']);
+    Route::get('dashboard/getLastOrders',[DashboardController::class,'getLastOrders']);
 
 });
 
