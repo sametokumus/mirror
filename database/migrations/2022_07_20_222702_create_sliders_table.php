@@ -19,6 +19,7 @@ class CreateSlidersTable extends Migration
             $table->text('image_url')->nullable();
             $table->text('content_text');
             $table->integer('order')->default(1);
+            $table->tinyInteger('user_type')->default(0);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
