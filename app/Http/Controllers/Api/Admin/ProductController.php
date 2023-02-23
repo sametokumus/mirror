@@ -371,7 +371,8 @@ class ProductController extends Controller
                 'micro_sku' => $request->micro_sku,
                 'dimensions' => $request->dimensions,
                 'package_type_id' => $request->package_type_id,
-                'weight' => $request->weight
+                'weight' => $request->weight,
+                'currency' => $request->currency,
             ]);
 
             return response(['message' => 'Ürün varyasyon ekleme işlemi başarılı.', 'status' => 'success']);
@@ -419,7 +420,8 @@ class ProductController extends Controller
                 'micro_sku' => $request->micro_sku,
                 'dimensions' => $request->dimensions,
                 'package_type_id' => $request->package_type_id,
-                'weight' => $request->weight
+                'weight' => $request->weight,
+                'currency' => $request->currency,
             ]);
 
             return response(['message' => 'Ürün varyasyon güncelleme işlemi başarılı.', 'status' => 'success']);
