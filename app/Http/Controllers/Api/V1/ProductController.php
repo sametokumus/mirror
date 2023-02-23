@@ -714,6 +714,7 @@ class ProductController extends Controller
             $product_variations = ProductVariationGroup::query()
                 ->leftJoin('product_variations', 'product_variations.variation_group_id', '=', 'product_variation_groups.id')
                 ->where('product_variation_groups.product_id', $product_id)
+                ->where('product_variations.active', 1)
                 ->selectRaw('product_variations.*')
                 ->get();
 
