@@ -373,6 +373,7 @@ class ProductController extends Controller
                 'package_type_id' => $request->package_type_id,
                 'weight' => $request->weight,
                 'currency' => $request->currency,
+                'material' => $request->material,
             ]);
 
             return response(['message' => 'Ürün varyasyon ekleme işlemi başarılı.', 'status' => 'success']);
@@ -422,6 +423,7 @@ class ProductController extends Controller
                 'package_type_id' => $request->package_type_id,
                 'weight' => $request->weight,
                 'currency' => $request->currency,
+                'material' => $request->material,
             ]);
 
             return response(['message' => 'Ürün varyasyon güncelleme işlemi başarılı.', 'status' => 'success']);
