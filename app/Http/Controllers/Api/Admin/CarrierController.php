@@ -12,22 +12,9 @@ class CarrierController extends Controller
 {
     public function addCarrier(Request $request){
         try {
-            $carrier_id = Carrier::query()->insertGetId([
+            Carrier::query()->insertGetId([
                 'name' => $request->name,
-                'price' => $request->price,
-                'delivery_text' => $request->delivery_text,
             ]);
-            if ($request->hasFile('logo')) {
-                $rand = uniqid();
-                $image = $request->file('logo');
-                $image_name = $rand . "-" . $image->getClientOriginalName();
-                $image->move(public_path('/images/Carrier/'), $image_name);
-                $image_path = "/images/Carrier/" . $image_name;
-
-                Carrier::query()->where('id', $carrier_id)->update([
-                    'logo' => $image_path,
-                ]);
-            }
             return response(['message' => 'Kargo firması ekleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
@@ -42,20 +29,7 @@ class CarrierController extends Controller
         try {
             Carrier::query()->where('id',$id)->update([
                 'name' => $request->name,
-                'price' => $request->price,
-                'delivery_text' => $request->delivery_text,
             ]);
-            if ($request->hasFile('logo')) {
-                $rand = uniqid();
-                $image = $request->file('logo');
-                $image_name = $rand . "-" . $image->getClientOriginalName();
-                $image->move(public_path('/images/Carrier/'), $image_name);
-                $image_path = "/images/Carrier/" . $image_name;
-
-                Carrier::query()->where('id',$id)->update([
-                    'logo' => $image_path,
-                ]);
-            }
             return response(['message' => 'Kargo firması güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
