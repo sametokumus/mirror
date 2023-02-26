@@ -22,8 +22,8 @@ class CarrierController extends Controller
     public function getCarrierById($id)
     {
         try {
-            $carriers = Carrier::query()->where('id',$id)->get();
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['carriers' => $carriers]]);
+            $carrier = Carrier::query()->where('id',$id)->first();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['carrier' => $carrier]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }

@@ -16,9 +16,6 @@ class CreateCarriersTable extends Migration
         Schema::create('carriers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->decimal('price');
-            $table->string('delivery_text');
-            $table->string('logo')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
