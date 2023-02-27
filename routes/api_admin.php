@@ -286,7 +286,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('proforma/addProformaOrder', [ProformaController::class, 'addProformaOrder']);
     Route::get('proforma/getProformaProducts', [ProformaController::class, 'getProformaProducts']);
     Route::post('proforma/getProformaProductsByFilter', [ProformaController::class, 'getProformaProductsByFilter']);
-    Route::post('proforma/getDuplicateProformaOrder', [ProformaController::class, 'getDuplicateProformaOrder']);
+    Route::post('proforma/getDuplicateProformaOrder/{order_id}', [ProformaController::class, 'getDuplicateProformaOrder']);
 
 
     Route::get('dashboard/getDashboard', [DashboardController::class, 'getDashboard']);
