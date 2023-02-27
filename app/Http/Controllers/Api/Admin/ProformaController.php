@@ -37,6 +37,96 @@ use Nette\Schema\ValidationException;
 
 class ProformaController extends Controller
 {
+    public function getDuplicateProformaOrder($order_id){
+
+        try {
+            //getOrder
+            $order = Order::query()->where('order_id', $order_id)->first();
+            $order_products = OrderProduct::query()->where('order_id', $order_id)->where('active', 1)->get();
+            $cart = Cart::query()->where('cart_id', $order->cart_id)->first();
+            $cart_details = CartDetail::query()->where('cart_id', $order->cart_id)->where('active', 1)->get();
+            $new_order_id = Uuid::uuid();
+            $new_cart_id = Uuid::uuid();
+
+            //createCart
+            Cart::query()->insert([
+                'user_id' => $cart->user_id,
+                'cart_id' => $new_cart_id,
+                'is_order' => 0,
+                'active' => 1
+            ]);
+
+            //createCartDetails
+            foreach ($cart_details as $cart_detail){
+                CartDetail::query()->insert([
+                    'cart_id' => $new_cart_id,
+                    'product_id' => $cart_detail->product_id,
+                    'variation_id' => $cart_detail->variation_id,
+                    'price' => $cart_detail->price,
+                    'quantity' => $cart_detail->quantity,
+                    'active' => 1
+                ]);
+            }
+
+            //createOrder
+            Order::query()->insert([
+                'order_id' => $new_order_id,
+                'cart_id' => $new_cart_id,
+                'user_id' => $order->user_id,
+                'carrier_id' => $order->carrier_id,
+                'shipping_address_id' => $order->shipping_address_id,
+                'billing_address_id' => $order->billing_address_id,
+                'status_id' => 1,
+                'shipping_address' => $order->shipping_address,
+                'billing_address' => $order->billing_address,
+                'comment' => $order->comment,
+                'shipping_number' => $order->shipping_number,
+                'invoice_number' => $order->invoice_number,
+                'invoice_date' => $order->invoice_date,
+                'shipping_date' => $order->shipping_date,
+                'shipping_type' => $order->shipping_type,
+                'payment_method' => 3,
+                'shipping_price' => $order->shipping_price,
+                'subtotal' => $order->subtotal,
+                'total' => $order->total,
+                'coupon_code' => $order->coupon_code,
+                'is_partial' => 0,
+                'is_preauth' => 0,
+                'is_paid' => 0,
+                'active' => 1
+            ]);
+
+            //createOrderProducts
+            foreach ($order_products as $order_product){
+                OrderProduct::query()->insert([
+                    'order_id' => $new_order_id,
+                    'product_id' => $order_product->product_id,
+                    'variation_id' => $order_product->variation_id,
+                    'name' => $order_product->name,
+                    'sku' => $order_product->sku,
+                    'regular_price' => $order_product->regular_price,
+                    'regular_tax' => $order_product->regular_tax,
+                    'discounted_price' => $order_product->discounted_price,
+                    'discounted_tax' => $order_product->discounted_tax,
+                    'discount_rate' => $order_product->discount_rate,
+                    'tax_rate' => $order_product->tax_rate,
+                    'user_discount' => $order_product->user_discount,
+                    'quantity' => $order_product->quantity,
+                    'total' => $order_product->total,
+                    'active' => 1
+                ]);
+            }
+
+            return response(['message' => 'Proforma sipariş kopyalama işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
+
     public function addProformaOrder(Request $request){
 
         try {
