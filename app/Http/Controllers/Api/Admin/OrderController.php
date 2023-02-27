@@ -74,6 +74,7 @@ class OrderController extends Controller
             $orders = Order::query()
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
                 ->where('order_statuses.run_on', 1)
+                ->where('orders.active', 1)
                 ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.total', 'orders.status_id',
                     'orders.shipping_type', 'orders.user_id', 'orders.payment_method'
                 ]);
@@ -107,6 +108,7 @@ class OrderController extends Controller
             $orders = Order::query()
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
                 ->where('order_statuses.run_on', 0)
+                ->where('orders.active', 1)
                 ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.total', 'orders.status_id',
                     'orders.shipping_type', 'orders.user_id', 'orders.payment_method'
                 ]);
