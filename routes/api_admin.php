@@ -204,6 +204,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('carrier/updateCarrier/{id}', [CarrierController::class, 'updateCarrier']);
     Route::get('carrier/deleteCarrier/{id}', [CarrierController::class, 'deleteCarrier']);
     Route::get('carrier/getCarriers', [CarrierController::class, 'getCarriers']);
+    Route::get('carrier/getIncreasingDesis', [CarrierController::class, 'getIncreasingDesis']);
+    Route::get('carrier/getIncreasingDesiById/{id}', [CarrierController::class, 'getIncreasingDesiById']);
     Route::post('carrier/updateIncreasingDesi', [CarrierController::class, 'updateIncreasingDesi']);
 
 
