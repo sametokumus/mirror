@@ -103,7 +103,7 @@ class CarrierController extends Controller
 
     public function updateIncreasingDesi(Request $request){
         try {
-            Carrier::query()->where('carrier_id', $request->carrier_id)->update([
+            IncreasingDesi::query()->where('carrier_id', $request->carrier_id)->update([
                 'cat_1_price' => $request->cat_1_price,
                 'cat_2_price' => $request->cat_2_price,
                 'cat_3_price' => $request->cat_3_price,
