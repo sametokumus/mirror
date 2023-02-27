@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Carrier;
+use App\Models\IncreasingDesi;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;
@@ -12,8 +13,11 @@ class CarrierController extends Controller
 {
     public function addCarrier(Request $request){
         try {
-            Carrier::query()->insertGetId([
+            $carrier_id = Carrier::query()->insertGetId([
                 'name' => $request->name,
+            ]);
+            IncreasingDesi::query()->insert([
+                'carrier_id' => $carrier_id
             ]);
             return response(['message' => 'Kargo firması ekleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
@@ -65,6 +69,23 @@ class CarrierController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         } catch (\Throwable $throwable) {
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+    public function updateIncreasingDesi(Request $request){
+        try {
+            Carrier::query()->where('carrier_id', $request->carrier_id)->update([
+                'cat_1_price' => $request->cat_1_price,
+                'cat_2_price' => $request->cat_2_price,
+                'cat_3_price' => $request->cat_3_price,
+            ]);
+            return response(['message' => 'Artan güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
         }
     }
 
