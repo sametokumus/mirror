@@ -86,6 +86,21 @@ class CarrierController extends Controller
         }
     }
 
+    public function getIncreasingDesiById($carrier_id){
+        try {
+            $increasing_desi = IncreasingDesi::query()
+                ->leftJoin('carriers', 'carriers.id', '=', 'increasing_desis.carrier_id')
+                ->where('carriers.active', 1)
+                ->where('carriers.id', $carrier_id)
+                ->first(['increasing_desis.*', 'carriers.name as carrier_name']);
+            return response(['message' => 'Kargo silme işlemi başarılı.', 'status' => 'success','object' => ['increasing_desi' => $increasing_desi]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
     public function updateIncreasingDesi(Request $request){
         try {
             Carrier::query()->where('carrier_id', $request->carrier_id)->update([
