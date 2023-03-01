@@ -14,7 +14,11 @@ class DeliveryController extends Controller
 {
     public function getDeliveryPrices(){
         try {
-            $delivery_prices = DeliveryPrice::query()->where('active',1)->get();
+            $delivery_prices = DeliveryPrice::query()
+                ->leftJoin('carriers', 'carriers.id', '=', 'delivery_prices.carrier_id')
+                ->where('delivery_prices.active',1)
+                ->get(['deliver_prices.*', 'carriers.name as carrier_name']);
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['delivery_prices' => $delivery_prices]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -22,7 +26,12 @@ class DeliveryController extends Controller
     }
     public function getDeliveryPriceById($id){
         try {
-            $delivery_price = DeliveryPrice::query()->where('id',$id)->where('active',1)->first();
+            $delivery_price = DeliveryPrice::query()
+                ->leftJoin('carriers', 'carriers.id', '=', 'delivery_prices.carrier_id')
+                ->where('delivery_prices.id',$id)
+                ->where('delivery_prices.active',1)
+                ->first(['deliver_prices.*', 'carriers.name as carrier_name']);
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['delivery_price' => $delivery_price]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -31,18 +40,24 @@ class DeliveryController extends Controller
     public function addDeliveryPrice(Request $request){
         try {
             $request->validate([
+                'carrier_id' => 'required',
                 'min_value' => 'required',
                 'max_value' => 'required',
-                'price' => 'required',
+                'cat_1_price' => 'required',
+                'cat_2_price' => 'required',
+                'cat_3_price' => 'required',
             ]);
 
             $delivery_price = DeliveryPrice::query()->insert([
+                'carrier_id' => $request->carrier_id,
                 'min_value' => $request->min_value,
                 'max_value' => $request->max_value,
-                'price' => $request->price
+                'cat_1_price' => $request->cat_1_price,
+                'cat_2_price' => $request->cat_2_price,
+                'cat_3_price' => $request->cat_3_price
             ]);
 
-            return response(['message' => 'Default ücret ekleme işlemi başarılı.','status' => 'success','object' => ['delivery_price' => $delivery_price]]);
+            return response(['message' => 'Kargo fiyatı ekleme işlemi başarılı.','status' => 'success','object' => ['delivery_price' => $delivery_price]]);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
@@ -54,18 +69,24 @@ class DeliveryController extends Controller
     public function updateDeliveryPrice(Request $request,$id){
         try {
             $request->validate([
+                'carrier_id' => 'required',
                 'min_value' => 'required',
                 'max_value' => 'required',
-                'price' => 'required',
+                'cat_1_price' => 'required',
+                'cat_2_price' => 'required',
+                'cat_3_price' => 'required',
             ]);
 
             $delivery_price = DeliveryPrice::query()->where('id',$id)->update([
+                'carrier_id' => $request->carrier_id,
                 'min_value' => $request->min_value,
                 'max_value' => $request->max_value,
-                'price' => $request->price
+                'cat_1_price' => $request->cat_1_price,
+                'cat_2_price' => $request->cat_2_price,
+                'cat_3_price' => $request->cat_3_price
             ]);
 
-            return response(['message' => 'Default ücret güncelleme işlemi başarılı.','status' => 'success','object' => ['delivery_price' => $delivery_price]]);
+            return response(['message' => 'Kargo fiyatı güncelleme işlemi başarılı.','status' => 'success','object' => ['delivery_price' => $delivery_price]]);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
@@ -80,7 +101,7 @@ class DeliveryController extends Controller
             $delivery_price = DeliveryPrice::query()->where('id',$id)->update([
                 'active' => 0,
             ]);
-            return response(['message' => 'Default ücret silme işlemi başarılı.','status' => 'success','object' => ['delivery_price' => $delivery_price]]);
+            return response(['message' => 'Kargo fiyatı silme işlemi başarılı.','status' => 'success','object' => ['delivery_price' => $delivery_price]]);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {

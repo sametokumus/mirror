@@ -15,9 +15,12 @@ class CreateDeliveryPricesTable extends Migration
     {
         Schema::create('delivery_prices', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('carrier_id')->default(1);
             $table->decimal('min_value');
             $table->decimal('max_value');
-            $table->decimal('price');
+            $table->decimal('cat_1_price');
+            $table->decimal('cat_2_price');
+            $table->decimal('cat_3_price');
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
