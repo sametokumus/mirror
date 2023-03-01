@@ -17,11 +17,11 @@ class DeliveryController extends Controller
             $delivery_prices = DeliveryPrice::query()
                 ->leftJoin('carriers', 'carriers.id', '=', 'delivery_prices.carrier_id')
                 ->where('delivery_prices.active',1)
-                ->get(['deliver_prices.*', 'carriers.name as carrier_name']);
+                ->get(['delivery_prices.*', 'carriers.name as carrier_name']);
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['delivery_prices' => $delivery_prices]]);
         } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','e' => $queryException->getMessage()]);
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
     public function getDeliveryPriceById($id){
