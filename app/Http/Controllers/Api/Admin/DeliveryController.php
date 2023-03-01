@@ -30,7 +30,7 @@ class DeliveryController extends Controller
                 ->leftJoin('carriers', 'carriers.id', '=', 'delivery_prices.carrier_id')
                 ->where('delivery_prices.id',$id)
                 ->where('delivery_prices.active',1)
-                ->first(['deliver_prices.*', 'carriers.name as carrier_name']);
+                ->first(['delivery_prices.*', 'carriers.name as carrier_name']);
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['delivery_price' => $delivery_price]]);
         } catch (QueryException $queryException) {
