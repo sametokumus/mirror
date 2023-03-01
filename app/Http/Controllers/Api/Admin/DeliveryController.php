@@ -145,13 +145,14 @@ class DeliveryController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
-    public function getDistrictDeliveryById($id){
+    public function getDistrictDeliveries(){
         try {
-            $district_delivery = District::query()
+            $district_deliveries = District::query()
                 ->leftJoin('cities', 'cities.id', '=', 'districts.city_id')
-                ->where('districts.id', $id)
-                ->first(['districts.*', 'cities.name as city_name']);
+                ->orderBy('districts.city_id')
+                ->get(['districts.*', 'cities.name as city_name']);
 
+            foreach ($district_deliveries as $district_delivery){
                 $carriers = Carrier::query()->where('active', 1)->get();
                 foreach ($carriers as $carrier) {
                     $carrier['category'] = DistrictDelivery::query()
@@ -162,14 +163,36 @@ class DeliveryController extends Controller
                         ->first()->category;
                 }
                 $district_delivery['carriers'] = $carriers;
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['district_delivery' => $district_delivery]]);
+            }
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['district_deliveries' => $district_deliveries]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
 
 
+    public function getDistrictDeliveryById($id){
+        try {
+            $district_delivery = District::query()
+                ->leftJoin('cities', 'cities.id', '=', 'districts.city_id')
+                ->where('districts.id', $id)
+                ->first(['districts.*', 'cities.name as city_name']);
 
+            $carriers = Carrier::query()->where('active', 1)->get();
+            foreach ($carriers as $carrier) {
+                $carrier['category'] = DistrictDelivery::query()
+                    ->where('city_id', $district_delivery->city_id)
+                    ->where('district_id', $district_delivery->id)
+                    ->where('carrier_id', $carrier->id)
+                    ->where('active', 1)
+                    ->first()->category;
+            }
+            $district_delivery['carriers'] = $carriers;
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['district_delivery' => $district_delivery]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
 
     public function syncCitiesToRegionalDelivery()
     {
