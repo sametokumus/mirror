@@ -278,6 +278,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
 
     Route::get('delivery/syncDistrictsDelivery', [DeliveryController::class, 'syncDistrictsDelivery']);
+    Route::get('delivery/getDistrictDeliveries', [DeliveryController::class, 'getDistrictDeliveries']);
 
     Route::post('popup/addPopup', [PopupController::class, 'addPopup']);
     Route::post('popup/updatePopup/{id}', [PopupController::class, 'updatePopup']);
