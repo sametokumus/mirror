@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Carrier;
 use App\Models\City;
 use App\Models\DeliveryPrice;
+use App\Models\District;
+use App\Models\DistrictDelivery;
 use App\Models\RegionalDeliveryPrice;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -110,6 +113,40 @@ class DeliveryController extends Controller
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001','ar' => $throwable->getMessage()]);
         }
     }
+
+    public function syncDistrictsDelivery()
+    {
+        try {
+            $cities = City::query()->get();
+            foreach ($cities as $city){
+                $districts = District::query()->where('city_id', $city->id)->get();
+                foreach ($districts as $district){
+                    $carriers = Carrier::query()->where('active', 1)->get();
+                    foreach ($carriers as $carrier) {
+                        $check = DistrictDelivery::query()
+                            ->where('city_id', $city->id)
+                            ->where('district_id', $district->id)
+                            ->where('carrier_id', $carrier->id)
+                            ->where('active', 1)->count();
+
+                        if ($check == 0){
+                            DistrictDelivery::query()->insert([
+                                'city_id' => $city->id,
+                                'district_id' => $district->id,
+                                'carrier_id' => $carrier->id,
+                                'category' => 1
+                            ]);
+                        }
+                    }
+                }
+            }
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+
 
     public function syncCitiesToRegionalDelivery()
     {
