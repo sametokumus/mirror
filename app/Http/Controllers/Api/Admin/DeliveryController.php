@@ -149,7 +149,6 @@ class DeliveryController extends Controller
         try {
             $district_deliveries = District::query()
                 ->leftJoin('cities', 'cities.id', '=', 'districts.city_id')
-                ->where('districts.active', 1)
                 ->orderBy('districts.city_id')
                 ->get(['districts.*', 'cities.name as city_name']);
 
@@ -167,7 +166,7 @@ class DeliveryController extends Controller
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['district_deliveries' => $district_deliveries]]);
         } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a'=>$queryException->getMessage()]);
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
 
