@@ -276,6 +276,9 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('delivery/getRegionalDeliveryPrice/{city_id}/{delivery_price_id}', [DeliveryController::class, 'getRegionalDeliveryPrice']);
     Route::post('delivery/updateRegionalDeliveryPrice/{city_id}/{delivery_price_id}', [DeliveryController::class, 'updateRegionalDeliveryPrice']);
 
+
+    Route::get('delivery/syncDistrictsDelivery', [DeliveryController::class, 'syncDistrictsDelivery']);
+
     Route::post('popup/addPopup', [PopupController::class, 'addPopup']);
     Route::post('popup/updatePopup/{id}', [PopupController::class, 'updatePopup']);
     Route::get('popup/deletePopup/{id}', [PopupController::class, 'deletePopup']);
