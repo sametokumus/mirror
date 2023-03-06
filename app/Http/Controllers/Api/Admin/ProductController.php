@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CampaignProduct;
 use App\Models\Category;
 use App\Models\ProductImage;
+use App\Models\ProductMaterial;
 use App\Models\ProductPackageType;
 use App\Models\ProductRule;
 use App\Models\ProductSeo;
@@ -1223,6 +1224,16 @@ class ProductController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         } catch (\Throwable $throwable) {
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+    public function getProductMaterials()
+    {
+        try {
+            $materials = ProductMaterial::query()->where('active', 1)->get();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['materials' => $materials]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
 

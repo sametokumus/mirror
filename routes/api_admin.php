@@ -143,6 +143,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     Route::post('product/addProductImage', [ProductController::class, 'addProductImage']);
 
+    Route::get('product/getProductMaterials', [ProductController::class, 'getProductMaterials']);
+
     Route::post('orderStatus/addOrderStatus', [OrderStatusController::class, 'addOrderStatus']);
     Route::post('orderStatus/updateOrderStatus/{id}', [OrderStatusController::class, 'updateOrderStatus']);
     Route::get('orderStatus/deleteOrderStatus/{id}', [OrderStatusController::class, 'deleteOrderStatus']);
