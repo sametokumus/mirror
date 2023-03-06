@@ -146,7 +146,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('product/getProductMaterials', [ProductController::class, 'getProductMaterials']);
     Route::get('product/getProductMaterialById/{id}', [ProductController::class, 'getProductMaterialById']);
     Route::post('product/addProductMaterial', [ProductController::class, 'addProductMaterial']);
-    Route::post('product/updateProductMaterial/{id}', [ProductController::class, 'updateProductMaterial']);
+    Route::post('product/updateProductMaterial', [ProductController::class, 'updateProductMaterial']);
     Route::get('product/deleteProductMaterial/{id}', [ProductController::class, 'deleteProductMaterial']);
 
     Route::post('orderStatus/addOrderStatus', [OrderStatusController::class, 'addOrderStatus']);
