@@ -15,6 +15,7 @@ class CarrierController extends Controller
         try {
             $carrier_id = Carrier::query()->insertGetId([
                 'name' => $request->name,
+                'max_desi' => $request->max_desi
             ]);
             IncreasingDesi::query()->insert([
                 'carrier_id' => $carrier_id
@@ -33,6 +34,7 @@ class CarrierController extends Controller
         try {
             Carrier::query()->where('id',$id)->update([
                 'name' => $request->name,
+                'max_desi' => $request->max_desi
             ]);
             return response(['message' => 'Kargo firması güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
