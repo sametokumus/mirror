@@ -144,6 +144,10 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('product/addProductImage', [ProductController::class, 'addProductImage']);
 
     Route::get('product/getProductMaterials', [ProductController::class, 'getProductMaterials']);
+    Route::get('product/getProductMaterialById/{id}', [ProductController::class, 'getProductMaterialById']);
+    Route::post('product/addProductMaterial', [ProductController::class, 'addProductMaterial']);
+    Route::post('product/updateProductMaterial/{id}', [ProductController::class, 'updateProductMaterial']);
+    Route::get('product/deleteProductMaterial/{id}', [ProductController::class, 'deleteProductMaterial']);
 
     Route::post('orderStatus/addOrderStatus', [OrderStatusController::class, 'addOrderStatus']);
     Route::post('orderStatus/updateOrderStatus/{id}', [OrderStatusController::class, 'updateOrderStatus']);

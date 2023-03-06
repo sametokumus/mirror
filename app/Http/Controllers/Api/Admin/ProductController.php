@@ -1237,4 +1237,70 @@ class ProductController extends Controller
         }
     }
 
+    public function getProductMaterialById($id)
+    {
+        try {
+            $material = ProductMaterial::query()->where('id', $id)->first();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['material' => $material]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function addProductMaterial(Request $request)
+    {
+        try {
+            ProductMaterial::query()->insert([
+                'name' => $request->name,
+                'multiplier' => $request->multiplier,
+                'free_shipping' => $request->free_shipping,
+                'free_shipping_price' => $request->free_shipping_price
+            ]);
+
+            return response(['message' => 'Ürün materyal ekleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+    public function updateProductMaterial(Request $request)
+    {
+        try {
+            ProductMaterial::query()->where('id', $request->id)->update([
+                'name' => $request->name,
+                'multiplier' => $request->multiplier,
+                'free_shipping' => $request->free_shipping,
+                'free_shipping_price' => $request->free_shipping_price
+            ]);
+
+            return response(['message' => 'Ürün materyal güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+    public function deleteProductMaterial($id)
+    {
+        try {
+            ProductMaterial::query()->where('id', $id)->update([
+                'active' => 0
+            ]);
+            return response(['message' => 'Ürün materyal silme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
 }
