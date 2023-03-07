@@ -202,7 +202,7 @@ class DeliveryController extends Controller
                 ]);
             }
 
-            return response(['message' => 'Kategori güncelleme işlemi başarılı.','status' => 'success','object' => ['delivery_price' => $delivery_price]]);
+            return response(['message' => 'Kargo fiyatı güncelleme işlemi başarılı.','status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
