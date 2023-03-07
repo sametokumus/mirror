@@ -169,8 +169,6 @@ class DeliveryController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
-
-
     public function getDistrictDeliveryById($id){
         try {
             $district_delivery = District::query()
@@ -191,6 +189,26 @@ class DeliveryController extends Controller
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['district_delivery' => $district_delivery]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function updateDistrictDelivery(Request $request, $district_id){
+        try {
+
+            $carriers = Carrier::query()->where('active', 1)->get();
+            foreach ($carriers as $carrier){
+                DistrictDelivery::query()->where('district_id', $district_id)->where('carrier_id', $carrier->id)->update([
+                   'category' => $request->{$carrier->id}
+                ]);
+            }
+
+            return response(['message' => 'Kategori güncelleme işlemi başarılı.','status' => 'success','object' => ['delivery_price' => $delivery_price]]);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        } catch (\Throwable $throwable) {
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001','e' => $throwable->getMessage()]);
         }
     }
 
