@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CreditCard;
 use App\Models\CreditCardInstallment;
+use App\Models\VinovExpiry;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;
@@ -75,5 +76,60 @@ class CreditCardController extends Controller
 
         }
 
+    }
+
+    public function addVinovExpiry(Request $request)
+    {
+        try {
+            VinovExpiry::query()->insert([
+                'expiry' => $request->expiry,
+                'expiry_plus' => $request->expiry_plus,
+                'discount' => $request->discount
+            ]);
+
+            return response(['message' => 'Vinov vade ekleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'ar' => $throwable->getMessage()]);
+        }
+    }
+
+    public function updateVinovExpiry(Request $request)
+    {
+        try {
+            VinovExpiry::query()->where('id', $request->id)->update([
+                'expiry' => $request->expiry,
+                'expiry_plus' => $request->expiry_plus,
+                'discount' => $request->discount
+            ]);
+
+            return response(['message' => 'Vinov vade güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'ar' => $throwable->getMessage()]);
+        }
+    }
+
+    public function deleteVinovExpiry($id)
+    {
+        try {
+            VinovExpiry::query()->where('id', $id)->update([
+                'active' => 0
+            ]);
+
+            return response(['message' => 'Vinov vade silme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'ar' => $throwable->getMessage()]);
+        }
     }
 }

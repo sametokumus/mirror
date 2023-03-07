@@ -242,6 +242,9 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('creditCard/getCreditCardById/{card_id}',[CreditCardController::class,'getCreditCardById']);
     Route::post('creditCard/postCreditInstallmentUpdate/{id}',[CreditCardController::class,'postCreditInstallmentUpdate']);
     Route::get('creditCard/getCreditCardInstallmentById/{id}',[CreditCardController::class,'getCreditCardInstallmentById']);
+    Route::post('creditCard/addVinovExpiry', [CreditCardController::class, 'addVinovExpiry']);
+    Route::post('creditCard/updateVinovExpiry', [CreditCardController::class, 'updateVinovExpiry']);
+    Route::get('creditCard/deleteVinovExpiry/{id}', [CreditCardController::class, 'deleteVinovExpiry']);
 
     Route::get('user/getUsers',[UserController::class,'getUsers']);
     Route::get('user/getUsersByTypeId/{id}',[UserController::class,'getUsersByTypeId']);

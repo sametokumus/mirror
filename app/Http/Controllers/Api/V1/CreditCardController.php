@@ -95,9 +95,20 @@ class CreditCardController extends Controller
             $expiries = VinovExpiry::query()->where('active',1)->get();
             foreach ($expiries as $expiry){
                 $total = $expiry->expiry + $expiry->expiry_plus;
-                $expiries['payment_date'] = Carbon::now()->addDays($total);
+                $expiry['payment_date'] = Carbon::now()->addDays($total);
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['expiries' => $expiries]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getVinovExpiryById($id){
+        try {
+            $expiry = VinovExpiry::query()->where('active',1)->where('id', $id)->first();
+                $total = $expiry->expiry + $expiry->expiry_plus;
+                $expiry['payment_date'] = Carbon::now()->addDays($total);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['expiry' => $expiry]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
         }
