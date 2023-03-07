@@ -10,8 +10,10 @@ use App\Models\CreditCard;
 use App\Models\CreditCardInstallment;
 use App\Models\ProductRule;
 use App\Models\User;
+use App\Models\VinovExpiry;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class CreditCardController extends Controller
 {
@@ -83,6 +85,19 @@ class CreditCardController extends Controller
             $credit_card['installment'] = $credit_card_installments;
             $credit_card['no_bank'] = $no_bank;
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['credit_card' => $credit_card]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getVinovExpiries(){
+        try {
+            $expiries = VinovExpiry::query()->where('active',1)->get();
+            foreach ($expiries as $expiry){
+                $total = $expiry->expiry + $expiry->expiry_plus;
+                $expiries['payment_date'] = Carbon::now()->addDays($total);
+            }
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['expiries' => $expiries]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
         }
