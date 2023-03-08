@@ -575,6 +575,7 @@ class CartController extends Controller
                 }
             }
 
+            $checkout_prices['carriers'] = $carriers;
 
 //            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
 //            $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
