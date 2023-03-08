@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
+use App\Models\Carrier;
 use App\Models\Cart;
 use App\Models\CartDetail;
 use App\Models\Coupons;
 use App\Models\DeliveryPrice;
+use App\Models\IncreasingDesi;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductMaterial;
 use App\Models\ProductRule;
 use App\Models\ProductVariation;
 use App\Models\RegionalDeliveryPrice;
@@ -20,6 +23,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Nette\Schema\ValidationException;
+use phpDocumentor\Reflection\Types\Array_;
 
 class CartController extends Controller
 {
@@ -409,7 +413,28 @@ class CartController extends Controller
             $total_price_with_delivery = null;
 
 
+            $address = Address::query()->where('id', $address_id)->where('active', 1)->first();
+            $carriers = Carrier::query()
+                ->leftJoin('district_deliveries', 'district_deliveries.carrier_id', '=', 'carriers.id')
+                ->selectRaw('carriers.*, district_deliveries.category as category')
+                ->where('carriers.active', 1)
+                ->where('district_deliveries.active', 1)
+                ->where('district_deliveries.district_id', $address->district_id)
+                ->get();
+            foreach ($carriers as $carrier){
+                if ($carrier->category == 0){
+                    $carrier['is_delivery'] = 0;
+                }else{
+                    $carrier['is_delivery'] = 1;
+                }
+            }
 
+
+            $material_array = array();
+            $materials = ProductMaterial::query()->where('active', 1)->get();
+            foreach ($materials as $material){
+                $material_array[$material->id] = 0;
+            }
 
 
 //            $user_discount_rate = User::query()->where('id', $user_id)->where('active', 1)->first()->user_discount;
@@ -461,6 +486,16 @@ class CartController extends Controller
                 }
 
                 $weight = $weight + $rule->weight;
+                $material_array[$rule->material] = $material_array[$rule->material] + $rule->weight;
+
+                $step_desi = $rule->weight * $rule->quantity_step;
+                foreach ($carriers as $carrier){
+                    if ($carrier->category == 1){
+                        if ($step_desi > $carrier->max_desi) {
+                            $carrier['is_delivery'] = 0;
+                        }
+                    }
+                }
 
 //                $cart_price += $cart_detail_price;
 //                $cart_tax += $cart_detail_tax;
@@ -494,12 +529,6 @@ class CartController extends Controller
                 $total_price = $coupon_subtotal_price;
             }
 
-            $address = Address::query()->where('id', $address_id)->where('active', 1)->first();
-            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
-            $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
-            $regional_delivery_price_without_tax = $regional_delivery_price->price / 118 * 100;
-            $regional_delivery_price_tax = $regional_delivery_price->price - $regional_delivery_price_without_tax;
-            $total_price_with_delivery = $total_price + $regional_delivery_price->price;
 
             $checkout_prices['products_subtotal_price'] = number_format($products_subtotal_price, 2,",",".");
             $checkout_prices['products_cart_price'] = number_format($products_cart_price, 2,",",".");
@@ -509,13 +538,57 @@ class CartController extends Controller
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
-
-            $checkout_prices['delivery_price'] = number_format($regional_delivery_price->price, 2,",",".");
-            $checkout_prices['delivery_price_tax'] = number_format($regional_delivery_price_tax, 2,",",".");
-            $checkout_prices['delivery_price_without_tax'] = number_format($regional_delivery_price_without_tax, 2,",",".");
-
             $checkout_prices['total_price'] = number_format($total_price, 2,",",".");
-            $checkout_prices['total_price_with_delivery'] = number_format($total_price_with_delivery, 2,",",".");
+
+            foreach ($carriers as $carrier){
+                if ($carrier['is_delivery'] == 1){
+                    $shipment_price = 0;
+                    foreach ($materials as $material){
+
+                        $weight = $material_array[$material->id];
+                        if ($weight == 0){
+                        }else{
+
+                            $delivery_price = DeliveryPrice::query()->where('carrier_id', $carrier->id)->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
+                            if ($delivery_price){
+                                $shipment_price += $delivery_price->{'cat_'.$carrier->category.'_price'};
+                            }else{
+                                $delivery_price_max = DeliveryPrice::query()->where('carrier_id', $carrier->id)->orderByDesc('max_value')->first();
+                                $increses_weight = IncreasingDesi::query()->where('carrier_id', $carrier->id)->first();
+
+                                $diff_price = ($weight - $delivery_price_max->max_value) * ($increses_weight->{'cat_'.$carrier->category.'_price'});
+                                $shipment_price += ($delivery_price_max->{'cat_'.$carrier->category.'_price'} + $diff_price);
+
+                            }
+
+                        }
+
+                    }
+                    $delivery_price_without_tax = $shipment_price / 118 * 100;
+                    $delivery_price_tax = $shipment_price - $delivery_price_without_tax;
+                    $total_price_with_delivery = $total_price + $shipment_price;
+
+                    $carrier['delivery_price'] = number_format($shipment_price, 2,",",".");
+                    $carrier['delivery_price_without_tax'] = number_format($delivery_price_without_tax, 2,",",".");
+                    $carrier['delivery_price_tax'] = number_format($delivery_price_tax, 2,",",".");
+                    $carrier['total_price_with_delivery'] = number_format($total_price_with_delivery, 2,",",".");
+                }
+            }
+
+
+//            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
+//            $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
+//            $regional_delivery_price_without_tax = $regional_delivery_price->price / 118 * 100;
+//            $regional_delivery_price_tax = $regional_delivery_price->price - $regional_delivery_price_without_tax;
+//            $total_price_with_delivery = $total_price + $regional_delivery_price->price;
+
+
+//
+//            $checkout_prices['delivery_price'] = number_format($regional_delivery_price->price, 2,",",".");
+//            $checkout_prices['delivery_price_tax'] = number_format($regional_delivery_price_tax, 2,",",".");
+//            $checkout_prices['delivery_price_without_tax'] = number_format($regional_delivery_price_without_tax, 2,",",".");
+//
+//            $checkout_prices['total_price_with_delivery'] = number_format($total_price_with_delivery, 2,",",".");
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['checkout_prices' => $checkout_prices]]);
         } catch (QueryException $queryException) {
