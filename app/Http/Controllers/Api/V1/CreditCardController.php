@@ -103,12 +103,12 @@ class CreditCardController extends Controller
         }
     }
 
-    public function getVinovExpiriesWithPayment($cart_id, $coupon_code, $total){
+    public function getVinovExpiriesWithPayment($cart_id, $coupon_code, $total, $delivery){
         try {
             $expiries = VinovExpiry::query()->where('active',1)->get();
             foreach ($expiries as $expiry){
-                $total = $expiry->expiry + $expiry->expiry_plus;
-                $expiry['payment_date'] = Carbon::now()->addDays($total);
+                $total_day = $expiry->expiry + $expiry->expiry_plus;
+                $expiry['payment_date'] = Carbon::now()->addDays($total_day);
 
                 $cart = Cart::query()->where('cart_id', $cart_id)->first();
                 $cart_details = CartDetail::query()->where('cart_id', $cart_id)->get();
@@ -135,7 +135,7 @@ class CreditCardController extends Controller
                     $total_price = $coupon_subtotal_price;
                 }
 
-                $expiry['total'] = number_format($total_price, 2, ",", ".");
+                $expiry['total'] = number_format(($total_price + (float)$delivery), 2, ",", ".");
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['expiries' => $expiries]]);

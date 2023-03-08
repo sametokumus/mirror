@@ -201,7 +201,7 @@ Route::get('/carrier/getCarrierById/{id}', [CarrierController::class, 'getCarrie
 Route::get('/creditCard/getCreditCarts', [CreditCardController::class, 'getCreditCarts']);
 Route::get('/creditCard/getCreditCardById/{member_no}/{cart_id}/{coupon_code}/{partial}/{total}', [CreditCardController::class, 'getCreditCardById']);
 Route::get('/creditCard/getVinovExpiries', [CreditCardController::class, 'getVinovExpiries']);
-Route::get('/creditCard/getVinovExpiriesWithPayment/{cart_id}/{coupon_code}/{total}', [CreditCardController::class, 'getVinovExpiriesWithPayment']);
+Route::get('/creditCard/getVinovExpiriesWithPayment/{cart_id}/{coupon_code}/{total}/{delivery}', [CreditCardController::class, 'getVinovExpiriesWithPayment']);
 Route::get('/creditCard/getVinovExpiryById/{id}', [CreditCardController::class, 'getVinovExpiryById']);
 
 
