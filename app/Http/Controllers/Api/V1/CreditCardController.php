@@ -135,6 +135,7 @@ class CreditCardController extends Controller
                     $total_price = $coupon_subtotal_price;
                 }
 
+                $expiry['sub_total'] = number_format($total_price, 2, ",", ".");
                 $expiry['total'] = number_format(($total_price + (float)$delivery), 2, ",", ".");
             }
 
