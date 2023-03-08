@@ -103,13 +103,41 @@ class CreditCardController extends Controller
         }
     }
 
-    public function getVinovExpiriesWithPayment(){
+    public function getVinovExpiriesWithPayment($cart_id, $coupon_code, $total){
         try {
             $expiries = VinovExpiry::query()->where('active',1)->get();
             foreach ($expiries as $expiry){
                 $total = $expiry->expiry + $expiry->expiry_plus;
                 $expiry['payment_date'] = Carbon::now()->addDays($total);
+
+                $cart = Cart::query()->where('cart_id', $cart_id)->first();
+                $cart_details = CartDetail::query()->where('cart_id', $cart_id)->get();
+                $user_discount = User::query()->where('id', $cart->user_id)->first()->user_discount;
+                $total_price = 0;
+                foreach ($cart_details as $cart_detail) {
+                    $product_rule = ProductRule::query()->where('variation_id', $cart_detail->variation_id)->first();
+                    if ($product_rule->discount_rate == null || $product_rule->discount_rate == '') {
+                        $price = $product_rule->regular_price / 100 * ((($user_discount - $expiry->discount) * -1) + 100);
+                    } else {
+                        $price = $product_rule->regular_price / 100 * ((($product_rule->discount_rate + $user_discount - $expiry->discount) * -1) + 100);
+                    }
+                    $total_price += ($price * $cart_detail->quantity);
+                }
+                $total_price = $total_price + ($total_price / 100 * $product_rule->tax_rate);
+
+                if ($coupon_code != "null") {
+                    $coupon = Coupons::query()->where('code', $coupon_code)->where('active', 1)->first();
+                    if ($coupon->discount_type == 1) {
+                        $coupon_subtotal_price = $total_price - $coupon->discount;
+                    } elseif ($coupon->discount_type == 2) {
+                        $coupon_subtotal_price = $total_price - ($total_price / 100 * $coupon->discount);
+                    }
+                    $total_price = $coupon_subtotal_price;
+                }
+
+                $expiry['total'] = number_format($total_price, 2, ",", ".");
             }
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['expiries' => $expiries]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
