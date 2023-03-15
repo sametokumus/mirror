@@ -108,7 +108,7 @@ class AuthController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'auth-001'){
-                return response('Eposta veya şifre hatalı.');
+                return  response(['message' => 'Eposta veya şifre hatalı.','status' => 'auth-001']);
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
         }
