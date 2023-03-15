@@ -31,7 +31,7 @@ class ProductController extends Controller
     public function getAllProduct()
     {
         try {
-            $products = Product::query()->where('active', 1)->get();
+            $products = Product::query()->where('active', 1)->orderBy('name')->get();
             foreach ($products as $product) {
                 $brands = Product::query()->where('brand_id', $product->brand_id)->get();
                 $product_types = ProductType::query()->where('id', $product->type_id)->get();
@@ -272,6 +272,7 @@ class ProductController extends Controller
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
                 ->where('products.active', 1)
+                ->orderBy('products.name')
                 ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
@@ -289,6 +290,7 @@ class ProductController extends Controller
                 ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
+                ->orderBy('products.name')
                 ->where('products.active', 1);
 
             if ($request->brand_id != 0){
@@ -315,6 +317,7 @@ class ProductController extends Controller
                 ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
+                ->orderBy('products.name')
                 ->where('products.active', $request->active);
 
             if ($request->brands != ""){
@@ -383,6 +386,7 @@ class ProductController extends Controller
                 ->where('products.active', 1)
                 ->where('product_categories.active', 1)
                 ->where('product_categories.category_id', $category_id)
+                ->orderBy('products.name')
                 ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
@@ -412,6 +416,7 @@ class ProductController extends Controller
                     ->where('products.active', 1)
                     ->where('product_categories.active', 1)
                     ->where('product_categories.category_id', $first_id)
+                    ->orderBy('products.name')
                     ->limit(4)
                     ->get();
 
@@ -469,6 +474,7 @@ class ProductController extends Controller
                 ->where('products.active', 1)
                 ->where('product_categories.active', 1)
                 ->where('categories.slug', $slug)
+                ->orderBy('products.name')
                 ->get();
             if($user_id != 0) {
                 $user = User::query()->where('id', $user_id)->where('active', 1)->first();
@@ -515,6 +521,7 @@ class ProductController extends Controller
                 ->where('products.active', 1)
                 ->where('product_types.active', 1)
                 ->where('product_types.slug', $slug)
+                ->orderBy('products.name')
                 ->get();
 
             if($user_id != 0) {
@@ -561,6 +568,7 @@ class ProductController extends Controller
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
                 ->where('products.active', 1)
                 ->where('brands.slug', $slug)
+                ->orderBy('products.name')
                 ->get();
 
             if($user_id != 0) {
@@ -910,6 +918,7 @@ class ProductController extends Controller
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
                 ->where('products.active', 1)
                 ->where('products.is_featured', 1)
+                ->orderBy('products.name')
                 ->limit(7)
                 ->get();
 
@@ -957,6 +966,7 @@ class ProductController extends Controller
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
                 ->where('products.active', 1)
                 ->where('products.is_new', 1)
+                ->orderBy('products.name')
                 ->limit(7)
                 ->get();
 
@@ -1007,6 +1017,7 @@ class ProductController extends Controller
                 ->where('products.active', 1)
                 ->where('product_categories.active', 1)
                 ->where('product_categories.category_id', $product_category->category_id)
+                ->orderBy('products.name')
                 ->limit(5)
                 ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
