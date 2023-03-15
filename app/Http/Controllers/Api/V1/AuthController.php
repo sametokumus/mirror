@@ -33,6 +33,12 @@ class AuthController extends Controller
                 throw new \Exception('auth-002');
             }
 
+            $userPhoneCheck = User::query()->where('phone_number', $request->phone_number)->count();
+
+            if ($userPhoneCheck > 0) {
+                throw new \Exception('auth-003');
+            }
+
             //Önce Kullanıcıyı oluşturuyor
             $userId = User::query()->insertGetId([
                 'email' => $request->email,
@@ -83,6 +89,9 @@ class AuthController extends Controller
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'auth-002'){
                 return  response(['message' => 'Girdiğiniz eposta adresi kullanılmaktadır.','status' => 'auth-002']);
+            }
+            if ($exception->getMessage() == 'auth-003'){
+                return  response(['message' => 'Girdiğiniz telefon numarası kullanılmaktadır.','status' => 'auth-003']);
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
         }
