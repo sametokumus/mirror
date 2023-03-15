@@ -22,7 +22,7 @@ class CreateUserProfilesTable extends Migration
             $table->tinyInteger('gender')->nullable();
             $table->string('profile_photo')->nullable();
             $table->tinyInteger('tc_citizen')->nullable();
-            $table->integer('tc_number')->nullable();
+            $table->string('tc_number')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
