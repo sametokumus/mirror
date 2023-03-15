@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class CorporateAddresses extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'tax_number'
+    ];
 }
