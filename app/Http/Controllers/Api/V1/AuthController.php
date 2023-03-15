@@ -27,6 +27,12 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
+            $userCheck = User::query()->where('email', $request->email)->count();
+
+            if ($userCheck > 0) {
+                throw new \Exception('auth-002');
+            }
+
             //Önce Kullanıcıyı oluşturuyor
             $userId = User::query()->insertGetId([
                 'email' => $request->email,
@@ -74,8 +80,11 @@ class AuthController extends Controller
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','error' => $queryException->getMessage()]);
-        } catch (\Throwable $throwable) {
-            return  response(['message' => 'Hatalı işlem.','status' => 'error-001','ero' => $throwable->getMessage()]);
+        } catch (\Exception $exception){
+            if ($exception->getMessage() == 'auth-001'){
+                return  response(['message' => 'Eposta veya şifre hatalı.','status' => 'auth-001']);
+            }
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
         }
 
     }
