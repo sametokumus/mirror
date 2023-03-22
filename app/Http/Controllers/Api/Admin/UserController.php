@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\UserWelcome;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\UserType;
 use App\Models\UserTypeDiscount;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Nette\Schema\ValidationException;
 
 class UserController extends Controller
@@ -218,4 +220,30 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001','ar' => $throwable->getMessage()]);
         }
     }
+
+    public function verifyUser($user_id)
+    {
+        try {
+            $user = User::query()->where('id', $user_id)->update([
+                'email_verified_at' => now(),
+                'verified' => true,
+                'active' => true,
+                'token' => null
+            ]);
+
+            return response(['message' => 'Kullanıcı epostası doğrulandı.','status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        } catch (\Exception $exception){
+            if ($exception->getMessage() == 'validation-002'){
+                return response('Eposta adresi daha önceden doğrulanmış.');
+            }
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
+        }
+
+
+    }
+
 }
