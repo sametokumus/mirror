@@ -20,6 +20,7 @@ class UserController extends Controller
             $users = User::query()
                 ->leftJoin('user_profiles','user_profiles.user_id','=','users.id')
                 ->selectRaw('users.*, user_profiles.name, user_profiles.surname')
+                ->where('users.active', 1)
                 ->get();
             return response(['message' => 'İşlem başarılı.','status' => 'success','object' => ['users' => $users]]);
         } catch (QueryException $queryException){
