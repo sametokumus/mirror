@@ -259,6 +259,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('user/updateUserTypeDiscount/{id}', [UserController::class, 'updateUserTypeDiscount']);
     Route::get('user/deleteUserTypeDiscount/{id}', [UserController::class, 'deleteUserTypeDiscount']);
     Route::get('user/verifyUser/{user_id}', [UserController::class, 'verifyUser']);
+    Route::get('user/deleteUser/{user_id}', [UserController::class, 'deleteUser']);
 
     Route::post('slider/addSlider', [SliderController::class, 'addSlider']);
     Route::post('slider/updateSlider/{id}', [SliderController::class, 'updateSlider']);

@@ -237,9 +237,25 @@ class UserController extends Controller
         } catch (QueryException $queryException) {
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
-            if ($exception->getMessage() == 'validation-002'){
-                return response('Eposta adresi daha önceden doğrulanmış.');
-            }
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
+        }
+
+
+    }
+
+    public function deleteUser($user_id)
+    {
+        try {
+            $user = User::query()->where('id', $user_id)->update([
+                'active' => false
+            ]);
+
+            return response(['message' => 'Kullanıcı silme başarılı.','status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        } catch (\Exception $exception){
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
         }
 
