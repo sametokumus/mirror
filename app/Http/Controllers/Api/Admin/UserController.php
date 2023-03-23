@@ -262,5 +262,21 @@ class UserController extends Controller
 
 
     }
+    public function updateTypeToUser(Request $request){
+        try {
+
+            User::query()->where('id',$request->id)->update([
+                'user_type' => $request->user_type
+            ]);
+
+            return response(['message' => 'Sipariş durumu güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
 
 }
