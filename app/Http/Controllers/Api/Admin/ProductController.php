@@ -667,13 +667,16 @@ class ProductController extends Controller
 //                'product_sku' => 'required'
 //            ]);
 
+            $order = CampaignProduct::query()->where('active', 1)->orderByDesc('order')->first()->order;
+            $order = $order + 1;
+
             if ($request->product_name != ''){
                 $product = Product::query()->where('name', $request->product_name)->where('active', 1)->first();
 
                 if (isset($product)) {
                     CampaignProduct::query()->insert([
                         'product_id' => $product->id,
-                        'order' => $request->order
+                        'order' => $order
                     ]);
                     return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
                 }else{
@@ -686,7 +689,7 @@ class ProductController extends Controller
                     if (isset($product)) {
                         CampaignProduct::query()->insert([
                             'product_id' => $product->id,
-                            'order' => $request->order
+                            'order' => $order
                         ]);
                         return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
                     }else{
@@ -699,7 +702,7 @@ class ProductController extends Controller
             if (isset($product)) {
                 CampaignProduct::query()->insert([
                     'product_id' => $product->id,
-                    'order' => $request->order
+                    'order' => $order
                 ]);
                 return response(['message' => 'Kampanyalı ürün ekleme işlemi başarılı.', 'status' => 'success']);
             }else{
