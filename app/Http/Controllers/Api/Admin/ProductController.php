@@ -715,6 +715,27 @@ class ProductController extends Controller
 
     }
 
+    public function updateCampaignProductOrder(Request $request)
+    {
+        try {
+
+            foreach ($request->products as $product){
+                CampaignProduct::query()->where('product_id', $product['product_id'])->where('active', 1)->update([
+                   'order' => $product['order']
+                ]);
+            }
+
+            return response(['message' => 'Kampanyalı ürün sıralaması düzenlendi.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+
+    }
+
     public function deleteCampaignProduct($id)
     {
         try {
