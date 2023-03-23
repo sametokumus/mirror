@@ -61,7 +61,7 @@ class OrderStatusController extends Controller
             foreach ($ids as $order_id) {
                 $order = Order::query()->where('id', $order_id)->first();
                 Order::query()->where('id', $order_id)->update([
-                    'status' => $request->status_id
+                    'status_id' => $request->status_id
                 ]);
                 OrderStatusHistory::query()->insert([
                     'status_id' => $request->status_id,
