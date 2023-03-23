@@ -269,7 +269,7 @@ class UserController extends Controller
                 'user_type' => $request->user_type
             ]);
 
-            return response(['message' => 'Sipariş durumu güncelleme işlemi başarılı.', 'status' => 'success']);
+            return response(['message' => 'Kullanıcı türü güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
