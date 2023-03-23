@@ -86,6 +86,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('productType/addProductType', [ProductTypeController::class, 'addProductType']);
     Route::post('productType/updateProductType/{id}', [ProductTypeController::class, 'updateProductType']);
     Route::get('productType/deleteProductType/{id}', [ProductTypeController::class, 'deleteProductType']);
+    Route::post('productType/updateProductTypeOrder', [ProductTypeController::class, 'updateProductTypeOrder']);
 
     Route::post('category/addCategory', [CategoryController::class, 'addCategory']);
     Route::post('category/updateCategory/{id}', [CategoryController::class, 'updateCategory']);

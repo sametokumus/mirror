@@ -17,6 +17,7 @@ class CreateProductTypesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable();
+            $table->bigInteger('order')->default(1);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();

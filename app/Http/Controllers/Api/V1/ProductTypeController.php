@@ -12,7 +12,7 @@ class ProductTypeController extends Controller
     public function getProductTypes()
     {
         try {
-            $product_type = ProductType::query()->where('active',1)->get();
+            $product_type = ProductType::query()->where('active',1)->orderBy('order')->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product_type' => $product_type]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
