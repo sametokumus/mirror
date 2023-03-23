@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
+use App\Models\Product;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;
@@ -41,6 +43,31 @@ class OrderStatusController extends Controller
                 'run_on' => $request->run_on,
                 'is_default' => $request->is_default
             ]);
+
+            return response(['message' => 'Sipariş durumu güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
+
+    public function updateOrderAllStatus(Request $request){
+        try {
+            $ids = explode(',',$request->order_ids);
+
+            foreach ($ids as $order_id) {
+                $order = Order::query()->where('id', $order_id)->first();
+                Order::query()->where('id', $order_id)->update([
+                    'status' => $request->status_id
+                ]);
+                OrderStatusHistory::query()->insert([
+                    'status_id' => $request->status_id,
+                    'order_id' => $order->order_id
+                ]);
+            }
 
             return response(['message' => 'Sipariş durumu güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
