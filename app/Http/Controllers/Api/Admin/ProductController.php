@@ -795,6 +795,7 @@ class ProductController extends Controller
 
     public function addProductDocument(Request $request)
     {
+        return $request->products;
         try {
             $document_id = ProductDocument::query()->insertGetId([
                 'product_id' => $request->product_id,
