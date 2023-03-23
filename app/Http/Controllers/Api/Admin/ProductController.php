@@ -718,7 +718,7 @@ class ProductController extends Controller
     public function updateCampaignProductOrder(Request $request)
     {
         try {
-
+return $request->products;
             foreach ($request->products as $product){
                 CampaignProduct::query()->where('product_id', $product['product_id'])->where('active', 1)->update([
                    'order' => $product['order']
@@ -795,7 +795,6 @@ class ProductController extends Controller
 
     public function addProductDocument(Request $request)
     {
-        return $request->products;
         try {
             $document_id = ProductDocument::query()->insertGetId([
                 'product_id' => $request->product_id,
