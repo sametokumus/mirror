@@ -39,7 +39,9 @@ class SearchController extends Controller
                     ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
                     ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
                     ->selectRaw('brands.name as brand_name,product_types.name as type_name, product_rules.*, products.*')
-                    ->where('products.active', 1);
+                    ->where('products.active', 1)
+                    ->where('product_types.active', 1)
+                    ->where('brands.active', 1);
 
                 $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . '%" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . ',%" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ',%")';
                 $products = $products->whereRaw($q);
@@ -86,7 +88,9 @@ class SearchController extends Controller
                     ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
                     ->selectRaw('brands.name as brand_name,product_types.name as type_name, product_rules.*, products.*')
                     ->where('products.active', 1)
-                    ->where('product_categories.active', 1);
+                    ->where('product_categories.active', 1)
+                    ->where('product_types.active', 1)
+                    ->where('brands.active', 1);
 
 
                 $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . '%" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . ',%" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ',%")';
@@ -189,7 +193,12 @@ class SearchController extends Controller
             $products = $products
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id');
             $products = $products->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*');
-            $products = $products->get();
+            $products = $products
+                ->where('products.active', 1)
+                ->where('product_categories.active', 1)
+                ->where('product_types.active', 1)
+                ->where('brands.active', 1)
+                ->get();
             foreach ($products as $product){
                 $product['image'] = ProductImage::query()->where('variation_id',$product->featured_variation)->first()->image;
             }
