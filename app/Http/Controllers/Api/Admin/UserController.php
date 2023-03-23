@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\UserWelcome;
 use App\Models\User;
+use App\Models\UserContactRule;
+use App\Models\UserDocumentCheck;
 use App\Models\UserProfile;
 use App\Models\UserType;
 use App\Models\UserTypeDiscount;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Nette\Schema\ValidationException;
 
 class UserController extends Controller
@@ -277,6 +281,89 @@ class UserController extends Controller
         } catch (\Throwable $throwable) {
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
         }
+    }
+
+    public function addUserForAdmin(Request $request)
+    {
+        try {
+            $request->validate([
+                'user_name' => 'nullable',
+                'email' => 'required|email',
+                'phone_number' => 'required',
+                'password' => 'required'
+            ]);
+
+            $userCheck = User::query()->where('email', $request->email)->count();
+
+            if ($userCheck > 0) {
+                throw new \Exception('auth-002');
+            }
+
+            $userPhoneCheck = User::query()->where('phone_number', $request->phone_number)->count();
+
+            if ($userPhoneCheck > 0) {
+                throw new \Exception('auth-003');
+            }
+
+            //Önce Kullanıcıyı oluşturuyor
+            $userId = User::query()->insertGetId([
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'password' => Hash::make($request->password),
+                'verified' => 1,
+                'active' => 1,
+                'email_verified_at' => now()
+            ]);
+
+            //İletişim Kurallarını oluşturuyor
+            $user_contact_rules = $request->user_contact_rules;
+            foreach ($user_contact_rules as $user_contact_rule){
+                UserContactRule::query()->insert([
+                    'user_id' => $userId,
+                    'contact_rule_id' => $user_contact_rule['contact_rule_id'],
+                    'value' => $user_contact_rule['value']
+                ]);
+            }
+
+            //Kullanıcının dökümanlarını ekliyor
+            $user_document_checks = $request->user_document_checks;
+            foreach ($user_document_checks as $user_document_check){
+                UserDocumentCheck::query()->insert([
+                    'user_id' => $userId,
+                    'document_id' => $user_document_check['document_id'],
+                    'value' => $user_document_check['value']
+                ]);
+            }
+            //Kullanıcı profilini oluşturuyor
+            $name = $request->name;
+            $surname = $request->surname;
+            UserProfile::query()->insert([
+                'user_id' => $userId,
+                'name' => $name,
+                'surname' => $surname
+            ]);
+
+            // Oluşturulan kullanıcıyı çekiyor
+            $user = User::query()->whereId($userId)->first();
+
+            //Oluşturulan Kullanıcıyı mail yolluyor
+//            $user->sendApiConfirmAccount($user);
+
+            return response(['message' => 'Kullanıcı başarıyla oluşturuldu.','status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','error' => $queryException->getMessage()]);
+        } catch (\Exception $exception){
+            if ($exception->getMessage() == 'auth-002'){
+                return  response(['message' => 'Girdiğiniz eposta adresi kullanılmaktadır.','status' => 'auth-002']);
+            }
+            if ($exception->getMessage() == 'auth-003'){
+                return  response(['message' => 'Girdiğiniz telefon numarası kullanılmaktadır.','status' => 'auth-003']);
+            }
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
+        }
+
     }
 
 }
