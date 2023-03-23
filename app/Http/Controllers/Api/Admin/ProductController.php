@@ -718,7 +718,6 @@ class ProductController extends Controller
     public function updateCampaignProductOrder(Request $request)
     {
         try {
-return $request->products;
             foreach ($request->products as $product){
                 CampaignProduct::query()->where('product_id', $product['product_id'])->where('active', 1)->update([
                    'order' => $product['order']
