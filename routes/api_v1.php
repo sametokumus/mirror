@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\V1\CouponController;
 use App\Http\Controllers\Api\V1\PopupController;
 use App\Http\Controllers\Api\V1\SubscribeController;
 use App\Http\Controllers\Api\V1\CimriController;
+use App\Http\Controllers\Api\V1\ContactController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -231,3 +232,5 @@ Route::get('/cimri/getProducts', [CimriController::class, 'getProducts']);
 Route::get('/cimri/getProductById/{product_id}', [CimriController::class, 'getProductById']);
 Route::post('/cimri/updateProduct/{product_id}', [CimriController::class, 'updateProduct']);
 Route::get('/cimri/deleteProduct/{product_id}', [CimriController::class, 'deleteProduct']);
+
+Route::post('contact/addContactForm', [ContactController::class, 'addProformaOrder']);

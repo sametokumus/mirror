@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Admin\PopupController;
 use App\Http\Controllers\Api\Admin\SubscribeController;
 use App\Http\Controllers\Api\Admin\ProformaController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -317,6 +318,9 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     Route::get('dashboard/getDashboard', [DashboardController::class, 'getDashboard']);
     Route::get('dashboard/getLastOrders',[DashboardController::class,'getLastOrders']);
+
+
+    Route::get('contact/getContactForms', [ContactController::class, 'getContactForms']);
 
 });
 
