@@ -15,19 +15,16 @@ class ContactController extends Controller
     public function addContactForm(Request $request)
     {
         try {
-
             $request->validate([
                 'name' => 'required',
                 'email' => 'required',
                 'message' => 'required',
             ]);
-
             ContactForm::query()->insert([
                 'name' => $request->name,
                 'email' => $request->email,
                 'message' => $request->message
             ]);
-
             return response(['message' => 'Mesaj gönderme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
