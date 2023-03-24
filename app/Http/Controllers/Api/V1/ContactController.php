@@ -12,7 +12,7 @@ use Nette\Schema\ValidationException;
 
 class ContactController extends Controller
 {
-    public function addContactMessage(Request $request)
+    public function addContactForm(Request $request)
     {
         try {
 
