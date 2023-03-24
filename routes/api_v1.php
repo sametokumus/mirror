@@ -233,4 +233,4 @@ Route::get('/cimri/getProductById/{product_id}', [CimriController::class, 'getPr
 Route::post('/cimri/updateProduct/{product_id}', [CimriController::class, 'updateProduct']);
 Route::get('/cimri/deleteProduct/{product_id}', [CimriController::class, 'deleteProduct']);
 
-Route::post('contact/addContactForm', [ContactController::class, 'addProformaOrder']);
+Route::post('contact/addContactForm', [ContactController::class, 'addContactForm']);
