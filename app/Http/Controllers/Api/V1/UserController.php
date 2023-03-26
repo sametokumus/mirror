@@ -156,12 +156,6 @@ class UserController extends Controller
 
     public function removeUserFavorite(Request $request){
         try {
-            $user_favorite = UserFavorite::query()
-                ->where('user_id',$request->user_id)
-                ->where('product_id',$request->product_id)
-                ->where('variation_id',$request->variation_id)
-                ->count();
-            if ($user_favorite > 0){
                 UserFavorite::query()
                     ->where('user_id',$request->user_id)
                     ->where('product_id',$request->product_id)
@@ -169,7 +163,6 @@ class UserController extends Controller
                     ->update([
                         'active' => 0
                     ]);
-            }
 
 
             return response(['message' => 'Favori ürün silme işlemi başarılı.', 'status' => 'success']);
