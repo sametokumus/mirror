@@ -156,6 +156,12 @@ class UserController extends Controller
 
     public function removeUserFavorite(Request $request){
         try {
+            $user_favorite = UserFavorite::query()
+                ->where('user_id',$request->user_id)
+                ->where('product_id',$request->product_id)
+                ->where('variation_id',$request->variation_id)
+                ->count();
+            if ($user_favorite > 0){
                 UserFavorite::query()
                     ->where('user_id',$request->user_id)
                     ->where('product_id',$request->product_id)
@@ -163,6 +169,7 @@ class UserController extends Controller
                     ->update([
                         'active' => 0
                     ]);
+            }
 
 
             return response(['message' => 'Favori ürün silme işlemi başarılı.', 'status' => 'success']);
@@ -188,7 +195,7 @@ class UserController extends Controller
                 ->leftJoin('product_variations', 'product_variations.id', '=', 'products.featured_variation')
                 ->select(DB::raw('(select image from product_images where variation_id = user_favorites.variation_id order by id asc limit 1) as image'))
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
-                ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*, user_favorites.*')
+                ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*')
                 ->where('user_favorites.active', 1)
                 ->where('user_favorites.user_id',$id)
                 ->get();
