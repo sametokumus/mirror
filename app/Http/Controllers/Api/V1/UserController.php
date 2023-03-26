@@ -162,7 +162,7 @@ class UserController extends Controller
                 ->where('variation_id',$request->variation_id)
                 ->count();
             if ($user_favorite > 0){
-                UserFavorite::query()->where('product_id',$user_favorite->product_id)
+                UserFavorite::query()
                     ->where('user_id',$request->user_id)
                     ->where('product_id',$request->product_id)
                     ->where('variation_id',$request->variation_id)
