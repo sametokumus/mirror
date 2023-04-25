@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\CampaignProduct;
 use App\Models\Category;
+use App\Models\CreditCard;
+use App\Models\CreditCardInstallment;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductDocument;
@@ -1099,6 +1101,58 @@ class ProductController extends Controller
             }else{
                 return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => false]]);
             }
+
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getCreditCartInstallments($product_variation_id){
+        try {
+            $product_rule = ProductRule::query()->where('variation_id', $product_variation_id)->first();
+
+            $price = $product_rule->regular_price;
+            if ($product_rule->currency == "EUR"){
+                $price = convertEURtoTRY($product_rule->regular_price);
+            }else if ($product_rule->currency == "USD") {
+                $price = convertUSDtoTRY($product_rule->regular_price);
+            }
+
+            $credit_cards = CreditCard::query()->where('active', 1)->get();
+            foreach ($credit_cards as $credit_card){
+
+                $installments = CreditCardInstallment::query()
+                    ->where('credit_card_id', $credit_card->id)
+                    ->where('active', 1)
+                    ->orderBy('installment')
+                    ->get();
+                foreach ($installments as $installment){
+                    $installment['short_name'] = $installment->installment;
+                    if ($installment->installment_plus != 0){
+                        $installment['short_name'] = $installment->installment."+".$installment->installment_plus;
+                    }
+                    $total_installment = $installment->installment + $installment->installment_plus;
+
+                    if ($product_rule->discount_rate != null && $product_rule->discount_rate != '0.00'){
+                        $total_rate = $product_rule->discount_rate - $installment->discount;
+                        $installment_total_price = $price / 100 * (100 - $total_rate);
+                    }else{
+                        $installment_total_price = $price / 100 * (100 + $installment->discount);
+                    }
+
+                    $installment_price = $installment_total_price / $total_installment;
+
+                    $installment['installment_total_price'] = number_format($installment_total_price, 2,".","");
+                    $installment['installment_price'] = number_format($installment_price, 2,".","");
+
+                }
+
+                $credit_card['installments'] = $installments;
+
+            }
+
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => false]]);
 
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);

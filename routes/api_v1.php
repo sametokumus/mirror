@@ -176,6 +176,8 @@ Route::get('/product/getCategoriesByBranId', [ProductController::class, 'getCate
 
 Route::get('/product/getProductColors', [ProductController::class, 'getProductColors']);
 
+Route::get('/product/getCreditCartInstallments/{product_variation_id}', [ProductController::class, 'getCreditCartInstallments']);
+
 
 Route::get('/productSeo/getProductSeoById/{product_id}', [ProductController::class, 'getProductSeoById']);
 
