@@ -1152,7 +1152,7 @@ class ProductController extends Controller
             }
 
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['useSku' => false]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['credit_cards' => $credit_cards]]);
 
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
