@@ -83,7 +83,12 @@ class OrderController extends Controller
                 $product = OrderProduct::query()->where('order_id', $order->order_id)->first();
                 $product_image = ProductImage::query()->where('variation_id', $product->variation_id)->first()->image;
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
-                $shipping_type = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
+//                $shipping_type = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
+                if ($order->shipping_type == 0){
+                    $shipping_type = "Mağazadan Teslimat";
+                }else {
+                    $shipping_type = Carrier::query()->where('id', $order->shipping_type)->first()->name;
+                }
                 $user_profile = UserProfile::query()->where('user_id', $order->user_id)->first(['name', 'surname']);
                 $payment_method = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
 

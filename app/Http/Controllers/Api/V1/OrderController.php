@@ -378,7 +378,7 @@ class OrderController extends Controller
             if ($order->shipping_type == 0){
                 $order['shipping_name'] = "Mağazadan Teslimat";
             }else {
-                $order['shipping_name'] = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
+                $order['shipping_name'] = Carrier::query()->where('id', $order->shipping_type)->first()->name;
             }
             $order['payment_method'] = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
             $order_details = OrderProduct::query()->where('order_id', $order_id)->get();
