@@ -310,9 +310,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'phone_number' => $request->phone_number,
                 'password' => Hash::make($request->password),
-                'verified' => 1,
-                'active' => 1,
-                'email_verified_at' => now()
+                'token' => Str::random(60)
             ]);
 
             //İletişim Kurallarını oluşturuyor
@@ -347,7 +345,7 @@ class UserController extends Controller
             $user = User::query()->whereId($userId)->first();
 
             //Oluşturulan Kullanıcıyı mail yolluyor
-//            $user->sendApiConfirmAccount($user);
+            $user->sendApiConfirmAccount($user);
 
             return response(['message' => 'Kullanıcı başarıyla oluşturuldu.','status' => 'success']);
         } catch (ValidationException $validationException) {
