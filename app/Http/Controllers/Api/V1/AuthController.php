@@ -27,7 +27,7 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            $userCheck = User::query()->where('email', $request->email)->where('active', 1)->count();
+            $userCheck = User::query()->where('email', $request->email)->count();
 
             if ($userCheck > 0) {
                 throw new \Exception('auth-002');
