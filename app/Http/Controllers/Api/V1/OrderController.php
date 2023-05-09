@@ -173,7 +173,13 @@ class OrderController extends Controller
             foreach ($orders as $order){
                 $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
                 $product = OrderProduct::query()->where('order_id', $order->order_id)->first();
-                $product_image = ProductImage::query()->where('variation_id', $product->variation_id)->first()->image;
+                $product_image_row = ProductImage::query()->where('variation_id', $product->variation_id)->first();
+                if ($product_image_row){
+                    $product_image = $product_image_row->image;
+                }else{
+                    $product_image = '';
+                }
+//                $product_image = ProductImage::query()->where('variation_id', $product->variation_id)->first()->image;
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
                 $payment_method = PaymentMethod::query()->where('id',$order->payment_method)->first()->name;
 
