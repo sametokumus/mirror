@@ -97,6 +97,14 @@ class SearchController extends Controller
                 $products = $products->whereRaw($q);
                 $products = $products->get();
 
+
+
+                foreach ($products as $product){
+                    $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                    $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                    $product['variation_count'] = $count;
+                }
+
                 if($user_id != 0) {
                     $user = User::query()->where('id', $user_id)->where('active', 1)->first();
                     $total_user_discount = $user->user_discount;
@@ -199,6 +207,15 @@ class SearchController extends Controller
                 ->where('product_types.active', 1)
                 ->where('brands.active', 1)
                 ->get();
+
+
+
+            foreach ($products as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
+
             foreach ($products as $product){
                 $product['image'] = ProductImage::query()->where('variation_id',$product->featured_variation)->first()->image;
             }

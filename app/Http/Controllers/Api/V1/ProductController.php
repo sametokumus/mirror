@@ -484,6 +484,13 @@ class ProductController extends Controller
                 ->where('categories.slug', $slug)
                 ->orderBy('products.name')
                 ->get();
+
+            foreach ($products as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
+
             if($user_id != 0) {
                 $user = User::query()->where('id', $user_id)->where('active', 1)->first();
                 $total_user_discount = $user->user_discount;
@@ -532,6 +539,12 @@ class ProductController extends Controller
                 ->orderBy('products.name')
                 ->get();
 
+            foreach ($products as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
+
             if($user_id != 0) {
                 $user = User::query()->where('id', $user_id)->where('active', 1)->first();
                 $total_user_discount = $user->user_discount;
@@ -578,6 +591,12 @@ class ProductController extends Controller
                 ->where('brands.slug', $slug)
                 ->orderBy('products.name')
                 ->get();
+
+            foreach ($products as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
 
             if($user_id != 0) {
                 $user = User::query()->where('id', $user_id)->where('active', 1)->first();
@@ -836,6 +855,13 @@ class ProductController extends Controller
                 ->where('campaign_products.active', 1)
                 ->orderBy('campaign_products.order', 'ASC')
                 ->get();
+
+            foreach ($products as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
+
             if($user_id != 0) {
                 $user = User::query()->where('id', $user_id)->where('active', 1)->first();
                 $total_user_discount = $user->user_discount;

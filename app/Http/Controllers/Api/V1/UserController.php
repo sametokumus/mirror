@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Order;
 use App\Models\OrderRefund;
 use App\Models\ProductCategory;
+use App\Models\ProductVariation;
+use App\Models\ProductVariationGroup;
 use App\Models\User;
 use App\Models\UserDocumentCheck;
 use App\Models\UserFavorite;
@@ -199,6 +201,12 @@ class UserController extends Controller
                 ->where('user_favorites.active', 1)
                 ->where('user_favorites.user_id',$id)
                 ->get();
+
+            foreach ($user_favorites as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
 //            ->where('user_favorites.product_id', '=','products.id')
             return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user_favorites' => $user_favorites]]);
         } catch (QueryException $queryException){
