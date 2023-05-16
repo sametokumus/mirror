@@ -422,6 +422,12 @@ class ProductController extends Controller
                     ->limit(4)
                     ->get();
 
+                foreach ($products as $product){
+                    $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                    $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                    $product['variation_count'] = $count;
+                }
+
                 if($user_id != 0) {
                     $user = User::query()->where('id', $user_id)->where('active', 1)->first();
                     $total_user_discount = $user->user_discount;
@@ -803,6 +809,10 @@ class ProductController extends Controller
 
                     $product['variation'] = $variation;
 
+                    $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                    $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                    $product['variation_count'] = $count;
+
                 }
                 $brand['products'] = $products;
             }
@@ -930,6 +940,12 @@ class ProductController extends Controller
                 ->limit(7)
                 ->get();
 
+            foreach ($products as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
+
             if($user_id != 0) {
                 $user = User::query()->where('id', $user_id)->where('active', 1)->first();
                 $total_user_discount = $user->user_discount;
@@ -977,6 +993,12 @@ class ProductController extends Controller
                 ->orderBy('products.name')
                 ->limit(7)
                 ->get();
+
+            foreach ($products as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
 
             if($user_id != 0) {
                 $user = User::query()->where('id', $user_id)->where('active', 1)->first();
@@ -1028,6 +1050,12 @@ class ProductController extends Controller
                 ->orderBy('products.name')
                 ->limit(5)
                 ->get();
+
+            foreach ($products as $product){
+                $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
+                $product['variation_count'] = $count;
+            }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
