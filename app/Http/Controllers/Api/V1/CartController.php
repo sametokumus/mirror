@@ -353,10 +353,10 @@ class CartController extends Controller
     public function getUserToCart($user_id, $cart_id){
         try {
 
-            Cart::query()->where('cart_id', $cart_id)->update([
+            Cart::query()->where('cart_id', $cart_id)->where('user_id', null)->update([
                 'user_id' => $user_id
             ]);
-            $cart_details = CartDetail::query()->where('cart_id', $cart_id)->get();
+            $cart_details = CartDetail::query()->where('cart_id', $cart_id)->where('user_id', $user_id)->get();
             foreach ($cart_details as $cart_detail){
                 $rule = ProductRule::query()->where('variation_id', $cart_detail->variation_id)->first();
                 $product = Product::query()->where('id', $cart_detail->product_id)->first();
