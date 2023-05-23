@@ -251,6 +251,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('creditCard/deleteVinovExpiry/{id}', [CreditCardController::class, 'deleteVinovExpiry']);
 
     Route::get('user/getUsers',[UserController::class,'getUsers']);
+    Route::get('user/getPassiveUsers',[UserController::class,'getPassiveUsers']);
     Route::get('user/getUsersByTypeId/{id}',[UserController::class,'getUsersByTypeId']);
     Route::get('user/getUserTypes', [UserController::class, 'getUserTypes']);
     Route::get('user/getUserTypeById/{id}', [UserController::class, 'getUserTypeById']);
@@ -262,6 +263,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('user/addUserTypeDiscount', [UserController::class, 'addUserTypeDiscount']);
     Route::post('user/updateUserTypeDiscount/{id}', [UserController::class, 'updateUserTypeDiscount']);
     Route::get('user/deleteUserTypeDiscount/{id}', [UserController::class, 'deleteUserTypeDiscount']);
+    Route::get('user/activateUser/{user_id}', [UserController::class, 'activateUser']);
     Route::get('user/verifyUser/{user_id}', [UserController::class, 'verifyUser']);
     Route::get('user/deleteUser/{user_id}', [UserController::class, 'deleteUser']);
     Route::post('user/updateTypeToUser', [UserController::class, 'updateTypeToUser']);

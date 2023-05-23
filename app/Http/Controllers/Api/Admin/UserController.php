@@ -31,6 +31,18 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
         }
     }
+    public function getPassiveUsers(){
+        try {
+            $users = User::query()
+                ->leftJoin('user_profiles','user_profiles.user_id','=','users.id')
+                ->selectRaw('users.*, user_profiles.name, user_profiles.surname')
+                ->where('users.active', 0)
+                ->get();
+            return response(['message' => 'İşlem başarılı.','status' => 'success','object' => ['users' => $users]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
+        }
+    }
 
     public function getUsersByTypeId($type_id){
         try {
@@ -237,6 +249,25 @@ class UserController extends Controller
             ]);
 
             return response(['message' => 'Kullanıcı epostası doğrulandı.','status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        } catch (\Exception $exception){
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
+        }
+
+
+    }
+
+    public function activateUser($user_id)
+    {
+        try {
+            $user = User::query()->where('id', $user_id)->update([
+                'active' => true
+            ]);
+
+            return response(['message' => 'Kullanıcı hesabı aktifleştirildi.','status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
