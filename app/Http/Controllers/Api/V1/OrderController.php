@@ -220,7 +220,9 @@ class OrderController extends Controller
             if ($order->carrier_id != 0) {
                 $order['carrier_name'] = Carrier::query()->where('id', $order->carrier_id)->first()->name;
             }
-            $order['shipping_name'] = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
+            if ($order->shipping_type != 0) {
+                $order['shipping_name'] = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
+            }
             $order['payment_method'] = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
             $order_details = OrderProduct::query()->where('order_id', $order_id)->get();
             $order_price = 0;
