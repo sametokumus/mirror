@@ -27,6 +27,12 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
+            $userActiveCheck = User::query()->where('email', $request->email)->where('active', 0)->count();
+
+            if ($userActiveCheck > 0) {
+                throw new \Exception('auth-004');
+            }
+
             $userCheck = User::query()->where('email', $request->email)->count();
 
             if ($userCheck > 0) {
@@ -93,6 +99,9 @@ class AuthController extends Controller
             if ($exception->getMessage() == 'auth-003'){
                 return  response(['message' => 'Girdiğiniz telefon numarası kullanılmaktadır.','status' => 'auth-003']);
             }
+            if ($exception->getMessage() == 'auth-004'){
+                return  response(['message' => 'Bu e-posta adresi ile bir hesap bulunmaktadır. Yeniden giriş yaparak hesabınızı aktifleştirebilirsiniz.','status' => 'auth-003']);
+            }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
         }
 
@@ -107,6 +116,12 @@ class AuthController extends Controller
             ]);
 
             $user = User::query()->where('email', $request->email)->first();
+
+            if ($user->active == 0){
+                User::query()->where('email', $request->email)->update([
+                    'active' => 1
+                ]);
+            }
 
             if (!$user || !Hash::check($request->password, $user->password)) {
                 throw new \Exception('auth-001');
