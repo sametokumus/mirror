@@ -43,9 +43,6 @@ use App\Http\Controllers\Api\V1\ContactController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/unauthorized', function () {
-    return response(['message' => 'Unauthenticated.', 'status' => 'auth-401']);
-})->name('unauthenticated');
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('auth/register', [AuthController::class, 'register']);
@@ -57,7 +54,7 @@ Route::post('password/sendResetPasswordEmail', [ResetPasswordController::class, 
 Route::post('password/reset',[ResetPasswordController::class, 'resetPassword']);
 
 
-Route::middleware(['type.user'])->group(function (){
+Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     Route::get('/logout', [AuthController::class, 'logout']);
 
@@ -106,10 +103,6 @@ Route::middleware(['type.user'])->group(function (){
 
 
 
-});
-
-Route::fallback(function () {
-    return redirect()->route('unauthenticated');
 });
 
 
