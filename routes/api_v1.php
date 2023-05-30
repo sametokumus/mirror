@@ -43,6 +43,9 @@ use App\Http\Controllers\Api\V1\ContactController;
 |
 */
 
+Route::middleware('auth:sanctum')->get('/unauthorized', function () {
+    abort(401, 'Unauthorized');
+})->name('unauthenticated');
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('auth/register', [AuthController::class, 'register']);
@@ -54,7 +57,7 @@ Route::post('password/sendResetPasswordEmail', [ResetPasswordController::class, 
 Route::post('password/reset',[ResetPasswordController::class, 'resetPassword']);
 
 
-Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
+Route::middleware(['type.user'])->group(function (){
 
     Route::get('/logout', [AuthController::class, 'logout']);
 
@@ -104,6 +107,13 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
 
 });
+
+Route::fallback(function () {
+    return redirect()->route('unauthenticated');
+});
+
+
+
 
 Route::post('/cart/addCart', [CartController::class, 'addCart']);
 Route::post('/cart/updateCartProduct', [CartController::class, 'updateCartProduct']);
