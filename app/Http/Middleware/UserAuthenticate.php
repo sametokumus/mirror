@@ -2,20 +2,43 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Closure;
 
-class UserAuthenticate extends Middleware
+class UserAuthenticate
 {
     /**
-     * Get the path the user should be redirected to when they are not authenticated.
+     * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return string|null
+     * @param  \Closure  $next
+     * @return mixed
      */
-    protected function redirectTo($request)
+    public function handle($request, Closure $next)
     {
         if (! $request->expectsJson()) {
-            return route('auth.login');
+            return response()->json(['error' => 'Unauthenticated.'], 401);
         }
+
+        return $next($request);
     }
 }
+
+//namespace App\Http\Middleware;
+//
+//use Illuminate\Auth\Middleware\Authenticate as Middleware;
+//
+//class UserAuthenticate extends Middleware
+//{
+//    /**
+//     * Get the path the user should be redirected to when they are not authenticated.
+//     *
+//     * @param  \Illuminate\Http\Request  $request
+//     * @return string|null
+//     */
+//    protected function redirectTo($request)
+//    {
+//        if (! $request->expectsJson()) {
+//            return route('auth.login');
+//        }
+//    }
+//}
