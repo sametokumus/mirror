@@ -44,7 +44,8 @@ use App\Http\Controllers\Api\V1\ContactController;
 */
 
 Route::middleware('auth:sanctum')->get('/unauthorized', function () {
-    abort(401, 'Unauthorized');
+//    abort(401, 'Unauthorized');
+    return response()->json(['message' => 'Unauthenticated.'], 401);
 })->name('unauthenticated');
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
