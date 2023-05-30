@@ -6,6 +6,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Arr;
 
 class Handler extends ExceptionHandler
 {
@@ -48,15 +49,15 @@ class Handler extends ExceptionHandler
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $guard = array_get($exception->guards(), 0);
+        $guard = Arr::get($exception->guards(), 0);
 
         switch ($guard) {
             case 'sanctum':
-                return redirect()->route('login');
+                return redirect()->route('unauthenticated');
                 break;
 
             default:
-                return redirect()->guest(route('login'));
+                return redirect()->guest(route('unauthenticated'));
                 break;
         }
     }
