@@ -14,6 +14,7 @@ class UserAuthenticate extends Middleware
      */
     protected function redirectTo($request)
     {
+        return response(['message' => 'Unauthenticated.', 'status' => 'auth-401']);
         return response()->json(['error' => 'Unauthenticated.'], 401);
         if (! $request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
