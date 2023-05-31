@@ -201,14 +201,15 @@ class OrderController extends Controller
 
                 if ($final <= 15){
                     $order['is_refundable'] = 1;
-                    $refund = OrderRefund::query()->where('order_id',$order->id)->first();
-                    if (isset($refund)){
-                        $order['is_refundable'] = 0;
-                        $refund['status_name'] = OrderRefundStatus::query()->where('id', $refund->status)->first()->name;
-                        $order['refund'] = $refund;
-                    }
                 }else{
+                    $order['is_refundable'] = 'timeout';
+                }
+
+                $refund = OrderRefund::query()->where('order_id',$order->id)->first();
+                if (isset($refund)){
                     $order['is_refundable'] = 0;
+                    $refund['status_name'] = OrderRefundStatus::query()->where('id', $refund->status)->first()->name;
+                    $order['refund'] = $refund;
                 }
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['orders' => $orders]]);
