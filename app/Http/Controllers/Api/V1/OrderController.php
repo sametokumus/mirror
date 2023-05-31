@@ -201,7 +201,6 @@ class OrderController extends Controller
                     $refund = OrderRefund::query()->where('order_id',$order->id)->first();
                     if (isset($refund)){
                         $order['is_refundable'] = 0;
-                    }else{
                         $order['refund'] = $refund;
                     }
                 }else{
