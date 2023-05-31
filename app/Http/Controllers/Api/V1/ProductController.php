@@ -1224,7 +1224,7 @@ class ProductController extends Controller
         $images = ProductImage::all();
 
         foreach ($images as $image) {
-            $imageUrl = $image->url;
+            $imageUrl = $image->image;
 
             if (!empty($imageUrl)) {
                 $imageData = file_get_contents($imageUrl);
