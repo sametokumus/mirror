@@ -18,6 +18,7 @@ use App\Models\District;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\OrderRefund;
+use App\Models\OrderRefundStatus;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
 use App\Models\Payment;
@@ -201,7 +202,8 @@ class OrderController extends Controller
                     $refund = OrderRefund::query()->where('order_id',$order->id)->first();
                     if (isset($refund)){
                         $order['is_refundable'] = 0;
-                        $order['refund'] = $refund;
+                        $refund['status_name'] == OrderRefundStatus::query()->where('id', $refund->status)->first()->name;
+                        $order['refund'] = $refund;<
                     }
                 }else{
                     $order['is_refundable'] = 0;
