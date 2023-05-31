@@ -55,7 +55,6 @@ Route::post('password/sendResetPasswordEmail', [ResetPasswordController::class, 
 Route::post('password/reset',[ResetPasswordController::class, 'resetPassword']);
 
 
-Route::post('product/downloadImages',[ProductController::class, 'downloadImages']);
 
 Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
