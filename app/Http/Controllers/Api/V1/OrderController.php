@@ -183,9 +183,11 @@ class OrderController extends Controller
 //                $product_image = ProductImage::query()->where('variation_id', $product->variation_id)->first()->image;
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
                 $payment_method = PaymentMethod::query()->where('id',$order->payment_method)->first()->name;
+                $payment_type = PaymentType::query()->where('id',$order->payment_method)->first()->name;
 
                 $order['product_count'] = $product_count;
                 $order['product_image'] = $product_image;
+                $order['payment_type'] = $payment_type;
                 $order['payment_method'] = $payment_method;
                 $order['status_name'] = $status_name;
 
