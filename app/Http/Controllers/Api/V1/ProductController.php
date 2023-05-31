@@ -1227,10 +1227,17 @@ class ProductController extends Controller
             $imageUrl = $image->image;
 
             if (!empty($imageUrl)) {
-                $imageData = file_get_contents($imageUrl);
-                $imageName = basename($imageUrl);
+                $ch = curl_init($imageUrl);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $imageData = curl_exec($ch);
 
-                file_put_contents(public_path('images/ProductImage/' . $imageName), $imageData);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+
+                if ($httpCode == 200) {
+                    $imageName = basename($imageUrl);
+                    file_put_contents(public_path('images/ProductImage/' . $imageName), $imageData);
+                }
             }
         }
 
