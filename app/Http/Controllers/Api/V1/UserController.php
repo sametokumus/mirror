@@ -220,7 +220,7 @@ class UserController extends Controller
                     'user_id' => $request->user_id,
                     'order_id' => $request->order_id
                 ]);
-                Order::query()->where('order_id',$request->order_id)->update([
+                Order::query()->where('id',$request->order_id)->update([
                     'status_id' => 11
                 ]);
             return response(['message' => 'İade talebiniz alındı.','status' => 'success']);
