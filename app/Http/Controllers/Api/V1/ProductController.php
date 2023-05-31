@@ -1225,11 +1225,15 @@ class ProductController extends Controller
 
         foreach ($images as $image) {
             $imageUrl = $image->url;
-            $imageData = file_get_contents($imageUrl);
-            $imageName = basename($imageUrl);
 
-            file_put_contents(public_path('images/ProductImage/' . $imageName), $imageData);
+            if (!empty($imageUrl)) {
+                $imageData = file_get_contents($imageUrl);
+                $imageName = basename($imageUrl);
+
+                file_put_contents(public_path('images/ProductImage/' . $imageName), $imageData);
+            }
         }
+
 
         return "Görseller indirildi.";
     }
