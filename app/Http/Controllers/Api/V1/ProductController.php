@@ -1219,5 +1219,20 @@ class ProductController extends Controller
         }
     }
 
+    public function downloadImages()
+    {
+        $images = ProductImage::all();
+
+        foreach ($images as $image) {
+            $imageUrl = $image->url;
+            $imageData = file_get_contents($imageUrl);
+            $imageName = basename($imageUrl);
+
+            file_put_contents(public_path('images/ProductImage/' . $imageName), $imageData);
+        }
+
+        return "Görseller indirildi.";
+    }
+
 }
 
