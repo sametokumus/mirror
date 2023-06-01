@@ -1245,5 +1245,23 @@ class ProductController extends Controller
         return "Görseller indirildi.";
     }
 
+    public function updateImagesUrl()
+    {
+        $images = ProductImage::all();
+
+        foreach ($images as $image) {
+            $imageUrl = $image->image;
+            $fileName = basename($imageUrl);
+
+            ProductImage::query()->where('id', $image->id)->update([
+               'image' => $fileName
+            ]);
+
+        }
+
+
+        return "Görseller indirildi.";
+    }
+
 }
 
