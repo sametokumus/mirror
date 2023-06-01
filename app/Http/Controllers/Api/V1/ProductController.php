@@ -1251,10 +1251,10 @@ class ProductController extends Controller
 
         foreach ($images as $image) {
             $imageUrl = $image->image;
-            $fileName = basename($imageUrl);
+//            $fileName = basename($imageUrl);
 
             ProductImage::query()->where('id', $image->id)->update([
-               'image' => $fileName
+               'image' => '/images/ProductImage/'.$imageUrl
             ]);
 
         }
