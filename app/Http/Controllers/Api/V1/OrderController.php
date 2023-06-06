@@ -278,7 +278,7 @@ class OrderController extends Controller
                 $order_detail['product'] = $product;
 
                 if($order->user_id != null) {
-                    $user = User::query()->where('id', $order->user_id)->where('active', 1)->first();
+                    $user = User::query()->where('id', $order->user_id)->first();
                     $total_user_discount = $user->user_discount;
 
                     $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
