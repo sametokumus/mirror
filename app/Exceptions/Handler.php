@@ -4,9 +4,6 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Arr;
 
 class Handler extends ExceptionHandler
 {
@@ -42,23 +39,4 @@ class Handler extends ExceptionHandler
         });
     }
 
-
-    protected function unauthenticated($request, AuthenticationException $exception)
-    {
-        if ($request->expectsJson()) {
-            return response(['message' => 'Unauthenticated1.', 'status' => 'auth-401']);
-        }
-
-        $guard = Arr::get($exception->guards(), 0);
-
-        switch ($guard) {
-            case 'sanctum':
-                return response(['message' => 'Unauthenticated2.', 'status' => 'auth-401']);
-                break;
-
-            default:
-                return response(['message' => 'Unauthenticated3.', 'status' => 'auth-401']);
-                break;
-        }
-    }
 }
