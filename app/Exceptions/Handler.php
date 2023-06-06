@@ -50,6 +50,7 @@ class Handler extends ExceptionHandler
         }
 
         $guard = Arr::get($exception->guards(), 0);
+        return response(['message' => $guard, 'status' => 'auth-401']);
 
         switch ($guard) {
             case 'sanctum':
