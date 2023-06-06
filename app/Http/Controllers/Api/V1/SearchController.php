@@ -38,12 +38,12 @@ class SearchController extends Controller
                     ->leftJoin('product_variations', 'product_variations.id', '=', 'product_variation_groups.id')
                     ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
                     ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
-                    ->selectRaw('brands.name as brand_name,product_types.name as type_name, product_rules.*, products.*')
+                    ->selectRaw('brands.name as brand_name,product_types.name as type_name, product_rules.id as rule_id, product_rules.*, products.*')
                     ->where('products.active', 1)
                     ->where('product_types.active', 1)
                     ->where('brands.active', 1);
 
-                $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . '%" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . ',%" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ',%")';
+                $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR products.sku LIKE "%' . $request->search_keywords . ' %" OR products.name LIKE "% ' . $request->search_keywords . '%" OR products.description LIKE "% ' . $request->search_keywords . ',%" OR products.short_description LIKE "%' . $request->search_keywords . ',%")';
                 $products = $products->whereRaw($q);
                 $products = $products->get();
 
@@ -86,14 +86,15 @@ class SearchController extends Controller
                     ->leftJoin('product_variations', 'product_variations.id', '=', 'product_variation_groups.id')
                     ->select(DB::raw('(select image from product_images where variation_id = product_variations.id order by id asc limit 1) as image'))
                     ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
-                    ->selectRaw('brands.name as brand_name,product_types.name as type_name, product_rules.*, products.*')
+                    ->selectRaw('brands.name as brand_name,product_types.name as type_name, product_rules.id as rule_id, product_rules.*, products.*')
                     ->where('products.active', 1)
                     ->where('product_categories.active', 1)
                     ->where('product_types.active', 1)
-                    ->where('brands.active', 1);
+                    ->where('brands.active', 1)
+                    ->where('product_categories.category_id', $request->category_id);
 
 
-                $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ' %" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . '%" OR product_seos.search_keywords LIKE "% ' . $request->search_keywords . ',%" OR product_seos.search_keywords LIKE "%' . $request->search_keywords . ',%")';
+                $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR products.sku LIKE "%' . $request->search_keywords . ' %" OR products.name LIKE "% ' . $request->search_keywords . '%" OR products.description LIKE "% ' . $request->search_keywords . ',%" OR products.short_description LIKE "%' . $request->search_keywords . ',%")';
                 $products = $products->whereRaw($q);
                 $products = $products->get();
 
