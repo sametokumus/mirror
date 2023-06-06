@@ -150,8 +150,7 @@ class DeliveryController extends Controller
             $district_deliveries = District::query()
                 ->leftJoin('cities', 'cities.id', '=', 'districts.city_id')
                 ->orderBy('districts.city_id')
-//                ->get(['districts.*', 'cities.name as city_name']);
-            ->toSql();
+                ->get(['districts.*', 'cities.name as city_name']);
 
 //            foreach ($district_deliveries as $district_delivery){
 //                $carriers = Carrier::query()->where('active', 1)->get();
