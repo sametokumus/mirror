@@ -45,21 +45,19 @@ class Handler extends ExceptionHandler
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        return response(['message' => 'sadasd.', 'status' => 'auth-401']);
         if ($request->expectsJson()) {
-            return response(['message' => 'Unauthenticated.', 'status' => 'auth-401']);
+            return response(['message' => 'Unauthenticated1.', 'status' => 'auth-401']);
         }
 
         $guard = Arr::get($exception->guards(), 0);
-        return response(['message' => $guard, 'status' => 'auth-401']);
 
         switch ($guard) {
             case 'sanctum':
-                return response(['message' => 'Unauthenticated.', 'status' => 'auth-401']);
+                return response(['message' => 'Unauthenticated2.', 'status' => 'auth-401']);
                 break;
 
             default:
-                return response(['message' => 'Unauthenticated.', 'status' => 'auth-401']);
+                return response(['message' => 'Unauthenticated3.', 'status' => 'auth-401']);
                 break;
         }
     }
