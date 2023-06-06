@@ -17,6 +17,7 @@ class CreateOrderRefundsTable extends Migration
             $table->id();
             $table->text('order_id');
             $table->bigInteger('user_id');
+            $table->text('note')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->tinyInteger('status')->default(1);
             $table->timestamp('created_at')->useCurrent();

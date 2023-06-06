@@ -218,7 +218,8 @@ class UserController extends Controller
         try {
                 OrderRefund::query()->insert([
                     'user_id' => $request->user_id,
-                    'order_id' => $request->order_id
+                    'order_id' => $request->order_id,
+                    'note' => $request->note
                 ]);
                 Order::query()->where('id',$request->order_id)->update([
                     'status_id' => 11
