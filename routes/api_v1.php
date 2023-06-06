@@ -59,7 +59,7 @@ Route::post('password/reset',[ResetPasswordController::class, 'resetPassword']);
 Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     Route::get('/unauthorized', function () {
-        return response(['message' => 'Unauthenticated.', 'status' => 'auth-401']);
+        return response(['message' => 'Unauthenticated4.', 'status' => 'auth-401']);
     })->name('unauthenticated');
 
     Route::get('/logout', [AuthController::class, 'logout']);
