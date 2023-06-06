@@ -215,13 +215,11 @@ class SearchController extends Controller
                 $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
                 $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
                 $product['variation_count'] = $count;
-
-                $variation = ProductVariation::query()->where('variation_group_id' , $vg->id)->first();
-
-
-                $product['image'] = ProductImage::query()->where('variation_id',$variation->id)->first()->image;
             }
 
+            foreach ($products as $product){
+                $product['image'] = ProductImage::query()->where('variation_id',$product->featured_variation)->first()->image;
+            }
 
             if($user_id != 0) {
                 $user = User::query()->where('id', $user_id)->where('active', 1)->first();
