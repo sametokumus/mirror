@@ -541,8 +541,12 @@ class ProductController extends Controller
 
             foreach ($products as $product){
                 $vg = ProductVariationGroup::query()->where('product_id', $product->id)->first();
-                $count = ProductVariation::query()->where('variation_group_id' , $vg->id)->count();
-                $product['variation_count'] = $count;
+                if ($vg) {
+                    $count = ProductVariation::query()->where('variation_group_id', $vg->id)->count();
+                    $product['variation_count'] = $count;
+                }else{
+                    $product['variation_count'] = 0;
+                }
             }
 
             if($user_id != 0) {

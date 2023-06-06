@@ -13,7 +13,10 @@ class SliderController extends Controller
     public function getSliders()
     {
         try {
-            $sliders = Slider::query()->where('active',1)->get();
+            $sliders = Slider::query()
+                ->where('active',1);
+            $sliders = $sliders->get();
+
             foreach ($sliders as $slider){
                 if($slider->user_type == 0){
                     $slider['user_type_name'] = "Tüm Kullanıcılar";
