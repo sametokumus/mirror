@@ -455,7 +455,7 @@ class CartController extends Controller
                 $rule = ProductRule::query()->where('variation_id',$cart_detail->variation_id)->first();
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
 
-                $user = User::query()->where('id', $user_id)->where('active', 1)->first();
+                $user = User::query()->where('id', $user_id)->first();
                 $total_user_discount = $user->user_discount;
 
                 $type_discount = UserTypeDiscount::query()->where('user_type_id', $user->user_type)->where('brand_id', $product->brand_id)->where('type_id', $product->type_id)->where('active', 1)->first();
