@@ -45,6 +45,7 @@ class Handler extends ExceptionHandler
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
+        return response(['message' => 'sadasd.', 'status' => 'auth-401']);
         if ($request->expectsJson()) {
             return response(['message' => 'Unauthenticated.', 'status' => 'auth-401']);
         }
