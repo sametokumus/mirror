@@ -111,9 +111,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
 });
 
-Route::fallback(function () {
-    return redirect()->route('unauthenticated');
-});
+//Route::fallback(function () {
+//    return redirect()->route('unauthenticated');
+//});
 
 
 
