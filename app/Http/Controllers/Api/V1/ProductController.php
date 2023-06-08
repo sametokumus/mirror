@@ -7,6 +7,7 @@ use App\Models\CampaignProduct;
 use App\Models\Category;
 use App\Models\CreditCard;
 use App\Models\CreditCardInstallment;
+use App\Models\ImportProduct;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductDocument;
@@ -1221,6 +1222,24 @@ class ProductController extends Controller
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         }
+    }
+
+    public function reloadImages()
+    {
+        $imports = ImportProduct::all();
+
+        foreach ($imports as $import) {
+            $imageUrl = $import->resim;
+            $variations = ProductVariation::query()->where('sku', $import->alt_urun_kod)->get();
+            foreach ($variations as $variation){
+                ProductImage::query()->where('variation_id', $variation->id)->update([
+                    'image' => $imageUrl
+                ]);
+            }
+        }
+
+
+        return "Güncellendi.";
     }
 
     public function downloadImages()
