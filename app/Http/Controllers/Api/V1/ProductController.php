@@ -1274,7 +1274,7 @@ class ProductController extends Controller
 
     public function updateImagesUrl()
     {
-        $images = ProductImage::all();
+        $images = ProductImage::query()->where('image', '!=',  '0')->get();
 
         foreach ($images as $image) {
             $imageUrl = $image->image;
