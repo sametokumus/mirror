@@ -1278,16 +1278,16 @@ class ProductController extends Controller
 
         foreach ($images as $image) {
             $imageUrl = $image->image;
-//            $fileName = basename($imageUrl);
+            $fileName = basename($imageUrl);
 
             ProductImage::query()->where('id', $image->id)->update([
-               'image' => '/images/ProductImage/'.$imageUrl
+               'image' => '/images/ProductImage/'.$fileName
             ]);
 
         }
 
 
-        return "Görseller indirildi.";
+        return "URL'ler güncellendi.";
     }
 
 }
