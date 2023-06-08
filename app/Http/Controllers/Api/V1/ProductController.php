@@ -1244,7 +1244,7 @@ class ProductController extends Controller
 
     public function downloadImages()
     {
-        $images = ProductImage::all();
+        $images = ProductImage::query()->where('image', '!=', '0')->get();
 
         foreach ($images as $image) {
             $imageUrl = $image->image;
