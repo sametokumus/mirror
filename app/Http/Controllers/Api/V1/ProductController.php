@@ -1246,8 +1246,8 @@ class ProductController extends Controller
     {
         $images = ProductImage::query()
             ->where('image', '!=', '0')
-            ->where('id', '>=', 1201)
-            ->where('id', '<=', 1600)
+            ->where('id', '>=', 1601)
+            ->where('id', '<=', 2000)
             ->get();
 
         foreach ($images as $image) {
