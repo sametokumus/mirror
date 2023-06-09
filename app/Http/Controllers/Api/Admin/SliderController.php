@@ -18,6 +18,7 @@ class SliderController extends Controller
                 'content_text' => 'required'
             ]);
             $slider_id = Slider::query()->insertGetId([
+                'content_title' => $request->content_title,
                 'content_text' => $request->content_text,
                 'order' => $request->order,
                 'user_type' => $request->user_type
@@ -58,6 +59,7 @@ class SliderController extends Controller
             ]);
 
             $slider = Slider::query()->where('id',$id)->update([
+                'content_title' => $request->content_title,
                 'content_text' => $request->content_text,
                 'order' => $request->order,
                 'user_type' => $request->user_type
