@@ -43,7 +43,7 @@ class SearchController extends Controller
                     ->where('product_types.active', 1)
                     ->where('brands.active', 1);
 
-                $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR products.sku LIKE "%' . $request->search_keywords . ' %" OR products.name LIKE "% ' . $request->search_keywords . '%" OR products.description LIKE "% ' . $request->search_keywords . ',%" OR products.short_description LIKE "%' . $request->search_keywords . ',%")';
+                $q = ' (product_seos.search_keywords LIKE "%' . $request->search_keywords . '%" OR products.sku LIKE "%' . $request->search_keywords . '%" OR products.name LIKE "%' . $request->search_keywords . '%" OR products.description LIKE "%' . $request->search_keywords . '%" OR products.short_description LIKE "%' . $request->search_keywords . '%")';
                 $products = $products->whereRaw($q);
                 $products = $products->toSql();
 return $products;
