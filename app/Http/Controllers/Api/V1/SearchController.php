@@ -45,8 +45,8 @@ class SearchController extends Controller
 
                 $q = ' (product_seos.search_keywords LIKE "% ' . $request->search_keywords . ' %" OR products.sku LIKE "%' . $request->search_keywords . ' %" OR products.name LIKE "% ' . $request->search_keywords . '%" OR products.description LIKE "% ' . $request->search_keywords . ',%" OR products.short_description LIKE "%' . $request->search_keywords . ',%")';
                 $products = $products->whereRaw($q);
-                $products = $products->get();
-
+                $products = $products->toSql();
+return $products;
                 if($user_id != 0) {
                     $user = User::query()->where('id', $user_id)->where('active', 1)->first();
                     $total_user_discount = $user->user_discount;
