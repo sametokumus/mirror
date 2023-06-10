@@ -107,7 +107,7 @@ class CimriController extends Controller
                 });
             }
 
-            $products = $products->toSql();
+            $products = $products->get();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
