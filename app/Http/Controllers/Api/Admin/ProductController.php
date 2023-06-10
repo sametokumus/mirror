@@ -594,9 +594,6 @@ class ProductController extends Controller
                 'brand_id' => 'required|exists:brands,id',
                 'type_id' => 'required|exists:product_types,id',
                 'name' => 'required',
-                'short_description' => 'required',
-                'description' => 'required',
-                'notes' => 'required',
                 'sku' => 'required',
                 'is_free_shipping' => 'required',
                 'view_all_images' => 'required'
