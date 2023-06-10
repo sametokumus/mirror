@@ -201,7 +201,7 @@ class SearchController extends Controller
 
             $products = $products
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id');
-            $products = $products->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*');
+            $products = $products->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, product_variations.name as variation_name, products.*');
             $products = $products
                 ->where('products.active', 1)
                 ->where('product_categories.active', 1)
