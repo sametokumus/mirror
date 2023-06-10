@@ -551,6 +551,11 @@ class CartController extends Controller
                     foreach ($materials as $material){
 
                         $weight = $material_array[$material->id];
+
+                        //Kargo Çarpanı
+
+                        $weight = $weight * $material->multiplier;
+
                         if ($weight == 0){
                         }else{
 
