@@ -485,8 +485,13 @@ class CartController extends Controller
                     }
                 }
 
-                $weight = $weight + $rule->weight;
-                $material_array[$rule->material] = $material_array[$rule->material] + $rule->weight;
+                if ($product->is_free_shipping == 0) {
+                    $weight = $weight + $rule->weight;
+                    $material_array[$rule->material] = $material_array[$rule->material] + $rule->weight;
+                }else{
+                    $weight = $weight + 0;
+                    $material_array[$rule->material] = $material_array[$rule->material] + 0;
+                }
 
                 $step_desi = $rule->weight * $rule->quantity_step;
                 foreach ($carriers as $carrier){
