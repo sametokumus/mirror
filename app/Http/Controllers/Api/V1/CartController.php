@@ -488,8 +488,8 @@ class CartController extends Controller
                     $weight = $weight + $rule->weight;
                     $material_array[$rule->material] = $material_array[$rule->material] + $rule->weight;
                 }else{
-                    $weight = $weight + 0;
-                    $material_array[$rule->material] = $material_array[$rule->material] + 0;
+                    $weight = $weight + 1;
+                    $material_array[$rule->material] = $material_array[$rule->material] + 1;
                 }
 
                 $step_desi = $rule->weight * $rule->quantity_step;
