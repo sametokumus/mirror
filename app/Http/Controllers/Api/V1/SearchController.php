@@ -201,7 +201,18 @@ class SearchController extends Controller
 
             $products = $products
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id');
+
+
+            $products = $products
+                ->leftJoin('product_seos', 'product_seos.product_id', '=', 'products.id');
+            if ($request->search_keywords != null) {
+                $q = ' (product_seos.search_keywords LIKE "%' . $request->search_keywords . '%" OR products.sku LIKE "%' . $request->search_keywords . '%" OR products.name LIKE "%' . $request->search_keywords . '%" OR products.description LIKE "%' . $request->search_keywords . '%" OR products.short_description LIKE "%' . $request->search_keywords . '%")';
+                $products = $products->whereRaw($q);
+            }
+
             $products = $products->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, product_variations.name as variation_name, products.*');
+
+
             $products = $products
                 ->where('products.active', 1)
                 ->where('product_categories.active', 1)
