@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\CimriProduct;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductDocument;
+use App\Models\ProductImage;
 use App\Models\ProductRule;
+use App\Models\ProductTags;
+use App\Models\ProductType;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationGroup;
+use App\Models\ProductVariationGroupType;
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use Illuminate\Database\QueryException;
@@ -141,6 +148,13 @@ class CimriController extends Controller
     public function getProducts(){
         try {
             $products = CimriProduct::query()->where('active', 1)->get();
+
+            foreach ($products as $product) {
+                $product_variation_group = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $variations = ProductVariation::query()->where('variation_group_id', $product_variation_group->id)->get();
+
+                $product['variations'] = $variations;
+            }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
