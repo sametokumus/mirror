@@ -485,7 +485,7 @@ class CartController extends Controller
                     }
                 }
                 if ($product->is_free_shipping == 0) {
-                    $weight = $weight + ($cart_detail->quantity / $rule->step * $rule->weight);
+                    $weight = $weight + ($cart_detail->quantity / $rule->quantity_step * $rule->weight);
                     $material_array[$rule->material] = $material_array[$rule->material] + ($cart_detail->quantity / $rule->quantity_step * $rule->weight);
                 }else{
                     $weight = $weight + 0;
