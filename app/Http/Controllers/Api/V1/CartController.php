@@ -488,8 +488,8 @@ class CartController extends Controller
                     $weight = $weight + $rule->weight;
                     $material_array[$rule->material] = $material_array[$rule->material] + $rule->weight;
                 }else{
-                    $weight = $weight + 1;
-                    $material_array[$rule->material] = $material_array[$rule->material] + 1;
+                    $weight = $weight + 0;
+                    $material_array[$rule->material] = $material_array[$rule->material] + 0;
                 }
 
                 $step_desi = $rule->weight * $rule->quantity_step;
@@ -540,6 +540,7 @@ class CartController extends Controller
 //            $checkout_prices['user_discount'] = $user_discount;
 //            $checkout_prices['user_discount_rate'] = $user_discount_rate;
             $checkout_prices['coupon_code'] = $coupon_code;
+            $checkout_prices['material'] = $material_array;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
             $checkout_prices['total_price'] = number_format($total_price, 2,",",".");
