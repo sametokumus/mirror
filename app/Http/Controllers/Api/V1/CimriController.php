@@ -150,7 +150,7 @@ class CimriController extends Controller
             $products = CimriProduct::query()->where('active', 1)->get();
 
             foreach ($products as $product) {
-                $product_variation_group = ProductVariationGroup::query()->where('product_id', $product->id)->first();
+                $product_variation_group = ProductVariationGroup::query()->where('product_id', $product->merchantItemId)->first();
                 $variations = ProductVariation::query()->where('variation_group_id', $product_variation_group->id)->get();
 
                 $product['variations'] = $variations;
