@@ -188,6 +188,7 @@ class OrderController extends Controller
                 $order['product_count'] = $product_count;
                 $order['product_image'] = $product_image;
                 $order['payment_type'] = $payment_type;
+                $order['payment_type_id'] = $order->payment_method;
                 $order['payment_method'] = $payment_method;
                 $order['status_name'] = $status_name;
 
