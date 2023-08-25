@@ -170,7 +170,7 @@ class OrderController extends Controller
 
     public function getOrdersByUserId($user_id){
         try {
-            $orders = Order::query()->where('user_id',$user_id)->orderByDesc('id')->get(['id', 'order_id', 'created_at as order_date', 'total', 'status_id','payment_method']);
+            $orders = Order::query()->where('user_id',$user_id)->orderByDesc('id')->get(['id', 'order_id', 'cart_id', 'created_at as order_date', 'total', 'status_id','payment_method']);
             foreach ($orders as $order){
                 $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
                 $product = OrderProduct::query()->where('order_id', $order->order_id)->first();
