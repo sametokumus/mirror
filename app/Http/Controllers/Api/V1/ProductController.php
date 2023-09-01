@@ -649,7 +649,7 @@ class ProductController extends Controller
     public function getProductTagById($product_id)
     {
         try {
-            $product_tags = ProductTags::query()->where('product_id', $product_id)->get();
+            $product_tags = ProductTags::query()->where('product_id', $product_id)->where('active', 1)->get();
             foreach ($product_tags as $product_tag) {
                 $tag_name = Tag::query()->where('id', $product_tag->tag_id)->get();
                 $product_tag['tag'] = $tag_name;
@@ -663,7 +663,7 @@ class ProductController extends Controller
     public function getProductCategoryById($product_id)
     {
         try {
-            $product_categories = ProductCategory::query()->where('product_id', $product_id)->get();
+            $product_categories = ProductCategory::query()->where('product_id', $product_id)->where('active', 1)->get();
             foreach ($product_categories as $product_category) {
                 $category_name = Category::query()->where('id', $product_category->category_id)->get();
                 $product_category['category'] = $category_name;
@@ -773,7 +773,7 @@ class ProductController extends Controller
     public function getVariationImageById($variation_id)
     {
         try {
-            $variation_images = ProductImage::query()->where('variation_id', $variation_id)->get();
+            $variation_images = ProductImage::query()->where('variation_id', $variation_id)->where('active', 1)->get();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['variation_images' => $variation_images]]);
         } catch (QueryException $queryException) {
@@ -859,6 +859,7 @@ class ProductController extends Controller
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*, campaign_products.order')
                 ->where('campaign_products.active', 1)
+                ->where('products.active', 1)
                 ->orderBy('campaign_products.order', 'ASC')
                 ->get();
 
@@ -912,6 +913,7 @@ class ProductController extends Controller
                 ->leftJoin('product_rules', 'product_rules.variation_id', '=', 'product_variations.id')
                 ->selectRaw('product_rules.*, brands.name as brand_name,product_types.name as type_name, products.*, campaign_products.order')
                 ->where('campaign_products.active', 1)
+                ->where('products.active', 1)
                 ->orderBy('campaign_products.order', 'ASC')
                 ->limit($limit)
                 ->get();
