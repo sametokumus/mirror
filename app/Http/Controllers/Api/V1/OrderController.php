@@ -190,7 +190,7 @@ class OrderController extends Controller
                         $billing_address = $billing_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
                     }
 
-                    $order_id = Order::query()->where('order_id', $order_quid)->update([
+                    Order::query()->where('order_id', $order_quid)->update([
                         'carrier_id' => $request->carrier_id,
                         'shipping_address_id' => $request->shipping_address_id,
                         'billing_address_id' => $request->billing_address_id,
