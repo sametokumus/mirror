@@ -138,7 +138,11 @@ class ProductController extends Controller
     {
         try {
             $product = Product::query()->where('id', $product_id)->where('active', 1)->first();
-            $brand = Brand::query()->where('id', $product->brand_id)->first();
+            if ($product->brand_id != null) {
+                $brand = Brand::query()->where('id', $product->brand_id)->first();
+            }else{
+                $brand = null;
+            }
             $product_type = ProductType::query()->where('id', $product->type_id)->first();
             $product_documents = ProductDocument::query()->where('product_id', $product->id)->where('active', 1)->get();
             $product_tags = ProductTags::query()
