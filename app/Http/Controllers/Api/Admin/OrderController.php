@@ -95,7 +95,7 @@ class OrderController extends Controller
                 $user_profile = UserProfile::query()->where('user_id', $order->user_id)->first(['name', 'surname']);
                 $payment_method = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
 
-                $payments = Payment::query()->where('order_id', $order->order_id)->groupBy('type')->get('type');
+                $payments = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->groupBy('type')->get('type');
                 $payment_types = '';
                 foreach ($payments as $payment){
                     $payment_type = PaymentType::query()->where('id', $payment->type)->first();
