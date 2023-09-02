@@ -95,6 +95,14 @@ class OrderController extends Controller
                 $user_profile = UserProfile::query()->where('user_id', $order->user_id)->first(['name', 'surname']);
                 $payment_method = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
 
+                $payments = Payment::query()->where('order_id', $order->order_id)->groupBy('type')->get('type');
+                $payment_types = '';
+                foreach ($payments as $payment){
+                    $payment_type = PaymentType::query()->where('id', $payment->type)->first();
+                    $payment_types .= $payment_type->name.', ';
+                }
+                $payment_types = rtrim($payment_types, ", ");
+
                 $order['product_count'] = $product_count;
                 $order['product_image'] = $product_image;
                 $order['payment_method'] = $order->payment_method;
@@ -103,6 +111,7 @@ class OrderController extends Controller
                 $order['shipping_type_name'] = $shipping_type;
                 $order['user_profile'] = $user_profile;
                 $order['payment_method_name'] = $payment_method;
+                $order['payment_types'] = $payment_types;
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['orders' => $orders]]);
         } catch (QueryException $queryException) {
