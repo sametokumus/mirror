@@ -106,12 +106,16 @@ class OrderController extends Controller
                 $payments = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->get();
                 $is_paids = true;
                 $is_paid_credit_card = false;
+                $is_preauth_credit_card = false;
                 foreach ($payments as $payment){
                     if ($payment->is_paid == 0){
                         $is_paids = false;
                     }
                     if ($payment->is_paid == 1 && $payment->type == 1){
                         $is_paid_credit_card = true;
+                    }
+                    if ($payment->is_preauth == 1 && $payment->is_paid == 0 && $payment->type == 1){
+                        $is_preauth_credit_card = true;
                     }
                 }
 
@@ -127,6 +131,7 @@ class OrderController extends Controller
                 $order['payment_types'] = $payment_types;
                 $order['is_paids'] = $is_paids;
                 $order['is_paid_credit_card'] = $is_paid_credit_card;
+                $order['is_preauth_credit_card'] = $is_preauth_credit_card;
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['orders' => $orders]]);
         } catch (QueryException $queryException) {
