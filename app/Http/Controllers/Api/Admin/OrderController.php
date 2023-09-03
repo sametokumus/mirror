@@ -106,7 +106,7 @@ class OrderController extends Controller
                 $payments = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->get();
                 $is_paids = true;
                 foreach ($payments as $payment){
-                    if ($payment->is_paid = 0){
+                    if ($payment->is_paid == 0){
                         $is_paids = false;
                     }
                 }
