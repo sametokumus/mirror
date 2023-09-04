@@ -244,6 +244,13 @@ class OrderController extends Controller
             }
 
             if ($val){
+                Order::query()->where('order_id', $order_id)->update([
+                    'status_id' => 10
+                ]);
+                OrderStatusHistory::query()->insert([
+                    'order_id' => $order_id,
+                    'status_id' => 10
+                ]);
                 return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
             }else{
                 return response(['message' => 'İşlem başarısız.', 'status' => 'false']);
