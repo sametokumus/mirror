@@ -564,7 +564,7 @@ class OrderController extends Controller
             if ($is_proforma > 0){
 
                 $payment = Payment::query()->where('order_id', $request->order_id)->where('type', 3)->where('active', 1)->first();
-                $payment_quid = $payment;
+                $payment_quid = $payment->payment_id;
                 Payment::query()->where('order_id', $request->order_id)->where('type', 3)->where('active', 1)->update([
                     'default_price' => $request->default_price,
                     'paid_price' => $request->paid_price,
