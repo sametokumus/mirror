@@ -559,16 +559,31 @@ class OrderController extends Controller
     {
         try {
 
-            $payment_quid = Uuid::uuid();
-            Payment::query()->insert([
-                'order_id' => $request->order_id,
-                'payment_id' => $payment_quid,
-                'default_price' => $request->default_price,
-                'paid_price' => $request->paid_price,
-                'type' => $request->type,
-                'bank_id' => $request->bank_id,
-                'installment' => $request->installment_count
-            ]);
+            $is_proforma = Payment::query()->where('order_id', $request->order_id)->where('type', 3)->where('active', 1)->count();
+
+            if ($is_proforma > 0){
+
+                Payment::query()->where('order_id', $request->order_id)->where('type', 3)->where('active', 1)->update([
+                    'default_price' => $request->default_price,
+                    'paid_price' => $request->paid_price,
+                    'type' => $request->type,
+                    'bank_id' => $request->bank_id,
+                    'installment' => $request->installment_count
+                ]);
+
+            }else {
+
+                $payment_quid = Uuid::uuid();
+                Payment::query()->insert([
+                    'order_id' => $request->order_id,
+                    'payment_id' => $payment_quid,
+                    'default_price' => $request->default_price,
+                    'paid_price' => $request->paid_price,
+                    'type' => $request->type,
+                    'bank_id' => $request->bank_id,
+                    'installment' => $request->installment_count
+                ]);
+            }
 
             return response(['message' => 'Ödeme oluşturuldu.', 'status' => 'success', 'object' => ['payment_id' => $payment_quid]]);
 
