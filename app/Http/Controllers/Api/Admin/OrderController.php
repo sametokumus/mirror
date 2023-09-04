@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Helpers\PaymentHelper;
 use App\Models\Address;
 use App\Models\Carrier;
 use App\Models\CreditCard;
@@ -236,7 +237,7 @@ class OrderController extends Controller
             $val = true;
 
             foreach ($payments as $payment){
-                $return = cancelPreauth($payment->payment_id);
+                $return = PaymentHelper::cancelPreauth($payment->payment_id);
                 if (!$return){
                     $val = false;
                 }
