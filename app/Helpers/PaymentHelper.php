@@ -11,7 +11,7 @@ class PaymentHelper
     public static function cancelPreauth($payment_id)
     {
 
-        cancelPreauthVakifbank($payment_id);
+        PaymentHelper::cancelPreauthVakifbank($payment_id);
         return true;
     }
 
