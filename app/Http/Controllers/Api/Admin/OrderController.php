@@ -223,6 +223,41 @@ class OrderController extends Controller
         }
     }
 
+    public function cancelProvision($order_id)
+    {
+        try {
+            $payments = Payment::query()
+                ->where('order_id', $order_id)
+                ->where('type', 1)
+                ->where('is_paid', 0)
+                ->where('is_preauth', 1)
+                ->get();
+
+            $val = true;
+
+            foreach ($payments as $payment){
+                $return = cancelPreauth($payment->payment_id);
+                if (!$return){
+                    $val = false;
+                }
+            }
+
+            if ($val){
+                return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+            }else{
+                return response(['message' => 'İşlem başarısız.', 'status' => 'false']);
+            }
+
+
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
     public function updateOrderStatus(Request $request)
     {
         try {

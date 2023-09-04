@@ -1,13 +1,13 @@
 <?php
-use App\Models\CurrencyLog;
+use App\Models\BankRequest;
 use Carbon\Carbon;
 
 if (! function_exists('cancelPreauth')) {
     function cancelPreauth($payment_id)
     {
 
-
-        return 1;
+        cancelPreauthVakifbank($payment_id);
+        return true;
     }
 }
 
@@ -41,8 +41,18 @@ if (! function_exists('cancelPreauthVakifbank')) {
 
         curl_close($ch);
 
-        $xml_snippet = simplexml_load_string( $result );
+        BankRequest::query()->insert([
+            'payment_id' => $payment_id,
+            'pos_request' => $PosXML,
+            'pos_response' => $result
+        ]);
 
-        return 1;
+        $xml_snippet = simplexml_load_string( $result );
+        $result_code=isset($xml_snippet->ResultCode)?(string)$xml_snippet->ResultCode:'';
+        if ($result_code == '0000'){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
