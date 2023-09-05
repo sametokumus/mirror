@@ -159,7 +159,7 @@ class PaymentHelper
         ]);
 
         $xml_snippet = simplexml_load_string($result);
-        $result_code = isset($xml_snippet->procreturncode) ? (string)$xml_snippet->procreturncode : '';
+        $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
         if ($result_code == '00') {
             return true;
         } else {
