@@ -207,14 +207,76 @@ class OrderController extends Controller
     public function confirmOrder($order_id)
     {
         try {
-            Order::query()->where('order_id', $order_id)->update([
-                'status_id' => 4
-            ]);
-            OrderStatusHistory::query()->insert([
-                'order_id' => $order_id,
-                'status_id' => 4
-            ]);
-            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+            $payments = Payment::query()
+                ->where('order_id', $order_id)
+                ->where('type', 1)
+                ->where('is_paid', 0)
+                ->where('is_preauth', 1)
+                ->get();
+
+            $val = true;
+
+            foreach ($payments as $payment){
+                $return = PaymentHelper::confirmPayment($payment->payment_id);
+                if (!$return){
+                    $val = false;
+                }
+            }
+
+            if ($val){
+                Order::query()->where('order_id', $order_id)->update([
+                    'status_id' => 3
+                ]);
+                OrderStatusHistory::query()->insert([
+                    'order_id' => $order_id,
+                    'status_id' => 3
+                ]);
+                return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+            }else{
+                return response(['message' => 'İşlem başarısız.', 'status' => 'false']);
+            }
+
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+    public function cancelOrder($order_id)
+    {
+        try {
+            $payments = Payment::query()
+                ->where('order_id', $order_id)
+                ->where('type', 1)
+                ->where('is_paid', 1)
+                ->where('is_preauth', 1)
+                ->get();
+
+            $val = true;
+
+            foreach ($payments as $payment){
+                $return = PaymentHelper::confirmPayment($payment->payment_id);
+                if (!$return){
+                    $val = false;
+                }
+            }
+
+            if ($val){
+                Order::query()->where('order_id', $order_id)->update([
+                    'status_id' => 12
+                ]);
+                OrderStatusHistory::query()->insert([
+                    'order_id' => $order_id,
+                    'status_id' => 12
+                ]);
+                return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+            }else{
+                return response(['message' => 'İşlem başarısız.', 'status' => 'false']);
+            }
+
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {

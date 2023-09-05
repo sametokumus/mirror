@@ -18,6 +18,7 @@ class CreateBankRequestsTable extends Migration
             $table->string('payment_id');
             $table->text('pos_request')->nullable();
             $table->text('pos_response')->nullable();
+            $table->integer('type')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();

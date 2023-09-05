@@ -167,8 +167,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('order/updateOrderStatus', [OrderController::class, 'updateOrderStatus']);
     Route::get('order/deleteOrder/{order_id}', [OrderController::class, 'deleteOrder']);
     Route::get('order/confirmOrder/{order_id}', [OrderController::class, 'confirmOrder']);
-    Route::get('order/confirmPayment/{order_id}', [OrderController::class, 'confirmPayment']);
-    Route::get('order/cancelPayment/{order_id}', [OrderController::class, 'cancelPayment']);
+    Route::get('order/cancelOrder/{order_id}', [OrderController::class, 'cancelOrder']);
     Route::get('order/cancelProvision/{order_id}', [OrderController::class, 'cancelProvision']);
 
     Route::post('order/updateOrderInfo/{order_id}', [OrderController::class, 'updateOrderInfo']);
