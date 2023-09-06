@@ -258,7 +258,7 @@ class OrderController extends Controller
             $val = true;
 
             foreach ($payments as $payment){
-                $return = PaymentHelper::confirmPayment($payment->payment_id);
+                $return = PaymentHelper::cancelPayment($payment->payment_id);
                 if (!$return){
                     $val = false;
                 }
