@@ -362,16 +362,16 @@ class PaymentHelper
         $ClientIp = "212.2.199.55"; // ödemeyi gerçekleþtiren kullanýcýnýn IP bilgisi alýnarak bu alanda gönderilmelidir.
         $amount = $payment->paid_price;
 
-        $PosXML = '<VposRequest>
-                    <MerchantId>' . $IsyeriNo . '</MerchantId>
-                    <Password>' . $IsyeriSifre . '</Password>
-                    <TerminalNo>' . $TerminalNo . '</TerminalNo>
-                    <TransactionType>' . $IslemTipi . '</TransactionType>
-                    <CurrencyAmount>' . $amount . '</CurrencyAmount>
-                    <CurrencyCode>949</CurrencyCode>
-                    <ClientIp>' . $ClientIp . '</ClientIp>
-                    <ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId>
-                    </VposRequest>';
+        $PosXML = 'prmstr=<VposRequest>';
+        $PosXML .= '<MerchantId>' . $IsyeriNo . '</MerchantId>';
+        $PosXML .= '<Password>' . $IsyeriSifre . '</Password>';
+        $PosXML .= '<TerminalNo>' . $TerminalNo . '</TerminalNo>';
+        $PosXML .= '<TransactionType>' . $IslemTipi . '</TransactionType>';
+        $PosXML .= '<CurrencyAmount>' . $amount . '</CurrencyAmount>';
+        $PosXML .= '<CurrencyCode>949</CurrencyCode>';
+        $PosXML .= '<ClientIp>' . $ClientIp . '</ClientIp>';
+        $PosXML .= '<ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId>';
+        $PosXML .= '</VposRequest>';
 
         $ch = curl_init();
 
@@ -665,14 +665,14 @@ class PaymentHelper
         $ClientIp = "212.2.199.55"; // ödemeyi gerçekleþtiren kullanýcýnýn IP bilgisi alýnarak bu alanda gönderilmelidir.
         $amount = $payment->paid_price;
 
-        $PosXML = '<VposRequest>
-                     <MerchantId>' . $IsyeriNo . '</MerchantId>
-                     <Password>' . $IsyeriSifre . '</Password>
-                     <TransactionType>' . $IslemTipi . '</TransactionType>
-                     <CurrencyAmount>' . $amount . '</CurrencyAmount>
-                     <ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId>
-                     <ClientIp>' . $ClientIp . '</ClientIp>
-                    </VposRequest>                  ';
+        $PosXML = 'prmstr=<VposRequest>';
+        $PosXML .= '<MerchantId>' . $IsyeriNo . '</MerchantId>';
+        $PosXML .= '<Password>' . $IsyeriSifre . '</Password>';
+        $PosXML .= '<TransactionType>' . $IslemTipi . '</TransactionType>';
+        $PosXML .= '<CurrencyAmount>' . $amount . '</CurrencyAmount>';
+        $PosXML .= '<ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId>';
+        $PosXML .= '<ClientIp>' . $ClientIp . '</ClientIp>';
+        $PosXML .= '</VposRequest>';
 
         $ch = curl_init();
 
