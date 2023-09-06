@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
+use App\Models\BankRequest;
 use App\Models\Brand;
 use App\Models\Carrier;
 use App\Models\Cart;
@@ -552,6 +553,25 @@ class OrderController extends Controller
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order' => $order]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function addBankRequest(Request $request)
+    {
+        try {
+            BankRequest::query()->insert([
+                'payment_id' => $request->payment_id,
+                'pos_request' => $request->pos_request,
+                'pos_response' => $request->pos_response,
+                'type' => 1
+            ]);
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
         }
     }
 

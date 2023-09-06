@@ -120,6 +120,8 @@ Route::get('/cart/getUserToCart/{user_id}/{cart_id}', [CartController::class, 'g
 Route::post('/cart/getCheckoutPrices', [CartController::class, 'getCheckoutPrices']);
 Route::get('/cart/setIsOrder/{cart_id}/{is_order}', [CartController::class, 'setIsOrder']);
 
+Route::post('order/addBankRequest', [OrderController::class, 'addBankRequest']);
+
 Route::post('/order/addOrder',[OrderController::class,'addOrder']);
 Route::get('/order/getOrdersByUserId/{user_id}',[OrderController::class,'getOrdersByUserId']);
 Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
