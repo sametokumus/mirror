@@ -151,6 +151,60 @@ class PaymentHelper
     }
 
     public static function cancelPreauthFinansbank($payment_id){
+        $data = "".
+            "MbrId=5&".                                                                         //Kurum Kodu
+            "MerchantID=006600000014134&".                                                               //Language_MerchantID
+            "UserCode=aktemadmin&".                                                                   //Kullanici Kodu
+            "UserPass=80423388&".                                                                   //Kullanici Sifre
+            "OrgOrderId=".$payment_id."&".                                                   //Orijinal Islem Siparis Numarasi
+            "SecureType=NonSecure&".                                                                  //Language_SecureType
+            "TxnType=Void&".                                                                          //Islem Tipi
+            "Currency=949&".                                                                   //Para Birimi
+            "Lang=TR&".                                                                           //Language_Lang
+            $url = "https://vpos.qnbfinansbank.com/Gateway/Default.aspx";
+
+        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/v3/Vposreq.aspx';
+        $IsyeriNo = "000000000200014";
+        $TerminalNo = "VP201433";
+        $IsyeriSifre = "f0T7AdDw";
+        $SiparID = $payment_id;
+        $IslemTipi = "Cancel";
+        $ClientIp = "212.2.199.55"; // ödemeyi gerçekleþtiren kullanýcýnýn IP bilgisi alýnarak bu alanda gönderilmelidir.
+
+
+        $PosXML = 'prmstr=<VposRequest><MerchantId>' . $IsyeriNo . '</MerchantId><Password>' . $IsyeriSifre . '</Password><TransactionType>' . $IslemTipi . '</TransactionType>';
+        $PosXML = $PosXML . '<ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId><ClientIp>' . $ClientIp . '</ClientIp></VposRequest>';
+
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $PostUrl);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $PosXML);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 59);
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_1);
+
+        $result = curl_exec($ch);
+
+
+        curl_close($ch);
+
+        BankRequest::query()->insert([
+            'payment_id' => $payment_id,
+            'pos_request' => $PosXML,
+            'pos_response' => $result,
+            'type' => 2
+        ]);
+
+        $xml_snippet = simplexml_load_string($result);
+        $result_code = isset($xml_snippet->ResultCode) ? (string)$xml_snippet->ResultCode : '';
+        if ($result_code == '0000') {
+            return true;
+        } else {
+            return false;
+        }
+
 
     }
 
