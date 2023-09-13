@@ -254,6 +254,8 @@ class OrderController extends Controller
                 ->where('type', 1)
                 ->where('is_paid', 1)
                 ->where('is_preauth', 1)
+                ->where('is_cancel_preauth', 0)
+                ->where('is_refund', 0)
                 ->get();
 
             $val = true;
@@ -262,6 +264,12 @@ class OrderController extends Controller
                 $return = PaymentHelper::cancelPayment($payment->payment_id);
                 if (!$return){
                     $val = false;
+                }else{
+                    Payment::query()
+                        ->where('payment_id', $payment->payment_id)
+                        ->update([
+                            'is_refund' => 1
+                        ]);
                 }
             }
 
@@ -295,6 +303,8 @@ class OrderController extends Controller
                 ->where('type', 1)
                 ->where('is_paid', 0)
                 ->where('is_preauth', 1)
+                ->where('is_cancel_preauth', 0)
+                ->where('is_refund', 0)
                 ->get();
 
             $val = true;
@@ -305,13 +315,9 @@ class OrderController extends Controller
                     $val = false;
                 }else{
                     Payment::query()
-                        ->where('order_id', $order_id)
-                        ->where('payment_id', $payment_id)
-                        ->where('type', 1)
-                        ->where('is_paid', 0)
-                        ->where('is_preauth', 1)
+                        ->where('payment_id', $payment->payment_id)
                         ->update([
-                            'is_preauth' => 0
+                            'is_cancel_preauth' => 1
                         ]);
                 }
             }

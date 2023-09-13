@@ -30,6 +30,8 @@ class CreatePaymentsTable extends Migration
             $table->string('authcode')->nullable();
             $table->tinyInteger('is_preauth')->default(0);
             $table->tinyInteger('is_paid')->default(0);
+            $table->tinyInteger('is_cancel_preauth')->default(0);
+            $table->tinyInteger('is_refund')->default(0);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
