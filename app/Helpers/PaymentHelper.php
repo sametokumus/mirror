@@ -84,7 +84,7 @@ class PaymentHelper
 
         curl_close($ch);
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $PosXML,
             'pos_response' => $result,
@@ -94,6 +94,11 @@ class PaymentHelper
         $xml_snippet = simplexml_load_string($result);
         $result_code = isset($xml_snippet->ResultCode) ? (string)$xml_snippet->ResultCode : '';
         if ($result_code == '0000') {
+            $transaction_id = isset($xml_snippet->TransactionId) ? (string)$xml_snippet->TransactionId : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
             return true;
         } else {
             return false;
@@ -134,7 +139,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result,
@@ -144,6 +149,11 @@ class PaymentHelper
         $xml_snippet = simplexml_load_string($result);
         $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
         if ($result_code == '00') {
+            $transaction_id = isset($xml_snippet->TransId) ? (string)$xml_snippet->TransId : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
             return true;
         } else {
             return false;
@@ -190,7 +200,7 @@ class PaymentHelper
 
         curl_close($ch);
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $PosXML,
             'pos_response' => $result,
@@ -241,7 +251,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result,
@@ -251,6 +261,11 @@ class PaymentHelper
         $xml_snippet = simplexml_load_string($result);
         $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
         if ($result_code == '00') {
+            $transaction_id = isset($xml_snippet->TransId) ? (string)$xml_snippet->TransId : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
             return true;
         } else {
             return false;
@@ -290,7 +305,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result,
@@ -300,6 +315,11 @@ class PaymentHelper
         $xml_snippet = simplexml_load_string($result);
         $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
         if ($result_code == '00') {
+            $transaction_id = isset($xml_snippet->TransId) ? (string)$xml_snippet->TransId : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
             return true;
         } else {
             return false;
@@ -339,7 +359,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result,
@@ -349,6 +369,11 @@ class PaymentHelper
         $xml_snippet = simplexml_load_string($result);
         $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
         if ($result_code == '00') {
+            $transaction_id = isset($xml_snippet->TransId) ? (string)$xml_snippet->TransId : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
             return true;
         } else {
             return false;
@@ -441,7 +466,7 @@ class PaymentHelper
 
         curl_close($ch);
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $PosXML,
             'pos_response' => $result,
@@ -451,6 +476,11 @@ class PaymentHelper
         $xml_snippet = simplexml_load_string($result);
         $result_code = isset($xml_snippet->ResultCode) ? (string)$xml_snippet->ResultCode : '';
         if ($result_code == '0000') {
+            $transaction_id = isset($xml_snippet->TransactionId) ? (string)$xml_snippet->TransactionId : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
             Payment::query()->where('payment_id', $payment_id)->update([
                 'is_paid' => 1
             ]);
@@ -495,7 +525,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result
@@ -547,7 +577,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result
@@ -595,7 +625,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result
@@ -643,7 +673,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result
@@ -742,7 +772,7 @@ class PaymentHelper
 
         curl_close($ch);
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $PosXML,
             'pos_response' => $result,
@@ -792,7 +822,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result
@@ -844,7 +874,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result
@@ -892,7 +922,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result
@@ -940,7 +970,7 @@ class PaymentHelper
         curl_close($curl);
 
 
-        BankRequest::query()->insert([
+        $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
             'pos_response' => $result
