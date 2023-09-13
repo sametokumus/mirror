@@ -563,7 +563,9 @@ class OrderController extends Controller
                 'payment_id' => $request->payment_id,
                 'pos_request' => $request->pos_request,
                 'pos_response' => $request->pos_response,
-                'type' => 1
+                'type' => 1,
+                'success' => $request->success,
+                'transaction_id' => $request->transaction_id
             ]);
             return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
