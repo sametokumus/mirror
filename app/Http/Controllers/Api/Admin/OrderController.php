@@ -303,6 +303,16 @@ class OrderController extends Controller
                 $return = PaymentHelper::cancelPreauth($payment->payment_id);
                 if (!$return){
                     $val = false;
+                }else{
+                    Payment::query()
+                        ->where('order_id', $order_id)
+                        ->where('payment_id', $payment_id)
+                        ->where('type', 1)
+                        ->where('is_paid', 0)
+                        ->where('is_preauth', 1)
+                        ->update([
+                            'is_preauth' => 0
+                        ]);
                 }
             }
 
