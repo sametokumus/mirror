@@ -16,10 +16,6 @@ class PaymentHelper
         $payment_installment_count = $payment->installment;
         if ($payment->type == 1){
 
-            if ($payment_installment_count == "1") {
-                $payment_member_bank = 15;
-            }
-
             switch ($payment_member_bank) {
                 case 15:
                     //vakıf
@@ -389,10 +385,6 @@ class PaymentHelper
         $payment_installment_count = $payment->installment;
         if ($payment->type == 1){
 
-            if ($payment_installment_count == "1") {
-                $payment_member_bank = 15;
-            }
-
             switch ($payment_member_bank) {
                 case 15:
                     //vakıf
@@ -696,10 +688,6 @@ class PaymentHelper
         $payment_member_bank = $payment->bank_id;
         $payment_installment_count = $payment->installment;
         if ($payment->type == 1){
-
-            if ($payment_installment_count == "1") {
-                $payment_member_bank = 15;
-            }
 
             switch ($payment_member_bank) {
                 case 15:
