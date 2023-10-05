@@ -53,8 +53,8 @@ class PaymentHelper
 
     public static function cancelPreauthVakifbank($payment_id)
     {
-//        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/v3/Vposreq.aspx';
-        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/TransactionServices.asmx';
+        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/v3/Vposreq.aspx';
+//        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/TransactionServices.asmx';
         $IsyeriNo = "000000000200014";
         $TerminalNo = "VP201433";
         $IsyeriSifre = "f0T7AdDw";
