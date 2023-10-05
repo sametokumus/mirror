@@ -53,7 +53,8 @@ class PaymentHelper
 
     public static function cancelPreauthVakifbank($payment_id)
     {
-        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/v3/Vposreq.aspx'; //Dokümanda yer alan Prod VPOS URL i. Testlerinizi test ortamýnda gerçekleþtiriyorsanýz dokümandaki test URL ini kullanmalýsýnýz.
+//        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/v3/Vposreq.aspx';
+        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/TransactionServices.asmx';
         $IsyeriNo = "000000000200014";
         $TerminalNo = "VP201433";
         $IsyeriSifre = "f0T7AdDw";
@@ -62,9 +63,16 @@ class PaymentHelper
         $ClientIp = "212.2.199.55"; // ödemeyi gerçekleþtiren kullanýcýnýn IP bilgisi alýnarak bu alanda gönderilmelidir.
 
 
-        $PosXML = 'prmstr=<VposRequest><MerchantId>' . $IsyeriNo . '</MerchantId><Password>' . $IsyeriSifre . '</Password><TransactionType>' . $IslemTipi . '</TransactionType>';
-        $PosXML = $PosXML . '<ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId><ClientIp>' . $ClientIp . '</ClientIp></VposRequest>';
-
+//        $PosXML = 'prmstr=<VposRequest><MerchantId>' . $IsyeriNo . '</MerchantId><Password>' . $IsyeriSifre . '</Password><TransactionType>' . $IslemTipi . '</TransactionType>';
+//        $PosXML = $PosXML . '<ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId><ClientIp>' . $ClientIp . '</ClientIp></VposRequest>';
+        $PosXML = '<VposRequest>
+<MerchantId>' . $IsyeriNo . '</MerchantId>
+<Password>' . $IsyeriSifre . '</Password>
+<TransactionType>' . $IslemTipi . '</TransactionType>
+<ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId>
+<ClientIp>' . $ClientIp . '</ClientIp>
+</VposRequest>
+';
 
         $ch = curl_init();
 
