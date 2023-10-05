@@ -65,7 +65,7 @@ class PaymentHelper
 
 //        $PosXML = 'prmstr=<VposRequest><MerchantId>' . $IsyeriNo . '</MerchantId><Password>' . $IsyeriSifre . '</Password><TransactionType>' . $IslemTipi . '</TransactionType>';
 //        $PosXML = $PosXML . '<ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId><ClientIp>' . $ClientIp . '</ClientIp></VposRequest>';
-        $PosXML = '<VposRequest>
+        $PosXML = 'prmstr=<VposRequest>
 <MerchantId>' . $IsyeriNo . '</MerchantId>
 <Password>' . $IsyeriSifre . '</Password>
 <TransactionType>' . $IslemTipi . '</TransactionType>
