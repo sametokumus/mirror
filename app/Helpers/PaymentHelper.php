@@ -156,44 +156,100 @@ class PaymentHelper
         }
     }
 
+//    public static function cancelPreauthFinansbank($payment_id){
+//        $PostUrl      = 'https://vpos.qnbfinansbank.com/Gateway/XMLGate.aspx';
+//        $IsyeriNo     = "006600000014134";
+//        $TerminalNo   = "VP201433";
+//        $IsyeriSifre  = "YRBD0";
+//        $SiparID = $payment_id;
+//        $IslemTipi    = "Void";
+//        $ClientIp     = "212.2.199.55";
+//
+//
+//        $PosXML = '<PayforRequest><MbrId>5</MbrId><MerchantID>'.$IsyeriNo.'</MerchantID><UserCode>aktemapi3</UserCode><UserPass>'.$IsyeriSifre.'</UserPass><OrgOrderId>'.$SiparID.'</OrgOrderId>';
+//        $PosXML .= '<SecureType>NonSecure</SecureType><TxnType>'.$IslemTipi.'</TxnType><Currency>949</Currency><Lang>TR</Lang></PayforRequest>';
+//
+//        $ch = curl_init();
+//
+//        curl_setopt($ch, CURLOPT_URL, $PostUrl);
+//        curl_setopt($ch, CURLOPT_POST, 1);
+//        curl_setopt($ch, CURLOPT_POSTFIELDS, $PosXML);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 5);
+//        curl_setopt($ch, CURLOPT_TIMEOUT, 59);
+//        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_1);
+//
+//        $result = curl_exec($ch);
+//
+//
+//        curl_close($ch);
+//
+//        $request_id = BankRequest::query()->insertGetId([
+//            'payment_id' => $payment_id,
+//            'pos_request' => $PosXML,
+//            'pos_response' => $result,
+//            'type' => 2
+//        ]);
+//
+//        $xml_snippet = simplexml_load_string($result);
+//        $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
+//        if ($result_code == '00') {
+//            $transaction_id = isset($xml_snippet->OrderId) ? (string)$xml_snippet->OrderId : '';
+//            BankRequest::query()->where('id', $request_id)->update([
+//                'transaction_id' => $transaction_id,
+//                'success' => 1
+//            ]);
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
+
     public static function cancelPreauthFinansbank($payment_id){
-        $PostUrl      = 'https://vpos.qnbfinansbank.com/Gateway/XMLGate.aspx';
-        $IsyeriNo     = "006600000014134";
-        $TerminalNo   = "VP201433";
-        $IsyeriSifre  = "YRBD0";
-        $SiparID = $payment_id;
-        $IslemTipi    = "Void";
-        $ClientIp     = "212.2.199.55";
 
-
-        $PosXML = '<PayforRequest><MbrId>5</MbrId><MerchantID>'.$IsyeriNo.'</MerchantID><UserCode>aktemapi3</UserCode><UserPass>'.$IsyeriSifre.'</UserPass><OrgOrderId>'.$SiparID.'</OrgOrderId>';
-        $PosXML .= '<SecureType>NonSecure</SecureType><TxnType>'.$IslemTipi.'</TxnType><Currency>949</Currency><Lang>TR</Lang></PayforRequest>';
-
+        $data = "".
+            "MbrId=5&".                                                                         //Kurum Kodu
+            "MerchantID=006600000014134&".                                                               //Language_MerchantID
+            "UserCode=aktemadmin&".                                                                   //Kullanici Kodu
+            "UserPass=xxxxxxxxxxxx&".                                                                   //Kullanici Sifre
+            "OrgOrderId=".$payment_id."&".                                                   //Orijinal Islem Siparis Numarasi
+            "SecureType=NonSecure&".                                                                  //Language_SecureType
+            "TxnType=Void&".                                                                          //Islem Tipi
+            "Currency=949&".                                                                   //Para Birimi
+            "Lang=TR&".                                                                           //Language_Lang
+            $url = "https://vpos.qnbfinansbank.com/Gateway/Default.aspx";
         $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, $PostUrl);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $PosXML);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 5);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 59);
-        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_1);
-
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,2);
+        curl_setopt($ch, CURLOPT_SSLVERSION, 4);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 90);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         $result = curl_exec($ch);
-
-
-        curl_close($ch);
+        echo "<br>";
+        if (curl_errno($ch)) {
+            print curl_error($ch);
+        } else {
+            curl_close($ch);
+        }
 
         $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
-            'pos_request' => $PosXML,
+            'pos_request' => $data,
             'pos_response' => $result,
             'type' => 2
         ]);
 
-        $xml_snippet = simplexml_load_string($result);
-        $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
-        if ($result_code == '00') {
-            $transaction_id = isset($xml_snippet->OrderId) ? (string)$xml_snippet->OrderId : '';
+        $resultValues = explode(";;", $result);
+        $result_array = array();
+        foreach($resultValues as $resultt)
+        {
+            list($key,$value)= explode("=", $resultt);
+            $result_array[$key] = $value;
+        }
+
+        if ($result_array['ProcReturnCode'] == '00') {
+            $transaction_id = isset($result_array['OrderId']) ? (string)$result_array['OrderId'] : '';
             BankRequest::query()->where('id', $request_id)->update([
                 'transaction_id' => $transaction_id,
                 'success' => 1
