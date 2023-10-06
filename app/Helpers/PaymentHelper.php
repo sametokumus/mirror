@@ -537,7 +537,13 @@ class PaymentHelper
     }
 
     public static function confirmPaymentHalkbank($payment_id){
-        $id = $payment_id;
+        $id = BankRequest::query()
+            ->where('payment_id', $payment_id)
+            ->where('success', 1)
+            ->where('active', 1)
+            ->where('type', 1)
+            ->orderByDesc('id')
+            ->first()->transaction_id;
 
         $url = "https://sanalpos.halkbank.com.tr/fim/api";  //TEST
 
