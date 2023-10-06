@@ -157,30 +157,17 @@ class PaymentHelper
     }
 
     public static function cancelPreauthFinansbank($payment_id){
-        $data = "".
-            "MbrId=5&".                                                                         //Kurum Kodu
-            "MerchantID=006600000014134&".                                                               //Language_MerchantID
-            "UserCode=aktemadmin&".                                                                   //Kullanici Kodu
-            "UserPass=80423388&".                                                                   //Kullanici Sifre
-            "OrgOrderId=".$payment_id."&".                                                   //Orijinal Islem Siparis Numarasi
-            "SecureType=NonSecure&".                                                                  //Language_SecureType
-            "TxnType=Void&".                                                                          //Islem Tipi
-            "Currency=949&".                                                                   //Para Birimi
-            "Lang=TR&".                                                                           //Language_Lang
-            $url = "https://vpos.qnbfinansbank.com/Gateway/Default.aspx";
-
-        $PostUrl = 'https://onlineodeme.vakifbank.com.tr:4443/VposService/v3/Vposreq.aspx';
-        $IsyeriNo = "000000000200014";
-        $TerminalNo = "VP201433";
-        $IsyeriSifre = "f0T7AdDw";
+        $PostUrl      = 'https://vpos.qnbfinansbank.com/Gateway/XMLGate.aspx';
+        $IsyeriNo     = "006600000014134";
+        $TerminalNo   = "VP201433";
+        $IsyeriSifre  = "YRBD0";
         $SiparID = $payment_id;
-        $IslemTipi = "Cancel";
-        $ClientIp = "212.2.199.55"; // ödemeyi gerçekleþtiren kullanýcýnýn IP bilgisi alýnarak bu alanda gönderilmelidir.
+        $IslemTipi    = "Void";
+        $ClientIp     = "212.2.199.55";
 
 
-        $PosXML = 'prmstr=<VposRequest><MerchantId>' . $IsyeriNo . '</MerchantId><Password>' . $IsyeriSifre . '</Password><TransactionType>' . $IslemTipi . '</TransactionType>';
-        $PosXML = $PosXML . '<ReferenceTransactionId>' . $SiparID . '</ReferenceTransactionId><ClientIp>' . $ClientIp . '</ClientIp></VposRequest>';
-
+        $PosXML = '<PayforRequest><MbrId>5</MbrId><MerchantID>'.$IsyeriNo.'</MerchantID><UserCode>aktemapi3</UserCode><UserPass>'.$IsyeriSifre.'</UserPass><OrgOrderId>'.$SiparID.'</OrgOrderId>';
+        $PosXML .= '<SecureType>NonSecure</SecureType><TxnType>'.$IslemTipi.'</TxnType><Currency>949</Currency><Lang>TR</Lang></PayforRequest>';
 
         $ch = curl_init();
 
@@ -204,14 +191,17 @@ class PaymentHelper
         ]);
 
         $xml_snippet = simplexml_load_string($result);
-        $result_code = isset($xml_snippet->ResultCode) ? (string)$xml_snippet->ResultCode : '';
-        if ($result_code == '0000') {
+        $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
+        if ($result_code == '00') {
+            $transaction_id = isset($xml_snippet->OrderId) ? (string)$xml_snippet->OrderId : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
             return true;
         } else {
             return false;
         }
-
-
     }
 
     public static function cancelPreauthHalkbank($payment_id){
