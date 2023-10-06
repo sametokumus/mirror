@@ -590,6 +590,8 @@ class PaymentHelper
     public static function confirmPaymentFinansbank($payment_id){
         $payment = Payment::query()->where('payment_id', $payment_id)->where('active', 1)->first();
 
+        //test için
+        $payment->paid_price = "1.00";
         $data = "".
             "MbrId=5&".
             "MerchantID=006600000014134&".
