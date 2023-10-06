@@ -121,6 +121,7 @@ Route::post('/cart/getCheckoutPrices', [CartController::class, 'getCheckoutPrice
 Route::get('/cart/setIsOrder/{cart_id}/{is_order}', [CartController::class, 'setIsOrder']);
 
 Route::post('order/addBankRequest', [OrderController::class, 'addBankRequest']);
+Route::post('order/updateBankRequest', [OrderController::class, 'updateBankRequest']);
 
 Route::post('/order/addOrder',[OrderController::class,'addOrder']);
 Route::get('/order/getOrdersByUserId/{user_id}',[OrderController::class,'getOrdersByUserId']);

@@ -577,6 +577,26 @@ class OrderController extends Controller
         }
     }
 
+    public function updateBankRequest(Request $request)
+    {
+        try {
+            $req = BankRequest::query()->where('payment_id', $request->payment_id)->where('success', 0)->where('type', 1)->orderByDesc('id')->first();
+            if ($req) {
+                BankRequest::query()->where('id', $req->id)->update([
+                    'pos_response' => $request->pos_response,
+                    'success' => $request->success
+                ]);
+            }
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
     public function addPayment(Request $request)
     {
         try {
