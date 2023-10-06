@@ -207,15 +207,15 @@ class PaymentHelper
     public static function cancelPreauthFinansbank($payment_id){
 
         $data = "".
-            "MbrId=5&".                                                                         //Kurum Kodu
-            "MerchantID=006600000014134&".                                                               //Language_MerchantID
-            "UserCode=aktemapi3&".                                                                   //Kullanici Kodu
-            "UserPass=YRBD0&".                                                                   //Kullanici Sifre
-            "OrgOrderId=".$payment_id."&".                                                   //Orijinal Islem Siparis Numarasi
-            "SecureType=NonSecure&".                                                                  //Language_SecureType
-            "TxnType=Void&".                                                                          //Islem Tipi
-            "Currency=949&".                                                                   //Para Birimi
-            "Lang=TR&".                                                                           //Language_Lang
+            "MbrId=5&".
+            "MerchantID=006600000014134&".
+            "UserCode=aktemapi3&".
+            "UserPass=YRBD0&".
+            "OrgOrderId=".$payment_id."&".
+            "SecureType=NonSecure&".
+            "TxnType=Void&".
+            "Currency=949&".
+            "Lang=TR&".
             $url = "https://vpos.qnbfinansbank.com/Gateway/Default.aspx";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,$url);
@@ -588,17 +588,67 @@ class PaymentHelper
     }
 
     public static function confirmPaymentFinansbank($payment_id){
+        $payment = Payment::query()->where('payment_id', $payment_id)->where('active', 1)->first();
 
+        $data = "".
+            "MbrId=5&".
+            "MerchantID=006600000014134&".
+            "UserCode=aktemapi3&".
+            "UserPass=YRBD0&".
+            "OrgOrderId=".$payment_id."&".
+            "SecureType=NonSecure&".
+            "TxnType=PostAuth&".
+            "PurchAmount=".$payment->paid_price."&".
+            "Currency=949&".
+            "Lang=TR&".
+            $url = "https://vpos.qnbfinansbank.com/Gateway/Default.aspx";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,2);
+        curl_setopt($ch, CURLOPT_SSLVERSION, 4);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 90);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        $result = curl_exec($ch);
+        echo "<br>";
+        if (curl_errno($ch)) {
+            print curl_error($ch);
+        } else {
+            curl_close($ch);
+        }
+
+        $request_id = BankRequest::query()->insertGetId([
+            'payment_id' => $payment_id,
+            'pos_request' => $data,
+            'pos_response' => $result,
+            'type' => 3
+        ]);
+
+        $resultValues = explode(";;", $result);
+        $result_array = array();
+        foreach($resultValues as $resultt)
+        {
+            list($key,$value)= explode("=", $resultt);
+            $result_array[$key] = $value;
+        }
+
+        if ($result_array['ProcReturnCode'] == '00') {
+            $transaction_id = isset($result_array['OrderId']) ? (string)$result_array['OrderId'] : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
+            Payment::query()->where('payment_id', $payment_id)->update([
+                'is_paid' => 1
+            ]);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function confirmPaymentHalkbank($payment_id){
-//        $id = BankRequest::query()
-//            ->where('payment_id', $payment_id)
-//            ->where('success', 1)
-//            ->where('active', 1)
-//            ->where('type', 1)
-//            ->orderByDesc('id')
-//            ->first()->transaction_id;
         $id = $payment_id;
 
         $url = "https://sanalpos.halkbank.com.tr/fim/api";  //TEST
