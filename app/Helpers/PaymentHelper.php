@@ -209,8 +209,8 @@ class PaymentHelper
         $data = "".
             "MbrId=5&".                                                                         //Kurum Kodu
             "MerchantID=006600000014134&".                                                               //Language_MerchantID
-            "UserCode=aktemadmin&".                                                                   //Kullanici Kodu
-            "UserPass=xxxxxxxxxxxx&".                                                                   //Kullanici Sifre
+            "UserCode=aktemapi3&".                                                                   //Kullanici Kodu
+            "UserPass=YRBD0&".                                                                   //Kullanici Sifre
             "OrgOrderId=".$payment_id."&".                                                   //Orijinal Islem Siparis Numarasi
             "SecureType=NonSecure&".                                                                  //Language_SecureType
             "TxnType=Void&".                                                                          //Islem Tipi
