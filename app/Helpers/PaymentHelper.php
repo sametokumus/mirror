@@ -563,7 +563,7 @@ class PaymentHelper
 <Name>tsoftapi</Name>
 <Password>Api.Tsoft123</Password>
 <ClientId>500247951</ClientId>
-<Type>Void</Type>
+<Type>PostAuth</Type>
 <OrderId>".$id."</OrderId>
 </CC5Request>
 ";
@@ -579,12 +579,21 @@ class PaymentHelper
         $request_id = BankRequest::query()->insertGetId([
             'payment_id' => $payment_id,
             'pos_request' => $data,
-            'pos_response' => $result
+            'pos_response' => $result,
+            'type' => 3
         ]);
 
         $xml_snippet = simplexml_load_string($result);
         $result_code = isset($xml_snippet->ProcReturnCode) ? (string)$xml_snippet->ProcReturnCode : '';
         if ($result_code == '00') {
+            $transaction_id = isset($xml_snippet->TransId) ? (string)$xml_snippet->TransId : '';
+            BankRequest::query()->where('id', $request_id)->update([
+                'transaction_id' => $transaction_id,
+                'success' => 1
+            ]);
+            Payment::query()->where('payment_id', $payment_id)->update([
+                'is_paid' => 1
+            ]);
             return true;
         } else {
             return false;
