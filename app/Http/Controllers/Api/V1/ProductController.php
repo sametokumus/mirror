@@ -116,7 +116,7 @@ class ProductController extends Controller
 
             $featured_variation = ProductVariation::query()->where('id', $product->featured_variation)->first();
             $rule = ProductRule::query()->where('variation_id', $featured_variation->id)->first();
-            $images = ProductImage::query()->where('variation_id', $featured_variation->id)->get();
+            $images = ProductImage::query()->where('variation_id', $featured_variation->id)->where('active', 1)->get();
             $featured_variation['rule'] = $rule;
             $featured_variation['images'] = $images;
 
