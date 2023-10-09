@@ -434,6 +434,7 @@ class CartController extends Controller
             $materials = ProductMaterial::query()->where('active', 1)->get();
             foreach ($materials as $material){
                 $material['desi'] = 0;
+                $material['price'] = 0;
                 $material_array[$material->id] = $material;
             }
 
@@ -562,16 +563,17 @@ class CartController extends Controller
 
                             $delivery_price = DeliveryPrice::query()->where('carrier_id', $carrier->id)->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
                             if ($delivery_price){
-                                $shipment_price += $delivery_price->{'cat_'.$carrier->category.'_price'};
+                                $material_price = $delivery_price->{'cat_'.$carrier->category.'_price'};
                             }else{
                                 $delivery_price_max = DeliveryPrice::query()->where('carrier_id', $carrier->id)->orderByDesc('max_value')->first();
                                 $increses_weight = IncreasingDesi::query()->where('carrier_id', $carrier->id)->first();
 
                                 $diff_price = ($weight - $delivery_price_max->max_value) * ($increses_weight->{'cat_'.$carrier->category.'_price'});
-                                $shipment_price += ($delivery_price_max->{'cat_'.$carrier->category.'_price'} + $diff_price);
+                                $material_price = ($delivery_price_max->{'cat_'.$carrier->category.'_price'} + $diff_price);
 
                             }
-
+                            $material_array[$material->id]['price'] = $material_price;
+                            $shipment_price += $material_price;
                         }
 
                     }
