@@ -174,7 +174,7 @@ class ProductController extends Controller
 
             foreach ($variations as $variation) {
                 $rule = ProductRule::query()->where('variation_id', $variation->id)->first();
-                $images = ProductImage::query()->where('variation_id', $variation->id)->get();
+                $images = ProductImage::query()->where('variation_id', $variation->id)->where('active', 1)->get();
 
                 if ($rule->currency == "EUR"){
                     $try_currency = array();
