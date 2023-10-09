@@ -452,6 +452,7 @@ class CartController extends Controller
             $cart_price = 0;
             $cart_tax = 0;
             $weight = 0;
+            $all_free_shipping = 1;
             foreach ($cart_details as $cart_detail){
                 $rule = ProductRule::query()->where('variation_id',$cart_detail->variation_id)->first();
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
@@ -488,6 +489,8 @@ class CartController extends Controller
                 if ($product->is_free_shipping == 0) {
                     $weight = $weight + ($cart_detail->quantity * $rule->weight);
                     $material_array[$rule->material]['desi'] = $material_array[$rule->material]['desi'] + ($cart_detail->quantity * $rule->weight);
+
+                    $all_free_shipping = 0;
                 }else{
                     $weight = $weight + 0;
                     $material_array[$rule->material]['desi'] = $material_array[$rule->material]['desi'] + 0;
@@ -540,6 +543,7 @@ class CartController extends Controller
             $checkout_prices['products_cart_tax'] = number_format($products_cart_tax, 2,",",".");
 //            $checkout_prices['user_discount'] = $user_discount;
 //            $checkout_prices['user_discount_rate'] = $user_discount_rate;
+            $checkout_prices['all_free_shipping'] = $all_free_shipping;
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['material'] = $material_array;
             $checkout_prices['coupon_message'] = $coupon_message;
