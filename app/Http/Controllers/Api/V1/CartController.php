@@ -433,7 +433,8 @@ class CartController extends Controller
             $material_array = array();
             $materials = ProductMaterial::query()->where('active', 1)->get();
             foreach ($materials as $material){
-                $material_array[$material->id] = 0;
+                $material['desi'] = 0;
+                $material_array[$material->id] = $material;
             }
 
 
@@ -486,10 +487,10 @@ class CartController extends Controller
                 }
                 if ($product->is_free_shipping == 0) {
                     $weight = $weight + ($cart_detail->quantity * $rule->weight);
-                    $material_array[$rule->material] = $material_array[$rule->material] + ($cart_detail->quantity * $rule->weight);
+                    $material_array[$rule->material]['desi'] = $material_array[$rule->material]['desi'] + ($cart_detail->quantity * $rule->weight);
                 }else{
                     $weight = $weight + 0;
-                    $material_array[$rule->material] = $material_array[$rule->material] + 0;
+                    $material_array[$rule->material]['desi'] = $material_array[$rule->material]['desi'] + 0;
                 }
 
                 $step_desi = $rule->weight * $rule->quantity_step;
@@ -550,7 +551,7 @@ class CartController extends Controller
                     $shipment_price = 0;
                     foreach ($materials as $material){
 
-                        $weight = $material_array[$material->id];
+                        $weight = $material_array[$material->id]['desi'];
 
                         //Kargo Çarpanı
 
