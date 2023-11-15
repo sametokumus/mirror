@@ -14,6 +14,7 @@ class PaymentHelper
         $payment = Payment::query()->where('payment_id', $payment_id)->first();
         $payment_member_bank = $payment->bank_id;
         $payment_installment_count = $payment->installment;
+
         if ($payment->type == 1){
             switch ($payment_member_bank) {
                 case 15:
