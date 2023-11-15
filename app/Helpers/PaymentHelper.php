@@ -15,7 +15,6 @@ class PaymentHelper
         $payment_member_bank = $payment->bank_id;
         $payment_installment_count = $payment->installment;
         if ($payment->type == 1){
-
             switch ($payment_member_bank) {
                 case 15:
                     //vakıf
