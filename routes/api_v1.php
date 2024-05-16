@@ -46,6 +46,7 @@ use App\Http\Controllers\Api\V1\ContactController;
 
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('auth/registerPhone', [AuthController::class, 'registerPhone']);
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::get('auth/verify/{token}', [AuthController::class, 'verify'])->name('verification.verify');
 Route::post('auth/resend-verify-email', [AuthController::class, 'resend']);

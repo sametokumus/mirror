@@ -17,6 +17,55 @@ use Nette\Schema\ValidationException;
 
 class AuthController extends Controller
 {
+    public function registerPhone(Request $request)
+    {
+        try {
+            $request->validate([
+                'phone_number' => 'required',
+            ]);
+
+            $userActiveCheck = User::query()->where('phone_number', $request->phone_number)->where('active', 0)->count();
+
+            if ($userActiveCheck > 0) {
+                throw new \Exception('auth-004');
+            }
+
+            $userPhoneCheck = User::query()->where('phone_number', $request->phone_number)->where('active', 1)->count();
+
+            if ($userPhoneCheck > 0) {
+                throw new \Exception('auth-003');
+            }
+
+            //Önce Kullanıcıyı oluşturuyor
+            $userId = User::query()->insertGetId([
+                'phone_number' => $request->phone_number
+            ]);
+
+            // Oluşturulan kullanıcıyı çekiyor
+            $user = User::query()->whereId($userId)->first();
+
+            //Oluşturulan Kullanıcıyı mail yolluyor
+            $user->sendApiConfirmSmsAccount($user);
+
+            return response(['message' => 'Kullanıcı başarıyla oluşturuldu.','status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','error' => $queryException->getMessage()]);
+        } catch (\Exception $exception){
+            if ($exception->getMessage() == 'auth-002'){
+                return  response(['message' => 'Girdiğiniz eposta adresi kullanılmaktadır.','status' => 'auth-002']);
+            }
+            if ($exception->getMessage() == 'auth-003'){
+                return  response(['message' => 'Girdiğiniz telefon numarası kullanılmaktadır.','status' => 'auth-003']);
+            }
+            if ($exception->getMessage() == 'auth-004'){
+                return  response(['message' => 'Bu telefon numarası ile bir hesap bulunmaktadır.','status' => 'auth-003']);
+            }
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
+        }
+
+    }
     public function register(Request $request)
     {
         try {
