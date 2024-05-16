@@ -17,29 +17,6 @@ use Nette\Schema\ValidationException;
 
 class AuthController extends Controller
 {
-    public function test()
-    {
-        try {
-
-            return response(['message' => 'Kullanıcı başarıyla oluşturuldu.','status' => 'success']);
-        } catch (ValidationException $validationException) {
-            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
-        } catch (QueryException $queryException) {
-            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','error' => $queryException->getMessage()]);
-        } catch (\Exception $exception){
-            if ($exception->getMessage() == 'auth-002'){
-                return  response(['message' => 'Girdiğiniz eposta adresi kullanılmaktadır.','status' => 'auth-002']);
-            }
-            if ($exception->getMessage() == 'auth-003'){
-                return  response(['message' => 'Girdiğiniz telefon numarası kullanılmaktadır.','status' => 'auth-003']);
-            }
-            if ($exception->getMessage() == 'auth-004'){
-                return  response(['message' => 'Bu telefon numarası ile bir hesap bulunmaktadır.','status' => 'auth-003']);
-            }
-            return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
-        }
-
-    }
     public function registerPhone(Request $request)
     {
         try {
