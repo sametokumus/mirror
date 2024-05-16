@@ -17,7 +17,7 @@ use Nette\Schema\ValidationException;
 
 class AuthController extends Controller
 {
-    public function test()
+    public function test2()
     {
         try {
 
