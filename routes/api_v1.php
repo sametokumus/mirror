@@ -45,6 +45,7 @@ use App\Http\Controllers\Api\V1\ContactController;
 
 
 
+Route::get('auth/test', [AuthController::class, 'test']);
 Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('auth/registerPhone', [AuthController::class, 'registerPhone']);
 Route::post('auth/register', [AuthController::class, 'register']);
