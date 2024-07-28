@@ -224,7 +224,7 @@ class AuthController extends Controller
                 throw new \Exception('validation-002');
             }
             $user->email_verified_at = now();
-            $user->verified = true;
+            $user->email_verified = true;
             $user->active = true;
             $user->save();
             /*
