@@ -77,7 +77,7 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'name' => 'required',
+                'first_name' => 'required',
                 'phone_number' => 'required',
                 'gender' => 'required',
                 'b_day' => 'required'
@@ -94,7 +94,7 @@ class AuthController extends Controller
             $b_day = Carbon::createFromFormat('d-m-Y', $request->b_day)->format('Y-m-d');
             User::query()->where('id', $user->id)->update([
                 'phone_number' => $request->phone_number,
-                'name' => $request->name,
+                'first_name' => $request->first_name,
                 'gender' => $request->gender,
                 'b_day' => $b_day
             ]);
