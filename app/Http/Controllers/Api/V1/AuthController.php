@@ -8,8 +8,10 @@ use App\Models\User;
 use App\Models\UserContactRule;
 use App\Models\UserDocumentCheck;
 use App\Models\UserProfile;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -75,23 +77,11 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'user_name' => 'nullable',
-                'email' => 'required|email',
+                'name' => 'required',
                 'phone_number' => 'required',
-                'password' => 'required'
+                'gender' => 'required',
+                'b_day' => 'required'
             ]);
-
-            $userActiveCheck = User::query()->where('email', $request->email)->where('active', 0)->count();
-
-            if ($userActiveCheck > 0) {
-                throw new \Exception('auth-004');
-            }
-
-            $userCheck = User::query()->where('email', $request->email)->count();
-
-            if ($userCheck > 0) {
-                throw new \Exception('auth-002');
-            }
 
             $userPhoneCheck = User::query()->where('phone_number', $request->phone_number)->where('active', 1)->count();
 
@@ -99,49 +89,20 @@ class AuthController extends Controller
                 throw new \Exception('auth-003');
             }
 
-            //Önce Kullanıcıyı oluşturuyor
-            $userId = User::query()->insertGetId([
-                'email' => $request->email,
+            $user = Auth::user();
+
+            $b_day = Carbon::createFromFormat('d-m-Y', $request->b_day)->format('Y-m-d');
+            User::query()->where('id', $user->id)->update([
                 'phone_number' => $request->phone_number,
-                'password' => Hash::make($request->password),
-                'token' => Str::random(60)
-            ]);
-
-            //İletişim Kurallarını oluşturuyor
-            $user_contact_rules = $request->user_contact_rules;
-            foreach ($user_contact_rules as $user_contact_rule){
-                UserContactRule::query()->insert([
-                    'user_id' => $userId,
-                    'contact_rule_id' => $user_contact_rule['contact_rule_id'],
-                    'value' => $user_contact_rule['value']
-                ]);
-            }
-
-            //Kullanıcının dökümanlarını ekliyor
-            $user_document_checks = $request->user_document_checks;
-            foreach ($user_document_checks as $user_document_check){
-                UserDocumentCheck::query()->insert([
-                    'user_id' => $userId,
-                    'document_id' => $user_document_check['document_id'],
-                    'value' => $user_document_check['value']
-                ]);
-            }
-            //Kullanıcı profilini oluşturuyor
-            $name = $request->name;
-            $surname = $request->surname;
-            UserProfile::query()->insert([
-                'user_id' => $userId,
-                'name' => $name,
-                'surname' => $surname
+                'name' => $request->name,
+                'gender' => $request->gender,
+                'b_day' => $b_day
             ]);
 
             // Oluşturulan kullanıcıyı çekiyor
-            $user = User::query()->whereId($userId)->first();
+            $user = User::query()->whereId($user->id)->first();
 
-            //Oluşturulan Kullanıcıyı mail yolluyor
-            $user->sendApiConfirmAccount($user);
-
-            return response(['message' => 'Kullanıcı başarıyla oluşturuldu sisteme giriş için epostanızı kontrol ediniz.','status' => 'success']);
+            return response(['message' => 'Kullanıcı başarıyla oluşturuldu.','status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
