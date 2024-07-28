@@ -30,7 +30,7 @@ class UserWelcome extends Mailable {
      */
     public function build() {
         return $this
-            ->subject('Aramıza Hoşgeldin!')
+            ->subject('Welcome!')
             ->to($this->email)
             ->with(['name' => $this->name])
             ->markdown('emails.welcome');

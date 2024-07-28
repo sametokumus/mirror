@@ -226,7 +226,6 @@ class AuthController extends Controller
             $user->email_verified_at = now();
             $user->verified = true;
             $user->active = true;
-            $user->token = null;
             $user->save();
             /*
                $setDelay = Carbon::parse($user->email_verified_at)->addSeconds(10);
