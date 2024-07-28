@@ -23,8 +23,8 @@
 @isset($actionText)
 @slot('subcopy')
 
-    "Yukarıdaki \":actionText\" butonu ile, yada aşağıdaki URL'i tarayıcınıza yapıştırarak hesabınızı doğrulayabilirsiniz.\n".
-    'Tarayıcı Linki:',
+    "You can verify your account by using the \":actionText\" button above, or by pasting the URL below into your browser.\n".
+    'Browser Link:',
     [{{$actionText}}]
  <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
 @endslot

@@ -42,12 +42,12 @@ class AccountVerify extends AccountVerifyBase implements ShouldQueue
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable) {
-        $verificationUrl = "https://kablocu.wimco.com.tr/hesap-dogrulama/".$notifiable->token;
+        $verificationUrl = "https://mirror-app.com/verify-account/".$notifiable->token;
         return (new MailMessage)
-            ->greeting('Merhaba')
-            ->subject('E-Posta Adresinizi Doğrulayın!')
-            ->line('E-posta adresinizi doğrulamak için lütfen aşağıdaki linke tıklayın.')
-            ->action('E-posta Adresinizi Doğrulayın', $verificationUrl);
+            ->greeting('Hi!')
+            ->subject('Please confirm your email address.')
+            ->line('Please click on the link below to verify your email address.')
+            ->action('Confirm your email address.', $verificationUrl);
     }
 
     /**
@@ -70,7 +70,6 @@ class AccountVerify extends AccountVerifyBase implements ShouldQueue
      *
      */
     protected function verificationUrl($notifiable) {
-//        return "https://kablocu.wimco.com.tr/hesap-dogrulama/"+$notifiable->token;
         return URL::temporarySignedRoute('verification.verify',
             Carbon::now()->addMinutes(60), ['token' => $notifiable->token]
         );
