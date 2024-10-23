@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\Admin\SubscribeController;
 use App\Http\Controllers\Api\Admin\ProformaController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\ContactController;
+use App\Http\Controllers\Api\Admin\QuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -326,6 +327,13 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
 
     Route::get('contact/getContactForms', [ContactController::class, 'getContactForms']);
+
+
+    Route::get('question/getQuestions', [QuestionController::class, 'getQuestions']);
+    Route::post('question/addQuestion', [QuestionController::class, 'addQuestion']);
+
+    Route::get('question/getScreens', [QuestionController::class, 'getScreens']);
+    Route::post('question/addScreen', [QuestionController::class, 'addScreen']);
 
 });
 
