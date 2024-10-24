@@ -18,6 +18,7 @@ class CreateScreensTable extends Migration
             $table->string('title'); // Ekranın başlığı
             $table->string('type'); // Ekran türü (Info, Question Single, Question Multiple)
             $table->text('content')->nullable();
+            $table->tinyInteger('is_required')->default(1);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();

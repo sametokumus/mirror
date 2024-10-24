@@ -63,8 +63,9 @@ class QuestionController extends Controller
         try {
             $validated = $request->validate([
                 'title' => 'required|string',
-                'type' => 'required|string|in:info,question_single,question_multiple', // Ekran türü
-                'content' => 'nullable|string', // Info ekranı için içerik
+                'type' => 'required|string|in:info,question_single,question_multiple',
+                'content' => 'nullable|string',
+                'is_required' => 'required|integer',
             ]);
 
             $screen = Screen::create($validated);
