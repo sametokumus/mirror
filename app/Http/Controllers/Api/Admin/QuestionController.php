@@ -75,6 +75,23 @@ class QuestionController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
+    public function updateScreen(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string',
+                'type' => 'required|string|in:info,question_single,question_multiple',
+                'content' => 'nullable|string',
+                'is_required' => 'required|integer',
+            ]);
+
+            $screen = Screen::where('id', $request->screen_id)->update($validated);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
 
     // Tüm ekranları listeleme
     public function getScreens()
