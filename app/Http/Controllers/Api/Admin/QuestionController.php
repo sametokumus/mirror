@@ -98,6 +98,10 @@ class QuestionController extends Controller
     {
         try {
             $screens = Screen::with('questions')->get();
+            foreach ($screens as $screen){
+                $questions = Question::query()->where('scrren_id', $screen->id)->where('active', 1)->get();
+                $screen['questions'] = $questions;
+            }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screens' => $screens]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
