@@ -112,5 +112,16 @@ class QuestionController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
+
+    //Filter Questions
+    public function getFilterQuestions()
+    {
+        try {
+            $questions = Question::with('options')->get();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
 }
 
