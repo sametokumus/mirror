@@ -331,12 +331,12 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     Route::get('question/getQuestions', [QuestionController::class, 'getQuestions']);
     Route::post('question/addQuestion', [QuestionController::class, 'addQuestion']);
+    Route::get('question/getFilterQuestions', [QuestionController::class, 'getFilterQuestions']);
 
     Route::get('question/getScreens', [QuestionController::class, 'getScreens']);
     Route::get('question/getScreenById/{screen_id}', [QuestionController::class, 'getScreenById']);
     Route::post('question/addScreen', [QuestionController::class, 'addScreen']);
     Route::post('question/updateScreen', [QuestionController::class, 'updateScreen']);
-    Route::get('question/getQuestions', [QuestionController::class, 'getQuestions']);
 
 });
 
