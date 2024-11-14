@@ -14,8 +14,6 @@ class QuestionController extends Controller
 {
     public function addQuestion(Request $request)
     {
-
-        return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
         try {
             $validated = $request->validate([
                 'screen' => 'required|string',
