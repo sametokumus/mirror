@@ -16,11 +16,13 @@ class QuestionController extends Controller
     {
         try {
             $validated = $request->validate([
-                'screen' => 'required|string',
-                'question_text' => 'required|string',
-                'type' => 'required|string', // Cevap türü
                 'group' => 'nullable|string', // Soru grubu
+                'type' => 'required|string', // Cevap türü
+                'question_text' => 'required|string',
+                'screen_id' => 'required|integer',
                 'options' => 'nullable|array', // Seçenekler
+                'is_you' => 'nullable|integer', // Seçenekler
+                'mirror' => 'nullable|integer', // Seçenekler
             ]);
 
             // Soru oluştur
@@ -29,6 +31,8 @@ class QuestionController extends Controller
                 'question_text' => $validated['question_text'],
                 'type' => $validated['type'],
                 'group' => $validated['group'],
+                'is_you' => $validated['is_you'],
+                'mirror' => $validated['mirror'],
             ]);
 
             // Eğer seçenekler varsa, bu seçenekleri de ekle
@@ -51,6 +55,16 @@ class QuestionController extends Controller
     {
         try {
             $questions = Question::with('options')->get();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function getQuestionsByScreenId($screen_id)
+    {
+        try {
+            $questions = Question::with('options')->where('screen_id', $screen_id)->where('active', 1)->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);

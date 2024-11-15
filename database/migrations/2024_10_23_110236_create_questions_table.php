@@ -19,6 +19,8 @@ class CreateQuestionsTable extends Migration
             $table->string('question_text');
             $table->string('type');
             $table->string('group')->nullable();
+            $table->integer('is_you')->nullable();
+            $table->integer('mirror')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
