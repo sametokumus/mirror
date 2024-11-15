@@ -27,7 +27,7 @@ class QuestionController extends Controller
 
             // Soru oluştur
             $question = Question::create([
-                'screen' => $validated['screen'],
+                'screen_id' => $validated['screen_id'],
                 'question_text' => $validated['question_text'],
                 'type' => $validated['type'],
                 'group' => $validated['group'],
