@@ -136,6 +136,8 @@ class QuestionController extends Controller
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        } catch (Exception $exception) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
 
