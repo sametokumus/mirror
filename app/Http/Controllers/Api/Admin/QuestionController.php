@@ -129,7 +129,10 @@ class QuestionController extends Controller
     public function getNextScreen($last_screen_id)
     {
         try {
-            $screen = Screen::where('id', '>', $last_screen_id)->with('questions')->with('question_options')->orderBy('id')->first();
+            $screen = Screen::where('id', '>', $last_screen_id)
+                ->with('questions.question_options')
+                ->orderBy('id')
+                ->first();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
