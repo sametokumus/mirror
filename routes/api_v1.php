@@ -55,13 +55,13 @@ Route::post('password/sendResetPasswordEmail', [ResetPasswordController::class, 
 Route::post('password/reset',[ResetPasswordController::class, 'resetPassword']);
 
 
+Route::get('/clear-caches', [UserController::class, 'clearExceptRoutes']);
+
 
 Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     Route::post('/auth/registerComplete', [AuthController::class, 'registerComplete']);
     Route::get('/logout', [AuthController::class, 'logout']);
-
-    Route::get('/clear-caches', [UserController::class, 'clearExceptRoutes']);
 
     Route::get('/user/getUsers', [UserController::class, 'getUsers']);
     Route::get('/user/getUser/{id}', [UserController::class, 'getUser']);
