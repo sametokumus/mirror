@@ -130,9 +130,10 @@ class QuestionController extends Controller
     {
         try {
             $screen = Screen::where('id', '>', $last_screen_id)
-                ->with('questions.question_options')
+                ->with('questions.options') // Use 'options' instead of 'question_options'
                 ->orderBy('id')
                 ->first();
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
