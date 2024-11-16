@@ -61,6 +61,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('/auth/registerComplete', [AuthController::class, 'registerComplete']);
     Route::get('/logout', [AuthController::class, 'logout']);
 
+    Route::get('/clear-caches', [UserController::class, 'clearExceptRoutes']);
+
     Route::get('/user/getUsers', [UserController::class, 'getUsers']);
     Route::get('/user/getUser/{id}', [UserController::class, 'getUser']);
     Route::post('/user/updateUser/{user_id}', [UserController::class, 'updateUser']);

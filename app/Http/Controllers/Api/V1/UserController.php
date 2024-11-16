@@ -229,4 +229,36 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
         }
     }
+
+
+
+    public function clearExceptRoutes()
+    {
+        // Initialize an array to hold status messages
+        $statuses = [];
+
+        // Clear config cache
+        $exitCode = Artisan::call('config:clear');
+        $statuses['config:clear'] = $exitCode == 0 ? 'success' : 'failure';
+
+        // Clear view cache
+        $exitCode = Artisan::call('view:clear');
+        $statuses['view:clear'] = $exitCode == 0 ? 'success' : 'failure';
+
+        // Clear application cache
+        $exitCode = Artisan::call('cache:clear');
+        $statuses['cache:clear'] = $exitCode == 0 ? 'success' : 'failure';
+
+        // Rebuild route cache
+        $exitCode = Artisan::call('route:cache');
+        $statuses['route:cache'] = $exitCode == 0 ? 'success' : 'failure';
+
+        // Log the statuses for debugging purposes
+        Log::info('Cache clear statuses:', $statuses);
+
+        return response()->json([
+            'message' => 'Caches cleared, except for routes.',
+            'statuses' => $statuses
+        ]);
+    }
 }
