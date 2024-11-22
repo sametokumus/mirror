@@ -113,7 +113,7 @@ class QuestionController extends Controller
     public function getScreens()
     {
         try {
-            $screens = Screen::with('questions')->get();
+            $screens = Screen::with('questions.options')->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screens' => $screens]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -123,6 +123,15 @@ class QuestionController extends Controller
     {
         try {
             $screen = Screen::where('id', $screen_id)->with('questions.options')->first();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+    public function getDeleteScreen($screen_id)
+    {
+        try {
+            $screen = Screen::where('id', $screen_id)->delete();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
