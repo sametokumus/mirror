@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\V1\PopupController;
 use App\Http\Controllers\Api\V1\SubscribeController;
 use App\Http\Controllers\Api\V1\CimriController;
 use App\Http\Controllers\Api\V1\ContactController;
+use App\Http\Controllers\Api\V1\QuestionController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -72,6 +73,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('/user/removeUserFavorite', [UserController::class, 'removeUserFavorite']);
     Route::get('/user/getUserFavorites/{user_id}', [UserController::class, 'getUserFavorites']);
     Route::post('/user/addRefundRequest', [UserController::class, 'addRefundRequest']);
+
+
+    Route::get('/question/getScreen/{screen_id}', [QuestionController::class, 'getScreen']);
+    Route::post('/question/addAnswer/{screen_id}', [QuestionController::class, 'addAnswer']);
 
 
     Route::get('/addresses/getAddressesByUserId/{user_id}', [AddressController::class, 'getAddressesByUserId']);
