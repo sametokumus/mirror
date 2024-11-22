@@ -341,8 +341,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('question/getNextScreen/{last_screen_id}', [QuestionController::class, 'getNextScreen']);
 
 
-    Route::get('/question/getScreen/{screen_id}', [QuestionController::class, 'getScreen']);
-    Route::post('/question/addAnswer/{screen_id}', [QuestionController::class, 'addAnswer']);
+    Route::get('question/getScreen/{screen_id}', [QuestionController::class, 'getScreen']);
+    Route::post('question/addAnswer/{screen_id}', [QuestionController::class, 'addAnswer']);
 
 });
 
