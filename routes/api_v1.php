@@ -76,6 +76,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
 
     Route::get('/question/getScreen/{screen_id}', [QuestionController::class, 'getScreen']);
+    Route::get('/question/getScreenFirst', [QuestionController::class, 'getScreenFirst']);
     Route::post('/question/addAnswer/{screen_id}', [QuestionController::class, 'addAnswer']);
 
 

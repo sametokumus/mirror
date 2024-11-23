@@ -18,15 +18,25 @@ class QuestionController extends Controller
         try {
             $user_id = Auth::user()->id;
 
-            Answer::query()->insertGetId([
-                'user_id' => $user_id,
-                'question_id' => $request->question_id,
-                'option_id' => $request->option_id,
-                'answer' => $request->answer
-            ]);
+            if ($request->skip_this != 1) {
+                Answer::query()->insertGetId([
+                    'user_id' => $user_id,
+                    'question_id' => $request->question_id,
+                    'option_id' => $request->option_id,
+                    'answer' => $request->answer
+                ]);
+            }
 
             $screen = Screen::where('id', '>', $screen_id)
-                ->with('questions.options')
+                ->with([
+                    'questions' => function ($query) {
+                        $query->where('active', 1)->with([
+                            'options' => function ($query) {
+                                $query->where('active', 1);
+                            }
+                        ]);
+                    }
+                ])
                 ->orderBy('id')
                 ->first();
 
@@ -43,7 +53,43 @@ class QuestionController extends Controller
     {
         try {
             $screen = Screen::where('id', '=', $screen_id)
-                ->with('questions.options')
+                ->with([
+                    'questions' => function ($query) {
+                        $query->where('active', 1)->with([
+                            'options' => function ($query) {
+                                $query->where('active', 1);
+                            }
+                        ]);
+                    }
+                ])
+                ->first();
+
+            if (!$screen){
+                return response(['message' => 'İşlem Başarılı.', 'status' => 'screen_not_found']);
+            }
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        } catch (Exception $exception) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+    public function getScreenFirst()
+    {
+        try {
+            $screen = Screen::query()
+                ->where('active', 1)
+                ->with([
+                    'questions' => function ($query) {
+                        $query->where('active', 1)->with([
+                            'options' => function ($query) {
+                                $query->where('active', 1);
+                            }
+                        ]);
+                    }
+                ])
                 ->orderBy('id')
                 ->first();
 
