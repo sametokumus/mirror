@@ -113,7 +113,7 @@ class QuestionController extends Controller
     public function getScreens()
     {
         try {
-            $screens = Screen::query()->get();
+            $screens = Screen::with('questions.options')->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screens' => $screens]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
