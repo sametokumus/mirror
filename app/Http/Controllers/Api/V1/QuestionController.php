@@ -19,12 +19,17 @@ class QuestionController extends Controller
             $user_id = Auth::user()->id;
 
             if ($request->skip_this != 1) {
-                Answer::query()->insertGetId([
-                    'user_id' => $user_id,
-                    'question_id' => $request->question_id,
-                    'option_id' => $request->option_id,
-                    'answer' => $request->answer
-                ]);
+                // Gelen option_ids dizisini kontrol ediyoruz
+                if (is_array($request->option_ids)) {
+                    foreach ($request->option_ids as $option_id) {
+                        Answer::query()->insertGetId([
+                            'user_id' => $user_id,
+                            'question_id' => $request->question_id,
+                            'option_id' => $option_id,
+                            'answer' => $request->answer
+                        ]);
+                    }
+                }
             }
 
             $screen = Screen::where('id', '>', $screen_id)
@@ -97,7 +102,10 @@ class QuestionController extends Controller
                 return response(['message' => 'İşlem Başarılı.', 'status' => 'screen_not_found']);
             }
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
+            $screen_count = Screen::query()
+                ->where('active', 1)->count();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen, 'screen_count' => $screen_count]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         } catch (Exception $exception) {
