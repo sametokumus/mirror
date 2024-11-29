@@ -63,6 +63,16 @@ class QuestionController extends Controller
         }
     }
 
+    public function getQuestionById($question_id)
+    {
+        try {
+            $questions = Question::with('options')->where('id', $question_id)->where('active', 1)->first();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
     public function getQuestionsByScreenId($screen_id)
     {
         try {

@@ -330,6 +330,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
 
     Route::get('question/getQuestions', [QuestionController::class, 'getQuestions']);
+    Route::get('question/getQuestionById{question_id}', [QuestionController::class, 'getQuestionById']);
     Route::get('question/getQuestionsByScreenId', [QuestionController::class, 'getQuestionsByScreenId']);
     Route::post('question/addQuestion', [QuestionController::class, 'addQuestion']);
     Route::get('question/getFilterQuestions', [QuestionController::class, 'getFilterQuestions']);
