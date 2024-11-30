@@ -38,6 +38,13 @@ class QuestionController extends Controller
                 'mirror' => $validated['mirror'],
             ]);
 
+            if ($validated['is_you'] == 1){
+                Question::where('id', $validated['mirror'])->update([
+                    'is_you' => 0,
+                    'mirror' => $question->id
+                ]);
+            }
+
             // Eğer seçenekler varsa, bu seçenekleri de ekle
             if (!empty($validated['options'])) {
                 foreach ($validated['options'] as $option) {
@@ -79,6 +86,13 @@ class QuestionController extends Controller
                 'is_you' => $validated['is_you'],
                 'mirror' => $validated['mirror'],
             ]);
+
+            if ($validated['is_you'] == 1){
+                Question::where('id', $validated['mirror'])->update([
+                    'is_you' => 0,
+                    'mirror' => $question_id
+                ]);
+            }
 
             if (!empty($validated['options'])) {
                 // Mevcut seçenekleri al
