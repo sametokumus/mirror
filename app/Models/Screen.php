@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Screen extends Model
 {
-    protected $fillable = ['title', 'type', 'content', 'is_required'];
+    protected $fillable = ['title', 'type', 'content', 'is_required', 'sequence', 'active'];
 
     public function questions()
     {

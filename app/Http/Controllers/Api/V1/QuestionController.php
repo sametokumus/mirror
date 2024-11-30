@@ -58,6 +58,7 @@ class QuestionController extends Controller
     {
         try {
             $screen = Screen::where('id', '=', $screen_id)
+                ->where('active', 1)
                 ->with([
                     'questions' => function ($query) {
                         $query->where('active', 1)->with([

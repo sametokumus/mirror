@@ -55,7 +55,7 @@ class QuestionController extends Controller
                 }
             }
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['question' => $validated['is_you']]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
         }
@@ -128,8 +128,7 @@ class QuestionController extends Controller
 
             return response([
                 'message' => 'Soru başarıyla güncellendi.',
-                'status' => 'success',
-                'object' => $question
+                'status' => 'success'
             ]);
 
         } catch (ModelNotFoundException $e) {
@@ -159,7 +158,13 @@ class QuestionController extends Controller
     public function getQuestions()
     {
         try {
-            $questions = Question::with('options')->get();
+            $questions = Question::where('active', 1)
+            ->with([
+                'options' => function ($query) {
+                    $query->where('active', 1);
+                }
+            ])
+                ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -169,7 +174,14 @@ class QuestionController extends Controller
     public function getQuestionById($question_id)
     {
         try {
-            $questions = Question::with('options')->where('id', $question_id)->where('active', 1)->first();
+            $questions = Question::where('id', $question_id)
+                ->where('active', 1)
+                ->with([
+                    'options' => function ($query) {
+                        $query->where('active', 1);
+                    }
+                ])
+                ->first();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -179,7 +191,14 @@ class QuestionController extends Controller
     public function getQuestionsByScreenId($screen_id)
     {
         try {
-            $questions = Question::with('options')->where('screen_id', $screen_id)->where('active', 1)->get();
+            $questions = Question::where('screen_id', $screen_id)
+                ->where('active', 1)
+                ->with([
+                    'options' => function ($query) {
+                        $query->where('active', 1);
+                    }
+                ])
+                ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -197,13 +216,25 @@ class QuestionController extends Controller
                 'is_required' => 'required|integer',
             ]);
 
-            $screen = Screen::create($validated);
+            $maxSequence = Screen::max('sequence') ?? 9999;
+            $screen = Screen::create(array_merge($validated, [
+                'sequence' => $maxSequence + 1,
+            ]));
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
+            return response([
+                'message' => 'İşlem Başarılı.',
+                'status' => 'success',
+                'object' => ['screen' => $screen]
+            ]);
         } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+            return response([
+                'message' => 'Hatalı sorgu.',
+                'status' => 'query-001',
+                'e' => $queryException->getMessage()
+            ], 500);
         }
     }
+
     public function updateScreen(Request $request)
     {
         try {
@@ -226,7 +257,17 @@ class QuestionController extends Controller
     public function getScreens()
     {
         try {
-            $screens = Screen::with('questions.options')->get();
+            $screens = Screen::where('active', 1)
+                ->with([
+                    'questions' => function ($query) {
+                        $query->where('active', 1)->with([
+                            'options' => function ($query) {
+                                $query->where('active', 1);
+                            }
+                        ]);
+                    }
+                ])
+                ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screens' => $screens]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -235,7 +276,18 @@ class QuestionController extends Controller
     public function getScreenById($screen_id)
     {
         try {
-            $screen = Screen::where('id', $screen_id)->with('questions.options')->first();
+            $screen = Screen::where('id', $screen_id)
+                ->where('active', 1)
+                ->with([
+                    'questions' => function ($query) {
+                        $query->where('active', 1)->with([
+                            'options' => function ($query) {
+                                $query->where('active', 1);
+                            }
+                        ]);
+                    }
+                ])
+                ->first();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -244,7 +296,9 @@ class QuestionController extends Controller
     public function getDeleteScreen($screen_id)
     {
         try {
-            $screen = Screen::where('id', $screen_id)->delete();
+            $screen = Screen::where('id', $screen_id)->update([
+                'active' => 0
+            ]);
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -254,8 +308,17 @@ class QuestionController extends Controller
     {
         try {
             $screen = Screen::where('id', '>', $last_screen_id)
-                ->with('questions.options')
-                ->orderBy('id')
+                ->where('active', 1)
+                ->with([
+                    'questions' => function ($query) {
+                        $query->where('active', 1)->with([
+                            'options' => function ($query) {
+                                $query->where('active', 1);
+                            }
+                        ]);
+                    }
+                ])
+                ->orderBy('sequence')
                 ->first();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
@@ -270,7 +333,13 @@ class QuestionController extends Controller
     public function getFilterQuestions()
     {
         try {
-            $questions = Question::with('options')->get();
+            $questions = Question::where('active', 1)
+                ->with([
+                    'options' => function ($query) {
+                        $query->where('active', 1);
+                    }
+                ])
+                ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
@@ -288,8 +357,17 @@ class QuestionController extends Controller
             ]);
 
             $screen = Screen::where('id', '>', $screen_id)
-                ->with('questions.options')
-                ->orderBy('id')
+                ->where('active', 1)
+                ->with([
+                    'questions' => function ($query) {
+                        $query->where('active', 1)->with([
+                            'options' => function ($query) {
+                                $query->where('active', 1);
+                            }
+                        ]);
+                    }
+                ])
+                ->orderBy('sequence')
                 ->first();
 
             if (!$screen){
@@ -305,8 +383,17 @@ class QuestionController extends Controller
     {
         try {
             $screen = Screen::where('id', '=', $screen_id)
-                ->with('questions.options')
-                ->orderBy('id')
+                ->where('active', 1)
+                ->with([
+                    'questions' => function ($query) {
+                        $query->where('active', 1)->with([
+                            'options' => function ($query) {
+                                $query->where('active', 1);
+                            }
+                        ]);
+                    }
+                ])
+                ->orderBy('sequence')
                 ->first();
 
             if (!$screen){
