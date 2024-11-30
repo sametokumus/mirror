@@ -333,6 +333,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('question/getQuestionById/{question_id}', [QuestionController::class, 'getQuestionById']);
     Route::get('question/getQuestionsByScreenId', [QuestionController::class, 'getQuestionsByScreenId']);
     Route::post('question/addQuestion', [QuestionController::class, 'addQuestion']);
+    Route::post('question/updateQuestion/{question_id}', [QuestionController::class, 'updateQuestion']);
     Route::get('question/getFilterQuestions', [QuestionController::class, 'getFilterQuestions']);
 
     Route::get('question/getScreens', [QuestionController::class, 'getScreens']);

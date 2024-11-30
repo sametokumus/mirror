@@ -8,6 +8,7 @@ use App\Models\Cart;
 use App\Models\Question;
 use App\Models\QuestionOption;
 use App\Models\Screen;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +53,94 @@ class QuestionController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
         }
     }
+
+    public function updateQuestion(Request $request, $question_id)
+    {
+        try {
+            $validated = $request->validate([
+                'group' => 'nullable|string',
+                'type' => 'required|string',
+                'question_text' => 'required|string',
+                'screen_id' => 'required|integer',
+                'options' => 'nullable|array',
+                'is_you' => 'nullable|integer',
+                'mirror' => 'nullable|integer',
+            ]);
+
+            // Güncellenecek soruyu bul
+            $question = Question::findOrFail($question_id);
+
+            // Soru detaylarını güncelle
+            $question->update([
+                'screen_id' => $validated['screen_id'],
+                'question_text' => $validated['question_text'],
+                'type' => $validated['type'],
+                'group' => $validated['group'],
+                'is_you' => $validated['is_you'],
+                'mirror' => $validated['mirror'],
+            ]);
+
+            if (!empty($validated['options'])) {
+                // Mevcut seçenekleri al
+                $existingOptions = QuestionOption::where('question_id', $question_id)->get()->keyBy('option_text');
+
+                // İşlenen mevcut seçeneklerin listesini tut
+                $processedOptions = [];
+
+                foreach ($validated['options'] as $optionText) {
+                    if ($existingOptions->has($optionText)) {
+                        // Mevcut seçenek varsa, aktif hale getir ve güncelle
+                        $existingOption = $existingOptions[$optionText];
+                        $existingOption->update(['active' => 1]); // 'active' alanını güncelle (aktif)
+                    } else {
+                        // Yeni bir seçenek ekle
+                        QuestionOption::create([
+                            'question_id' => $question_id,
+                            'option_text' => $optionText,
+                            'active' => 1, // Yeni seçenek aktif olarak eklenir
+                        ]);
+                    }
+
+                    // İşlenen seçenekleri kaydet
+                    $processedOptions[] = $optionText;
+                }
+
+                // Silinmiş olan seçeneklerin aktif durumunu 0 yap
+                QuestionOption::where('question_id', $question_id)
+                    ->whereNotIn('option_text', $processedOptions)
+                    ->update(['active' => 0]);
+            }
+
+
+            return response([
+                'message' => 'Soru başarıyla güncellendi.',
+                'status' => 'success',
+                'object' => $question
+            ]);
+
+        } catch (ModelNotFoundException $e) {
+            return response([
+                'message' => 'Soru bulunamadı.',
+                'status' => 'error',
+                'code' => 'not_found',
+                'e' => $e->getMessage()
+            ], 404);
+        } catch (QueryException $queryException) {
+            return response([
+                'message' => 'Hatalı sorgu.',
+                'status' => 'error',
+                'code' => 'query-001',
+                'e' => $queryException->getMessage()
+            ], 500);
+        } catch (\Exception $e) {
+            return response([
+                'message' => 'Bir hata oluştu.',
+                'status' => 'error',
+                'e' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
     public function getQuestions()
     {
