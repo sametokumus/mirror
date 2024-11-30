@@ -47,7 +47,7 @@ class QuestionController extends Controller
                 }
             }
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['question' => $validated]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['question' => $validated['is_you']]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
