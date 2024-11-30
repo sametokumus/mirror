@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
-    protected $fillable = ['screen_id', 'question_text', 'type', 'group'];
+    protected $fillable = ['screen_id', 'question_text', 'type', 'group', 'is_you', 'mirror'];
 
     public function screen()
     {
