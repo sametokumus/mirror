@@ -265,7 +265,8 @@ class QuestionController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Sıralama başarıyla güncellendi.',
-                'sda' => $request->input('sortedIDs')
+                'sda' => $request->input('sortedIDs'),
+                'all_data' => $request->all(), // Gelen tüm veriyi kontrol et
             ]);
         } catch (\Exception $e) {
             return response()->json([
