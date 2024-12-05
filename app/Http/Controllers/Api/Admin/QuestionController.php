@@ -256,11 +256,7 @@ class QuestionController extends Controller
     public function updateScreenSequence(Request $request)
     {
         try {
-            $sortedIDs = $request->input('sortedIDs'); // JSON decode gerekmez çünkü array alacak
-
-            if (!is_array($sortedIDs)) {
-                throw new \Exception("Geçersiz veri formatı.");
-            }
+            $sortedIDs = json_decode($request->input('sortedIDs'), true);
 
             foreach ($sortedIDs as $index => $id) {
                 Screen::where('id', $id)->update(['sequence' => $index + 1]);
