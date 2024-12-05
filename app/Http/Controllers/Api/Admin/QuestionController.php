@@ -289,6 +289,7 @@ class QuestionController extends Controller
                         ]);
                     }
                 ])
+                ->orderBy('sequence')
                 ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screens' => $screens]]);
         } catch (QueryException $queryException) {
