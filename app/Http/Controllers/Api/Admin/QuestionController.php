@@ -256,17 +256,15 @@ class QuestionController extends Controller
     public function updateScreenSequence(Request $request)
     {
         try {
-//            $sortedIDs = json_decode($request->input('sortedIDs'), true);
+            $sortedIDs = $request->input('sortedIDs');
 
-//            foreach ($sortedIDs as $index => $id) {
-//                Screen::where('id', $id)->update(['sequence' => $index + 1]);
-//            }
+            foreach ($sortedIDs as $index => $id) {
+                Screen::where('id', $id)->update(['sequence' => $index + 1]);
+            }
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Sıralama başarıyla güncellendi.',
-                'sda' => $request->input('sortedIDs'),
-                'all_data' => $request->all(), // Gelen tüm veriyi kontrol et
+                'message' => 'Sıralama başarıyla güncellendi.'
             ]);
         } catch (\Exception $e) {
             return response()->json([
