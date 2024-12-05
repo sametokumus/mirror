@@ -256,7 +256,7 @@ class QuestionController extends Controller
     public function updateScreenSequence(Request $request)
     {
         try {
-            $sortedIDs = json_decode($request->input('sortedIDs'), true);
+//            $sortedIDs = json_decode($request->input('sortedIDs'), true);
 
 //            foreach ($sortedIDs as $index => $id) {
 //                Screen::where('id', $id)->update(['sequence' => $index + 1]);
