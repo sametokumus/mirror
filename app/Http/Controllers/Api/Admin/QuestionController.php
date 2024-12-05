@@ -256,7 +256,7 @@ class QuestionController extends Controller
     public function updateScreenSequence(Request $request)
     {
         try {
-            $sortedIDs = json_decode($request->input('sortedIDs'), true);
+            $sortedIDs = $request->input('sortedIDs'); // JSON decode gerekmez çünkü array alacak
 
             if (!is_array($sortedIDs)) {
                 throw new \Exception("Geçersiz veri formatı.");
