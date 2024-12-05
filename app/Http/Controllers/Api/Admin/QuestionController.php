@@ -258,13 +258,14 @@ class QuestionController extends Controller
         try {
             $sortedIDs = json_decode($request->input('sortedIDs'), true);
 
-            foreach ($sortedIDs as $index => $id) {
-                Screen::where('id', $id)->update(['sequence' => $index + 1]);
-            }
+//            foreach ($sortedIDs as $index => $id) {
+//                Screen::where('id', $id)->update(['sequence' => $index + 1]);
+//            }
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Sıralama başarıyla güncellendi.'
+                'message' => 'Sıralama başarıyla güncellendi.',
+                'sda' => $sortedIDs
             ]);
         } catch (\Exception $e) {
             return response()->json([
