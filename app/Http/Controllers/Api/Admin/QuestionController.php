@@ -253,6 +253,28 @@ class QuestionController extends Controller
         }
     }
 
+    public function updateScreenSequence(Request $request)
+    {
+        try {
+            $sortedIDs = $request->input('sortedIDs');
+
+            foreach ($sortedIDs as $index => $id) {
+                Screen::where('id', $id)->update(['sequence' => $index + 1]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Sıralama başarıyla güncellendi.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Sıralama güncellenirken bir hata oluştu.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     // Tüm ekranları listeleme
     public function getScreens()
     {
