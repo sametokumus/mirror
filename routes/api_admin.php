@@ -335,6 +335,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('question/addQuestion', [QuestionController::class, 'addQuestion']);
     Route::post('question/updateQuestion/{question_id}', [QuestionController::class, 'updateQuestion']);
     Route::get('question/getFilterQuestions', [QuestionController::class, 'getFilterQuestions']);
+    Route::get('question/getMatchQuestions', [QuestionController::class, 'getMatchQuestions']);
 
     Route::get('question/getScreens', [QuestionController::class, 'getScreens']);
     Route::get('question/getScreenById/{screen_id}', [QuestionController::class, 'getScreenById']);

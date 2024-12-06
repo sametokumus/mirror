@@ -380,6 +380,23 @@ class QuestionController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
+    public function getMatchQuestions()
+    {
+        try {
+            $questions = Question::where('active', 1)
+                ->where('group', '=', 'match')
+                ->where('mirror', null)
+                ->with([
+                    'options' => function ($query) {
+                        $query->where('active', 1);
+                    }
+                ])
+                ->get();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['questions' => $questions]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
     public function addAnswer(Request $request, $screen_id){
         try {
             $user_id = Auth::user()->id;
