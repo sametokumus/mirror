@@ -385,7 +385,6 @@ class QuestionController extends Controller
         try {
             $questions = Question::where('active', 1)
                 ->where('group', '=', 'match')
-                ->where('mirror', null)
                 ->with([
                     'options' => function ($query) {
                         $query->where('active', 1);
