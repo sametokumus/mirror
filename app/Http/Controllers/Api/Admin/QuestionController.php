@@ -326,13 +326,13 @@ class QuestionController extends Controller
             // Ekrana bağlı soruları güncelle
             $questions = Question::where('screen_id', $screen_id)->get();
             foreach ($questions as $question) {
-                $question->update(['active' => 0]);
+                Question::where('id', $question->id)->update(['active' => 0]);
 
                 // Sorulara bağlı seçenekleri güncelle
                 QuestionOption::where('question_id', $question->id)->update(['active' => 0]);
             }
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
         } catch (\Exception $exception) {
