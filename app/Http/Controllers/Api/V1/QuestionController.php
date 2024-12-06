@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Answer;
 use App\Models\Order;
 use App\Models\OrderRefund;
+use App\Models\Question;
 use App\Models\Screen;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -19,17 +20,12 @@ class QuestionController extends Controller
             $user_id = Auth::user()->id;
 
             if ($request->skip_this != 1) {
-                // Gelen option_ids dizisini kontrol ediyoruz
-                if (is_array($request->option_ids)) {
-                    foreach ($request->option_ids as $option_id) {
-                        Answer::query()->insertGetId([
-                            'user_id' => $user_id,
-                            'question_id' => $request->question_id,
-                            'option_id' => $option_id,
-                            'answer' => $request->answer
-                        ]);
-                    }
-                }
+                Answer::query()->insertGetId([
+                    'user_id' => $user_id,
+                    'question_id' => $request->question_id,
+                    'option_id' => $request->option_id,
+                    'answer' => $request->answer
+                ]);
             }
 
             $screen = Screen::query()->where('id', $screen_id)->first();
@@ -45,7 +41,7 @@ class QuestionController extends Controller
                     }
                 ])
                 ->where('active', 1)
-                ->orderBy('id')
+                ->orderBy('sequence')
                 ->first();
 
             if (!$new_screen){
@@ -99,7 +95,7 @@ class QuestionController extends Controller
                         ]);
                     }
                 ])
-                ->orderBy('id')
+                ->orderBy('sequence')
                 ->first();
 
             if (!$screen){
