@@ -32,7 +32,9 @@ class QuestionController extends Controller
                 }
             }
 
-            $screen = Screen::where('id', '>', $screen_id)
+            $screen = Screen::query()->where('id', $screen_id)->first();
+
+            $new_screen = Screen::where('sequence', '>', $screen->sequence)
                 ->with([
                     'questions' => function ($query) {
                         $query->where('active', 1)->with([
@@ -42,13 +44,14 @@ class QuestionController extends Controller
                         ]);
                     }
                 ])
+                ->where('active', 1)
                 ->orderBy('id')
                 ->first();
 
-            if (!$screen){
+            if (!$new_screen){
                 return response(['message' => 'İşlem Başarılı.', 'status' => 'screen_not_found']);
             }
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $new_screen]]);
         } catch (QueryException $queryException){
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
         }
