@@ -18,18 +18,11 @@ class QuestionController extends Controller
     public function addAnswer(Request $request, $screen_id){
         try {
 
-            $validated = $request->validate([
-                '*.question_id' => 'required|integer',
-                '*.option_id' => 'nullable|array',
-                '*.answer' => 'nullable|string',
-                '*.skip_this' => 'required|integer',
-            ]);
-
             $user_id = Auth::user()->id;
 
             if ($request->skip_this != 1) {
 
-                foreach ($validated as $answer) {
+                foreach ($request->answers as $answer) {
 
                     if (!empty($answer['option_id'])) {
                         foreach ($answer['option_id'] as $optionId) {
