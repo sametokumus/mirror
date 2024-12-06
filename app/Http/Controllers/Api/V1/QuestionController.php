@@ -17,15 +17,39 @@ class QuestionController extends Controller
 
     public function addAnswer(Request $request, $screen_id){
         try {
+
+            $validated = $request->validate([
+                '*.question_id' => 'required|integer',
+                '*.option_id' => 'nullable|array',
+                '*.answer' => 'nullable|string',
+                '*.skip_this' => 'required|integer',
+            ]);
+
             $user_id = Auth::user()->id;
 
             if ($request->skip_this != 1) {
-                Answer::query()->insertGetId([
-                    'user_id' => $user_id,
-                    'question_id' => $request->question_id,
-                    'option_id' => $request->option_id,
-                    'answer' => $request->answer
-                ]);
+
+                foreach ($validated as $answer) {
+
+                    if (!empty($validated['option_id'])) {
+                        foreach ($validated['option_id'] as $optionId) {
+                            Answer::create([
+                                'user_id' => $user_id,
+                                'question_id' => $validated['question_id'],
+                                'option_id' => $optionId,
+                                'answer' => null,
+                            ]);
+                        }
+                    }else{
+                        Answer::create([
+                            'user_id' => $user_id,
+                            'question_id' => $validated['question_id'],
+                            'option_id' => null,
+                            'answer' => $validated['answer'],
+                        ]);
+                    }
+                }
+
             }
 
             $screen = Screen::query()->where('id', $screen_id)->first();
