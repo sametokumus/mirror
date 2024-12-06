@@ -31,11 +31,11 @@ class QuestionController extends Controller
 
                 foreach ($validated as $answer) {
 
-                    if (!empty($validated['option_id'])) {
-                        foreach ($validated['option_id'] as $optionId) {
+                    if (!empty($answer['option_id'])) {
+                        foreach ($answer['option_id'] as $optionId) {
                             Answer::create([
                                 'user_id' => $user_id,
-                                'question_id' => $validated['question_id'],
+                                'question_id' => $answer['question_id'],
                                 'option_id' => $optionId,
                                 'answer' => null,
                             ]);
@@ -43,9 +43,9 @@ class QuestionController extends Controller
                     }else{
                         Answer::create([
                             'user_id' => $user_id,
-                            'question_id' => $validated['question_id'],
+                            'question_id' => $answer['question_id'],
                             'option_id' => null,
-                            'answer' => $validated['answer'],
+                            'answer' => $answer['answer'],
                         ]);
                     }
                 }
