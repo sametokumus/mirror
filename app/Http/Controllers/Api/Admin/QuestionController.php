@@ -319,12 +319,24 @@ class QuestionController extends Controller
     public function getDeleteScreen($screen_id)
     {
         try {
-            $screen = Screen::where('id', $screen_id)->update([
-                'active' => 0
-            ]);
+            // Ekran güncelleniyor
+            $screen = Screen::findOrFail($screen_id);
+            $screen->update(['active' => 0]);
+
+            // Ekrana bağlı soruları güncelle
+            $questions = Question::where('screen_id', $screen_id)->get();
+            foreach ($questions as $question) {
+                $question->update(['active' => 0]);
+
+                // Sorulara bağlı seçenekleri güncelle
+                QuestionOption::where('question_id', $question->id)->update(['active' => 0]);
+            }
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['screen' => $screen]]);
         } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
+        } catch (\Exception $exception) {
+            return response(['message' => 'Bir hata oluştu.', 'status' => 'error', 'err' => $exception->getMessage()]);
         }
     }
     public function getNextScreen($last_screen_id)
